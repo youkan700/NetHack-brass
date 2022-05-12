@@ -1,0 +1,18 @@
+
+    NetHack brass Ver.yymmdd - based on NetHack 3.4.3
+
+Options compiled into this edition:
+
+    color, debug mode, Elbereth, experience points on status line,
+    insurance files for recovering from crashes, Keystone Kops,
+    exclusive lock on level 0 file, log file, news file, redo command,
+    rogue level, saddles and riding, riding monsters, screen clipping,
+    seduction, sinks, tourists, walled mazes, zero-compressed save files,
+    save and bones files accepted from version 3.4.3 only,
+    basic NetHack features.
+
+Supported windowing systems:
+
+    win32,
+    with a default of win32y.
+

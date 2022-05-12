@@ -1,0 +1,1859 @@
+#
+#	Object description text (English)
+#
+#	%%	%
+#	%n	name
+#	%d	description name
+#	%f	fruitname
+#
+#	This is just a placeholder, since I'm not good at English at all...
+#	Please replace the text with more suitable one!
+#
+
+#
+#	missiles
+#
+)arrow
+	A missile which is fired by a bow.
+)elven arrow
+	An elven-crafted arrow.
+)runed arrow
+	An arrow which some runes are engraved on
+	its tip.
+)orcish arrow
+	An orcish-crafted arrow.
+)crude arrow
+	A crudely crafted arrow.
+)crossbow bolt
+	A missile which is fired by a crossbow.
+)ya
+	An arrow which is used by a samurai.
+)bamboo arrow
+	An arrow which is made of a bamboo shaft
+	and a sharp metal tip.
+)dart
+	A hand-thrown needle.
+)shuriken
+)throwing star
+	A throwing weapon which is used by oriental
+	assassins. Its blades extend from the center
+	and it looks like a shape of a star.
+)bullet
+	A missile which is loaded into a gun and
+	is fired from it.
+)boomerang
+	A bend-shaped wooden throwing club.
+	This strange weapon flies back to you when
+	it is thrown.
+)spear
+	A weapon which has a sharp tip on a pole.
+)elven spear
+	An elven-crafted spear.
+)runed spear
+	A spear which some runes are engraved on
+	its tip.
+)orcish spear
+	An orcish-crafted spear.
+)crude spear
+	A crudely crafted spear.
+)dwarvish spear
+	An dwarven-crafted one handed spear.
+)stout spear
+	A %d.
+)javelin
+)throwing spear
+	A spear which is designed to throw.
+)trident
+	A three-tipped spear.
+)lance
+	A large stout spear which is designed to
+	joust.
+)dagger
+	A small sword which has a short blade,
+	or a large knife.
+)elven dagger
+	An elven-crafted dagger.
+)runed dagger
+	A dagger which some runes are engraved on
+	its blade.
+)orcish dagger
+	An orcish-crafted dagger.
+)crude dagger
+	A crudely crafted dagger.
+)athame
+	A knife which is used at a magical ritual.
+)scalpel
+	A small sharp knife, used by surgeons
+	when they do operation.
+)knife
+	A small blade.
+)stiletto
+	A knife which is designed to stab.
+)worm tooth
+	A tooth which was grown on a mouth of
+	a long worm.
+)crysknife
+	A very sharp knife made of a tooth of a
+	long worm. It is required to keep it in
+	magnetic field of human body to avoid a
+	"unfixed" knife being disintegrated.
+)dwarvish mattock
+	A mattock which is used by dwarves for mining.
+	It is quite powerful as a weapon.
+)broad pick
+	A pick which has a stout iron nail.
+)axe
+	A tool which has a thick iron blade on
+	a wooden handle, used for cutting.
+	This axe can be handled by one-handed.
+)battle-axe
+)double-headed axe
+	A powerful combat axe, which has a thick
+	double-tipped iron blade.
+)short sword
+	A sword which has a blade of around 50cm.
+)elven short sword
+	An elven-crafted short sword.
+)runed short sword
+	A short sword which some runes are engraved
+	on its blade.
+)orcish short sword
+	An orcish-crafted short sword.
+)crude short sword
+	A crudely crafted short sword.
+)dwarvish short sword
+	A dwarven-crafted stout sword sword.
+)broad short sword
+	A short sword which has a thick broad blade.
+)scimitar
+)curved sword
+	A curved, wide-bladed sword.
+)saber
+	A slightly-curved, narrow bladed sword.
+)broadsword
+	A long sword which is designed to increase
+	its damage by making the blade thicker and
+	wider.
+)elven broadsword
+	An elven-crafted large sword.
+)runed broadsword
+	A broadsword which some runes are engraved
+	on its blade.
+)long sword
+	A sword which has a blade of around 100cm.
+)two-handed sword
+	A very large sword whose length is as match
+	as a human height.
+)katana
+)samurai sword
+	An exceptionally sharp, single-edged
+	curved sword, used by samurai.
+)tsurugi
+)long samurai sword
+	An exceptionally sharp, single-edged
+	curved sword, used by samurai.
+)runesword
+	A black sword whose blade is engraved
+	by full of ancient runes.
+)partisan
+)vulgar polearm
+	A long spear which has two axe-like
+	sub blades on the side of the tip.
+)ranseur
+)hilted polearm
+	A long spear which two extra blades
+	extend from the side of the tip,
+	looking like a cross shape.
+)spetum
+)forked polearm
+	A long spear which two extra blades
+	extend from the side of the tip to
+	forward, looking like three-tipped
+	spear.
+)glaive
+)single-edged polearm
+	A weapon which a knife is attached on a pole.
+)halberd
+)angled poleaxe
+	A long pole weapon, which has a composed tip of
+	an axelike blade, a spearhead and a hooklike spike.
+)bardiche
+)long poleaxe
+	A very large axe, which has a long wide blade and
+	a large handle.
+)voulge
+)pole cleaver
+	A weapon which an axelike blade is attached
+	on a pole.
+)fauchard
+)pole sickle
+	A weapon which a sickle blade is attached
+	on a pole.
+)guisarme
+)pruning hook
+	A weapon which a hook-like blade is attached
+	on a pole.
+)bill-guisarme
+)hooked polearm
+	A long pole weapon, which has a composed tip of
+	many spikes, hooks and blades.
+)lucern hammer
+)pronged polearm
+	A long pole weapon, which has a spearhead and
+	many stout spikes to crush.
+)bec de corbin
+)beaked polearm
+	A long pole weapon, which has a spearhead and
+	a hammerhead.
+)mace
+	A crushing weapon which has a heavy iron head
+	on a iron handle.
+)morning star
+	A very large flail, which a large iron ball
+	with many spikes is chained to a handle.
+)war hammer
+	A combat hammer which has a sharp hammerhead.
+)heavy hammer
+	A very heavy hammer.
+)club
+	A simple crushing weapon.
+)rubber hose
+	A hose made of rubber.
+)quarterstaff
+)staff
+	A stout straight stick, as match as a human
+	height.
+)aklys
+)thonged club
+	A small club, which has a thong attached to
+	its handle.
+)flail
+	A crushing weapon which some spiked iron balls
+	are chained to its handle.
+)bullwhip
+	A long whip made of leather.
+	It may be not so effective as a weapon, however,
+	it would help you when you are escaping from a
+	trap or you are trying to snatch an opponent's
+	weapon.
+#
+#	bows
+#
+)bow
+	A launcher to shoot an arrow.
+)elven bow
+	An elven-crafted bow.
+)runed bow
+	A bow which some runes are engraved on it.
+)orcish bow
+	An orcish-crafted bow.
+)crude bow
+	A crudely crafted bow.
+)yumi
+	A powerful long bow used by samurai.
+)long bow
+	A large bow.
+)sling
+	A launcher made of leather, to shoot a stone.
+)crossbow
+	A launcher to shoot an crossbow bolt.
+)musket
+	A simple rifle with a long barrel.
+)revolver
+	A hand gun with a revolving cylinder,
+	enabling six sequential shots.
+#
+#	helmets
+#
+[elven leather helm
+	A leather helmet used by elves.
+[leather hat
+	A hat made of thick leather.
+[orcish helm
+	An orcish-crafted iron helmet.
+[iron skull cap
+	A cap made of iron.
+[dwarvish iron helm
+	An iron helmet used by dwarves.
+[hard hat
+	A hat made of iron.
+[fedora
+	A hat made of felt.
+[cornuthaum
+	A pointy hat used by wizards.
+[conical hat
+	A pointy cloth hat.
+[dunce cap
+	A pointy hat. This cursed hat makes your
+	intelligence very low.
+[dented pot
+	An old dented iron pot.
+	It can be utilized as a helmet.
+[helmet
+	An iron protect gear for a head.
+[plumed helmet
+	A helmet garnished with a plume.
+[helm of brilliance
+	This magical helmet increases your
+	intelligence.
+[etched helmet
+	A helmet garnished with etching.
+[helm of opposite alignment
+	This cursed helmet changes your alignment
+	to the opposite one.
+[crested helmet
+	A helmet with crested garnishment.
+[helm of telepathy
+	This magical helmet enables you to
+	sense minds of monsters around you.
+[visored helmet
+	A helmet with a visor to protect
+	your face.
+[headpiece
+[katyusha
+	A frilled headpiece.
+[nurse cap
+	A cap worn by nurses.
+#
+#	armor
+#
+[gray dragon scale mail
+	A powerful magic armor made of gray dragon scales.
+	It protects you from various magical attacks.
+	Note that the magical protection wear off by
+	repeated use.
+[silver dragon scale mail
+	A powerful magic armor made of silver dragon scales.
+	It reflects several kind of spells, wands or dragon
+	breathe and protects you from them.
+	Note that the magical reflection wear off by
+	repeated use.
+[red dragon scale mail
+	A powerful magic armor made of red dragon scales.
+	It grants you a complete protection from fire.
+[white dragon scale mail
+	A powerful magic armor made of red dragon scales.
+	It grants you a complete protection from cold.
+[orange dragon scale mail
+	A powerful magic armor made of orange dragon scales.
+	It grants you a free action.
+[black dragon scale mail
+	A powerful magic armor made of black dragon scales.
+	It grants you a complete protection from disintegration.
+	It protects your gears too, not only your body.
+[blue dragon scale mail
+	A powerful magic armor made of red dragon scales.
+	It grants you a complete protection from electric
+	attacks.
+[green dragon scale mail
+	A powerful magic armor made of green dragon scales.
+	It grants you a protection from poison and sickness.
+[yellow dragon scale mail
+	A powerful magic armor made of green dragon scales.
+	It grants you a protection from acid.
+[deep dragon scale mail
+	A powerful magic armor made of green dragon scales.
+	It grants you a protection from life drainage.
+[plain dragon scale mail
+	A dragon scale mail which lost its color due to
+	its magical power wearing off.
+	It doesn't grant any special protection, though
+	it is still powerful armor.
+[gray dragon scales
+[silver dragon scales
+[red dragon scales
+[white dragon scales
+[orange dragon scales
+[black dragon scales
+[blue dragon scales
+[green dragon scales
+[yellow dragon scales
+[deep dragon scales
+[plain dragon scales
+	A set of %d.
+[plate mail
+	A suit of strong armor which covers all of
+	your body by thick iron plate.
+[splint mail
+	%d.
+[banded mail
+	A suit of armor composed of bent iron bands.
+[dwarvish mithril-coat
+	A dwarven-crafted, mithril-made shirt.
+	It is very light but strong.
+[elven mithril-coat
+	A elven-crafted, mithril-made shirt.
+	It is very light but strong.
+[chain mail
+	A suit of armor composed of iron chain.
+[orcish chain mail
+	Orcish-crafted chain mail.
+[crude chain mail
+	A suit of armor composed of iron chain.
+	This is very crudely crafted.
+[scale mail
+	A suit of armor which many iron scales
+	are sewn on a cloth shirt.
+[studded leather armor
+	A leather armor which is reinforced by
+	iron studs.
+[ring mail
+	A suit of armor which many iron rings
+	are sewn on a cloth shirt.
+[orcish ring mail
+	An orcish-crafted ring mail.
+[crude ring mail
+	A suit of armor which many iron rings
+	are sewn on a cloth shirt.
+	This is very crudely crafted.
+[leather armor
+	A suit of armor made of thick leather.
+[leather jacket
+	A jacket made of leather.
+[robe
+	A long cloth robe.
+[robe of protection
+	This magical robe protects you from
+	physical damage.
+[robe of power
+	This magical robe assists you casting
+	a spell.
+[robe of weakness
+	This cursed robe makes your strength
+	very low.
+[black robe
+	A robe made of black cloth.
+[red robe
+	A robe made of red cloth.
+[blue robe
+	A robe made of blue cloth.
+[green robe
+	A robe made of green cloth.
+[nurse uniform
+	A uniform worn by nurses.
+[white dress
+	A white female dress.
+[maid dress
+	A black female dress worn by maids.
+[black dress
+	A black female dress.
+#
+#	cloaks
+#
+[mummy wrapping
+	A set of narrow and long cloth bands,
+	which is wrapped over a mummy.
+[elven cloak
+	An elven-crafted cloak.
+	It lets you as if faded into the around,
+	thus monsters may overlook you.
+[faded pall
+	A simple and fine cloak.
+	It looks like fading into the around.
+[orcish cloak
+	An orcish-crafted, crude cloak.
+[coarse mantelet
+	A crudely crafted mantlet.
+[dwarvish cloak
+	A cloak worn by dwarves.
+[hooded cloak
+	A cloak with a hood.
+[oilskin cloak
+[slippery cloak
+	A cloak made of oilskin cloth.
+	Its surface is quite slippery, so that
+	it protects you from monsters trying to
+	grab you.
+[cloak of protection
+	This magical cloak protects you from
+	physical attacks.
+[tattered cape
+	A %d.
+[cloak of invisibility
+	This magical cloak makes you invisible.
+[opera cloak
+	A cloak used in an opera.
+[cloak of magic resistance
+	This magical cloak protects you from
+	various magical attacks.
+	Note that the magical protection wear off by
+	repeated use.
+[ornamental cope
+	A mantlet, which seems to be used for
+	some kind of ritual.
+[cloak of displacement
+	This magical cloak creates a virtual image
+	of you at the location which is slightly
+	distant from your actual position.
+	A monster fooled by the image may attack
+	an empty spot.
+[piece of cloth
+	A %d.
+	You can wear it as a cloak.
+[alchemy smock
+	A smock worn by alchemists when they do
+	experiment. It protects you from poison
+	and acid.
+[apron
+	An apron.
+[leather cloak
+	A leather-made cloak.
+[kitchen apron
+	An apron used in a kitchen, to avoid
+	your clothes getting dirty.
+[frilled apron
+	An apron ornamented with frills.
+#
+#	shields
+#
+[small shield
+	A small wooden shield.
+[elven shield
+	An elven-crafted, middle-sized
+	wooden shield.
+[blue and green shield
+	A middle-sized wooden shield with
+	beautiful decoration by blue and
+	green color.
+[Uruk-hai shield
+	A middle-sized iron shield used by
+	Uruk-Hai. A symbol of a white hand
+	is painted on it.
+[white-handed shield
+	A middle-sized iron shield painted
+	with a symbol of a white hand.
+[orcish shield
+	A middle-sized iron shield used by
+	Mordor orcs. A symbol of a red eye
+	is painted on it.
+[red-eyed shield
+	A middle-sized iron shield painted
+	with a symbol of a red eye.
+[large shield
+	A large-sized iron shield.
+[dwarvish roundshield
+	A dwarven-crafted, large-sized
+	round iron shield.
+[large round shield
+	A large-sized, round iron shield.
+[shield of isolation
+	This magical shield neutralizes an
+	electric bolt shot at you.
+	Note that it doesn't grant you a shock-
+	resistance, so that it cannot protect
+	you from some kinds of electric attacks.
+[blue-lined shield
+	A middle-sized iron shield etched
+	with blue lines.
+[shield of firebreak
+	This magical shield neutralizes an
+	fire bolt shot at you.
+	Note that it doesn't grant you a fire
+	resistance, so that it cannot protect
+	you from some kinds of fiery attacks.
+[red-lined shield
+	A middle-sized iron shield etched
+	with red lines.
+[shield of reflection
+	This magical shield reflects several
+	kind of spells, wands or dragon
+	breathe and protects you from them.
+	Note that the magical reflection wear
+	off by repeated use.
+[polished silver shield
+	A middle-sized shield, made of polished
+	silver.
+[shield
+	A middle-sized shield.
+
+#
+#	underwears
+#
+[Hawaiian shirt
+	A cloth shirt with flashy pattern printed.
+[T-shirt
+	A cloth shirt.
+	Somehow several kinds of useless text is
+	printed on it.
+#
+#	gloves
+#
+[leather gloves
+	A pair of gloves made of leather.
+[old gloves
+	A pair of old-looking gloves.
+[gauntlets of fumbling
+	This cursed gauntlets makes you
+	quite fumbling.
+[padded gloves
+	A pair of gloves reinforced with
+	some paddings.
+[gauntlets of power
+	This magical gauntlets effectively
+	increases your strength.
+[riding gloves
+	A pair of gloves for riding.
+[gauntlets of dexterity
+	This magical gauntlets effectively
+	increases your dexterity.
+[fencing gloves
+	A pair of gloves for fencing.
+[gauntlets
+	A protection gear for hands and arms.
+#
+#	boots
+#
+[low boots
+	A leather-made boots which covers
+	around your ankles.
+[walking shoes
+	A pair of shoes for walking.
+[iron shoes
+	A pair of iron-made strong shoes.
+[hard shoes
+	A pair of metal-made strong shoes.
+[high boots
+	A leather-made boots which covers
+	all around your knees.
+[jackboots
+	A pair of long leather boots.
+[speed boots
+	This magical boots lets you run
+	very swiftly.
+[combat boots
+	A pair of stout boots made for combat.
+[water walking boots
+	This magical boots allows you to
+	walk on a surface of water.
+[jungle boots
+	A pair of stout boots designed for
+	walking in a jungle.
+[jumping boots
+	This magical boots allows you to
+	jump to distant location.
+[hiking boots
+	A pair of boots designed for
+	walking on mountain path.
+[elven boots
+	A pair of elven-crafted boots.
+	This boots allows you to walk
+	very quietly.
+[mud boots
+	A pair of boots designed for walking
+	a muddy field.
+[fumble boots
+	This cursed boots makes you
+	quite fumbling.
+[riding boots
+	A pair of boots for riding.
+[levitation boots
+	This magical boots grants you an
+	ability to levitate.
+[snow boots
+	A pair of boots designed for walking
+	on a snowy or an icy field.
+[kicking boots
+	This magical boots allows you to
+	kick very powerfully.
+[buckled boots
+	A pair of boots with buckles.
+#
+#	rings
+#
+=adornment
+	This ring increases or decreases
+	your charisma.
+=gain strength
+	This ring increases or decreases
+	your strength.
+=gain constitution
+	This ring increases or decreases
+	your constitution.
+=increase accuracy
+	This ring increases or decreases
+	your accuracy to hit.
+=increase damage
+	This ring increases or decreases
+	your damage when you hit.
+=protection
+	This ring protects you from
+	physical damage.
+=regeneration
+	This ring rapidly heals you.
+	Note that you become hungry faster
+	when you are wearing this ring.
+=searching
+	This ring allows you to search
+	your surroundings automatically.
+=stealth
+	This ring makes you very stealthy.
+=sustain ability
+	This ring fixes your ability, so that
+	your ability won't increase or
+	decrease.
+=levitation
+	This ring grants you an ability of
+	levitation.
+=hunger
+	This ring makes you hungry faster.
+=aggravate monster
+	This ring makes monsters around you
+	quite aggravated to you.
+=conflict
+	This ring causes conflict around you.
+=warning
+	This ring lets you sense hostile
+	creature around you.
+=poison resistance
+	This ring grants you a poison resistance.
+=fire resistance
+	This ring grants you a complete resistance
+	to fire.
+=cold resistance
+	This ring grants you a complete resistance
+	to cold.
+=shock resistance
+	This ring grants you a complete resistance
+	to electricity.
+=free action
+	This ring grants you a free action.
+=slow digestion
+	This ring allows you to act with fewer
+	food.
+=teleportation
+	This ring makes you teleport randomly.
+=teleport control
+	This ring grants you an ability of
+	teleport control.
+=polymorph
+	This ring makes you polymorph randomly.
+	Note that a polymorph may be dangerous.
+=polymorph control
+	This ring grants you an ability of
+	polymorph control.
+=invisibility
+	This ring makes you invisible.
+=see invisible
+	This ring grants you an ability of
+	see invisible.
+=protection from shape changers
+	This ring makes shape-shifters around you
+	revert to their original form.
+#
+=black onyx
+=moonstone
+=tiger eye
+=jade
+=topaz
+=sapphire
+=ruby
+=diamond
+=pearl
+	A ring with a %d set in it.
+=agate
+=emerald
+=opal
+	A ring with an %d set in it.
+=wooden
+	A ring made of wood.
+=brass
+=bronze
+=clay
+=copper
+=coral
+=gold
+=granite
+=iron
+=ivory
+=silver
+=steel
+=wire
+	A ring made of %d.
+=twisted
+	A ring made of twisted iron wire.
+=engagement
+	An %d.
+=shiny
+	A ring made of polished iron.
+#
+#	amulets
+#
+"amulet of ESP
+	This amulet allows you to sense creatures
+	within range by telepathy.
+"amulet of life saving
+	This amulet saves you from death only one time.
+"amulet of strangulation
+	This amulet tries to strangle you to death!
+"amulet of restful sleep
+	This amulet makes you fall into sleep at random.
+"amulet versus poison
+	This amulet grants you a poison resistance.
+"amulet of change
+	This amulet changes your sex.
+"amulet of unchanging
+	This amulet keeps you as your current form and
+	protects you from polymorphing.
+	Note that a petrification is not assumed as
+	polymorphing.
+"amulet of reflection
+	This amulet reflects several kind of spells,
+	wands or dragon breathe and protects you from them.
+	Note that the amulet will break by repeated use.
+"amulet of magical breathing
+	This amulet allows you to breathe normally
+	even if you are in an environment without air.
+"circular
+"spherical
+"triangular
+"pyramidal
+"square
+"concave
+"hexagonal
+	An amulet, an %d-shaped pendant,
+	hanged from a neck.
+"octagonal
+"oval
+	An amulet, a %d-shaped pendant,
+	hanged from a neck.
+"cheap plastic imitation of the Amulet of Yendor
+	A mass-producted imitation of the Amulet of
+	Yendor, made of cheap plastic, for souvenirs
+	at the Maze of Menace.
+"Amulet of Yendor
+	The Amulet of Yendor, which is told as
+	the most powerful artifact crafted by gods.
+#
+#	containers
+#
+(large box
+	A large, wooden box.
+(chest
+	A large, strong wooden chest.
+(ice box
+	A strange box, the temparature in it is
+	kept cold.
+(sack
+	A cloth bag.
+(oilskin sack
+	A bag made of oilskin cloth.
+	This bag protects items in it from
+	getting wet.
+(bag of holding
+	This awesome magical bag makes the weight of
+	items in it lighter.
+(bag of tricks
+	From this magical bag, somehow monsters
+	come out. Do not carelessly put your hand
+	in it!
+(bag
+	A cloth tool to carry items by putting them
+	inside of it.
+#
+#	lock opening tools
+#
+(skeleton key
+	A key which fits to any locks.
+(key
+	An iron-made key.
+(lock pick
+	A metal stick to insert into a lock and
+	picking it.
+(credit card
+	A small rectangular card made of plastic.
+	No shopkeepers in this dungeon will accept
+	credit card, however, you can utilize it
+	to insert it into a gap between a door and
+	unlock a doorbolt.
+#
+#	light sources
+#
+(tallow candle
+	A candle made of tallow.
+(candle
+	A lighting tool.
+(wax candle
+	A candle made of wax.
+(magic candle
+	This magic candle never gets short.
+(brass lantern
+	An electric lamp.
+(oil lamp
+(lamp
+	A lighting tool, which gives off a light
+	by burning oil.
+(magic lamp
+	This magic lamp gives off a light forever.
+	Maybe a spirit of a lamp appears from it
+	by rubbing the lamp...?
+#
+#	other tools
+#
+(expensive camera
+	A very high-graded and expensive camera,
+	though you cannot develop the film during
+	adventure.
+	Most dungeon dwellers who are generally in
+	a dark cave, will be blined by the intense
+	flash light.
+(looking glass
+(mirror
+	A mirror. Some creatures may be afraid with
+	its reflection.
+(crystal ball
+	A big clear sphere made of crystal.
+	It may help you to find out something
+	if you have enough intelligence to use it.
+(glass orb
+	A large glass ball. It seems to have some
+	magical power.
+(orb of charging
+	This magic orb has a power to chage a
+	magical item.
+(orb of maintenance
+	This magic orb has a power to repair
+	a damaged item.
+(orb of destruction
+	This magic orb has a full of destructive
+	energy in it. Do not release it carelessly!
+#(lenses
+#	Šá‹¾
+(blindfold
+	A tool to shut off your sight.
+(towel
+	A piece of cloth to wipe off something dirty.
+	It can be an alternative of a blindfold by
+	wrapping it around your eyes.
+(saddle
+	A tool to set it on a steed to ride it.
+(leash
+	You can leash your pet with it to lead it.
+(stethoscope
+	A tool to check the health of a creature.
+(tinning kit
+	With this tool you can make a tin from
+	a corpse of a creature.
+(tin opener
+	A tool to open a tin.
+	You can easily open a tin with wiedling it
+	when you try eating a tin.
+(can of grease
+	A can filled with a grease.
+	You can protect your armor from rusting,
+	by covering the surface of your armor with
+	the grease.
+(figurine
+	A figurine represents a shape of a creature.
+	This magic figurine has a power to transform
+	to a real creature.
+(magic marker
+	This marker contains a powerful magic enery,
+	you can write a spell on a blank scroll or
+	a spellbook.
+(scissors
+	A pair of scissors to cut cloth.
+	You can utilize it to make some bandage from
+	a cloth outfit.
+(bandage
+	A long cloth band for first aid.
+	It slightly heals you.
+(glasses of magic reading
+	This magical glasses helps you a bit
+	when you read magical runes.
+(glasses of gaze protection
+	This magical glasses protects you from
+	an enchanted gaze.
+(glasses of infravision
+	This magical glasses grants you an infravision.
+(glasses versus flash
+	This magical glasses protects you from
+	blinding by an intense flash.
+(glasses of see invisible
+	This magical glasses grants you a see invisible
+	ability.
+(glasses of phantasmagoria
+	This magical glasses shows you
+	a hallucinated sight.
+(wire-rimmed glasses
+(rimless glasses
+(horn-rimmed glasses
+(silver-rimmed glasses
+(thick glasses
+(gold-rimmed glasses
+	A pair of %d.
+#
+#	instruments
+#
+(tin whistle
+	A tin-made whistle, produces a loud
+	sound by blowing.
+(whistle
+	A small instrument which produces
+	a loud sound by blowing.
+(magic whistle
+	This magical whistle instantly summons
+	your pets around you.
+(wooden flute
+	A wooden instrument.
+(flute
+	An instrument, made of a wooden pipe.
+(magic flute
+	This magical flute produces an enchanted
+	music to make creatures fall into sleep.
+(tooled horn
+	An instrument made of a horn of some creature,
+	to threaten foes and to fire up friends.
+(horn
+	An instrument made of a horn of some creature,
+	which produces a loud sound by blowing.
+(frost horn
+	This magic horn produces a ice-cold storm.
+(fire horn
+	This magic horn produces a fiery storm.
+(horn of plenty
+	This magic horn produces food and drink.
+(wooden harp
+	A %d.
+(harp
+	An instrument which many chords are strung
+	on a wooden frame.
+(magic harp
+	This magical harp produces an enchanted
+	music to pacify creatures, or even to
+	charm them.
+(bell
+	A small instrument to produces a sound
+	by swinging.
+(bugle
+	A metal instrument which produces a loud
+	sound by blowing. Soldiers of Yendor use
+	it to send a signal.
+(leather drum
+	An instrument which leather is stretched
+	on a wooden body.
+(drum
+	A %d.
+(drum of earthquake
+	This magical drum produces a enchanted
+	sound to shake ground.
+(land mine
+	A trap made of powerful explosive and a
+	trigger to sense a victim.
+(beartrap
+	A trap made of iron teeth, designed to
+	snap a foot of a passer-by.
+#
+#	tools useful as weapons
+#
+(pick-axe
+	A tool to break and cut a rock.
+	It can be utilize as a weapon.
+(grappling hook
+	A tool which has an iron hook is
+	attached at an end of a rope.
+	It can be used to snatch an item
+	at distant location, or to drag
+	down a creature on its steed.
+(iron hook
+	A tool which has an iron hook is
+	attached at an end of a rope.
+(unicorn horn
+	A sharp and long horn which was
+	grown on a head of an unicorn.
+	It has a magical power to neutralize
+	poison.
+	It can also be utilized as a powerful
+	spear.
+#
+#	special tools
+#
+(Candelabrum of Invocation
+	A gold candelabrum which seven candles
+	are able to be attached.
+	This magical candelabrum seems to give off
+	some special light.
+(candelabrum
+	A lighting tool to attach some candles.
+(Bell of Opening
+	This magical bell produces an enchanted
+	sound to reveal hidden doors, corridors
+	and traps around you. If its magical
+	power is fully invoked, it unlocks locked
+	doors, gates or etc.
+	
+	Moreover, it seems to have a secret power.
+(silver bell
+	A small bell, made of silver.
+#
+#	meat
+#
+%tripe ration
+	A small chunk of meat, which packs some
+	scrap meats or tripes.
+#%corpse:	Ž€‘Ì
+#%egg:		—‘
+%meatball
+	A small ball of meat.
+%meat stick
+	A stick-shaped meat.
+%huge chunk of meat
+	A enormous chunk of meat.
+%meat ring
+	A ring-shaped meat.
+%kelp frond
+	A plant which grows in water.
+%eucalyptus leaf
+	A leaf of a eucalyptus tree.
+	It has a strong bactericidal and
+	detoxifying effect, so that it
+	heals you from sickness.
+#
+#	fruits & veggies
+#
+%apple
+	A red, delicious fruit.
+%orange
+	An orange, delicious fruit.
+%pear
+	A fruit which has soft and sweet flesh.
+%melon
+	A large round fruit which has green,
+	soft and sweet flesh.
+%banana
+	A long and curved shaped,
+	sweet yellow fruit.
+%carrot
+	An orange-colored root vegetable.
+	It is good for eyes.
+%sprig of wolfsbane
+	A plant which has a lethal poison,
+	but the ones which are found in this
+	dungeon seems to be safe to eat.
+	They say that it purifies you from
+	lycanthropy.
+%clove of garlic
+	A vegetable which has strong odor.
+%slime mold
+	This is your favorite.
+#
+#	human food
+#
+%lump of royal jelly
+	A lump of secretion by killer bees for feeding
+	their queen. It has very rich nutrition and
+	beneficial effect.
+%cream pie
+	A pie with full of cream.
+	It is good for eating, and throwing.
+%candy bar
+	A stick-shaped sugar sweet.
+%fortune cookie
+	A hollow cookie which has a small strip
+	of paper inside it. Several kinds of
+	fortunes are written on the strip.
+%pancake
+	A piece of food which flour and egg
+	are mixed and baked.
+%lembas wafer
+	A waybread of elves. It is very light, but
+	has rich nutrition, and delicious.
+%cram ration
+	A waybread of dwarves.
+%food ration
+	A set of preserved food for traveling.
+%K-ration
+%C-ration
+	A set of preserved food which is rationed
+	in an army.
+%tin
+	A tin, contains preserved food.
+#
+#	potions
+#
+!gain ability
+	This potion increases your ability.
+!restore ability
+	This potion restores your ability.
+!confusion
+	This potion makes you confused.
+!blindness
+	This potion makes you blind for a while.
+!paralysis
+	This potion makes you paralyzed
+	for a while.
+!speed
+	This potion lets you run very swiftly.
+!levitation
+	This potion makes you levitated in an air
+	for a while. If you can control levitation,
+	you can land to floor by '>' command.
+!hallucination
+	This potion makes you hallucinated.
+!invisibility
+	This potion makes you invisible.
+!see invisible
+	This potion grants you a see invisible
+	ability. It also has an effect to heal
+	you from blindness.
+!healing
+	This potion slightly heals you.
+	It also has an effect to heal you
+	from blindness.
+!extra healing
+	This potion greatly heals you.
+	It also has an effect to heal you
+	from blindness, hallucination and
+	sickness.
+!gain level
+	This potion raises your experience level.
+!enlightenment
+	This potion grants you an insignt which
+	you can know your current properties.
+!monster detection
+	This potion lets you sense monsters
+	on the current level.
+!object detection
+	This potion lets you sense objects
+	on the current level.
+!gain energy
+	This potion restores and may increase
+	your magical power.
+!sleeping
+	This potion makes you fall asleep.
+!full healing
+	This potion completely heals you.
+	It also has an effect to heal you
+	from blindness, hallucination and
+	sickness. Furthermore, it restores
+	your experience point which is lost
+	by life drainage, by some amount.
+!polymorph
+	This potion makes you polymorphed.
+!booze
+	A high wine.
+!sickness
+	A bottle of poisounous liquid. It is not
+	recommended to drink it.
+	Some kind of weapon may be poisoned by
+	dipping the weapon into the liquid.
+!fruit juice
+	A bottle of %f juice.
+!water
+	A bottle of water.
+!oil
+	A bottle of plant-derived oil.
+	It can be utilized to scour a rust
+	off a weapon, or as a fire bomb.
+!acid
+	A bottle of strong acidic solution.
+	It is not recommended to drink it.
+!ruby
+!pink
+!orange
+!yellow
+!emerald
+!dark green
+!cyan
+!sky blue
+!brilliant blue
+!magenta
+!purple-red
+!puce
+!milky
+!swirly
+!bubbly
+!smoky
+!cloudy
+!effervescent
+!black
+!white
+!brown
+!fizzy
+!dark
+!clear
+!murky
+!golden
+	A small bottle which some %d
+	liquid is enclosed within it.
+#
+#	scrolls
+#
+?enchant armor
+	This scroll enchants one of your armor wearing.
+	Note that overenchantment will evaporate your
+	armor.
+?destroy armor
+	This scroll destroys one of your armor wearing.
+?confuse monster
+	This scroll grants your hand an ability to
+	confuse a creature.
+?scare monster
+	This scroll temporalily scares creatures around
+	you. If you drop the scroll on a floor and stand
+	on it, creatures around you cannot attack you.
+?remove curse
+	This scroll removes curse from items you have.
+?enchant weapon
+	This scroll enchants your weapon wielding.
+	Note that overenchantment will evaporate your
+	weapon.
+?create monster
+	This scroll creates a monster next to you.
+?taming
+	This scroll pacifies creatures around you,
+	and may charm them.
+?genocide
+	This horrendous scroll kills all creatures
+	of specified spicies and makes them never
+	appear in the world.
+?light
+	This scroll illuminates your surroundings.
+?teleportation
+	This scroll makes you teleported.
+?gold detection
+	This scroll lets you sense a piece of gold
+	on the current level.
+?food detection
+	This scroll lets you sense a piece of food
+	on the current level.
+?identify
+	This scroll identifies an item.
+?magic mapping
+	This scroll lets you know the map of
+	the current level.
+?amnesia
+	This scroll makes you in a condition of
+	momentary amnesia.
+?fire
+	This scroll produces a tower of flame
+	at your location.
+?earth
+	This scroll makes the ceiling cracked
+	above your location and do the rocks
+	fall.
+?punishment
+	This scroll punishes you by chaining you
+	with a heavy iron ball.
+?charging
+	This scroll recharges a magic item.
+?stinking cloud
+	This scroll produces a poisonous cloud.
+#?mail
+#	A mail for you.
+?blank paper
+	This scroll is blank.
+#?stamped
+#	A parchment which has a stamp on it.
+?unlabeled
+	An %d scroll.
+?ZELGO MER
+?JUYED AWK YACC
+?NR 9
+?XIXAXA XOXAXA XUXAXA
+?PRATYAVAYAH
+?DAIYEN FOOELS
+?LEP GEX VEN ZEA
+?PRIRUTSENIE
+?ELBIB YLOH
+?VERR YED HORRE
+?VENZAR BORGAVVE
+?THARR
+?YUM YUM
+?KERNOD WEL
+?ELAM EBOW
+?DUAM XNAHT
+?ANDOVA BEGARIN
+?KIRJE
+?VE FORBRYDERNE
+?HACKEM MUCHE
+?VELOX NEB
+?FOOBIE BLETCH
+?TEMOV
+?GARVEN DEH
+?READ ME
+?MAPIRO MAHAMA DIROMAT
+?VAS CORP BET MANI
+	A scroll, labelled with "%d".
+##
+##	spellbooks
+##
+#+dig:			
+#+magic missile:		
+#+fireball:		
+#+cone of cold:		
+#+sleep:			
+#+finger of death:	
+#+light:			
+#+detect monsters:	
+#+healing:		
+#+knock:			
+#+force bolt:		
+#+confuse monster:	
+#+cure blindness:	
+#+drain life:		
+#+slow monster:		
+#+wizard lock:		
+#+create monster:	
+#+detect food:		
+#+cause fear:		
+#+clairvoyance:		
+#+cure sickness:		
+#+charm monster:		
+#+haste self:		
+#+detect unseen:		
+#+levitation:		
+#+extra healing:		
+#+restore ability:	
+#+invisibility:		
+#+detect treasure:	
+#+remove curse:		
+#+magic mapping:		
+#+identify:		
+#+turn undead:		
+#+polymorph:		
+#+teleport away:		
+#+create familiar:	
+#+cancellation:		
+#+protection:		
+#+jumping:		
+#+stone to flesh:	
+#+know enchantment:	
+#+torch:			
+##
+#+parchment:	
+#+vellum:	
+#+ragged:	
+#+dog eared:	
+#+mottled:	
+#+stained:	
+#+cloth:		
+#+leather:	
+#+white:		
+#+pink:		
+#+red:		
+#+orange:	
+#+yellow:	
+#+velvet:	
+#+light green:	
+#+dark green:	
+#+turquoise:	
+#+cyan:		
+#+light blue:	
+#+dark blue:	
+#+indigo:	
+#+magenta:	
+#+purple:	
+#+violet:	
+#+tan:		
+#+plaid:		
+#+light brown:	
+#+dark brown:	
+#+gray:		
+#+dusty:		
+#+bronze:	
+#+copper:	
+#+silver:	
+#+gold:		
+#+glittering:	
+#+shining:	
+#+thin:		
+#+thick:		
+#+plain:		
+#+dull:		
+#+canvas:	
+#+hardcover:	
+#+Book of the Dead:	
+#+papyrus:	
+#+blank paper:	
+#+wrinkled:	
+#+khaki:		
+#+sky blue:	
+#
+#	wands
+#
+/light
+	This wand illuminates your surroundings.
+/secret door detection
+	This wand reveals hidden doors, traps or
+	invisible monsters around you.
+/enlightenment
+	This wand grants you an insight to know
+	your current abilities and properties.
+/create monster
+	This wand creates a monster next to you.
+/wishing
+	This wand grants you a wish.
+/nothing
+	This wand has a magic of nothingness.
+/striking
+	This wand shoots a wave of destructive
+	energy.
+/make invisible
+	This wand makes a target invisible.
+/slow monster
+	This wand makes a target slower.
+/speed monster
+	This wand makes a target faster.
+/undead turning
+	This wand strikes an undead and tries to
+	turn it.
+/polymorph
+	This wand makes a target polymorphed.
+/cancellation
+	This wand makes a target cancelled and
+	inhibits its magical abilities.
+/teleportation
+	This wand makes a target teleported.
+/opening
+	This wand unlocks a locked door or
+	a locked chest.
+/locking
+	This wand locks a door or a chest.
+/probing
+	This wand probes a state of a monster.
+/digging
+	This wand shoots a digging ray.
+/magic missile
+	This wand shoots a magic missile.
+/fire
+	This wand shoots a bolt of fire.
+/cold
+	This wand shoots a bolt of cold.
+/sleep
+	This wand shoots a sleep ray.
+/death
+	This wand shoots a death ray.
+/lightning
+	This wand shoots a bolt of lightning.
+/maintenance
+	This wand repairs a damaged item.
+#
+/balsa
+/maple
+/pine
+/oak
+/ebony
+	A 10-inches long, %d wood wand.
+	Some magical property is charged
+	within it.
+/glass
+/crystal
+/marble
+/iron
+/steel
+/silver
+/tin
+/brass
+/copper
+/platinum
+/iridium
+/zinc
+/aluminum
+/uranium
+/runed
+/spiked
+/jeweled
+/hexagonal
+/curved
+/forked
+/bone
+	A 10-inches long, %d wand.
+	Some magical property is charged
+	within it.
+/short
+	A 5-inches long, %d iron wand.
+	Some magical property is charged
+	within it.
+/long
+	A 20-inches long, %d iron wand.
+	Some magical property is charged
+	within it.
+#
+#	gold
+#
+#$gold piece:	
+#
+#	gems & rocks
+#
+*dilithium crystal
+	A very rare crystalline architecture
+	of dilithium.
+*diamond
+	A clear and shiny,  expensive jewel.
+*ruby
+*sapphire
+*emerald
+*turquoise
+*aquamarine
+*amber
+*topaz
+*opal
+*garnet
+*amethyst
+*jasper
+*fluorite
+*jade
+*jacinth
+*black opal
+*citrine
+*chrysoberyl
+*obsidian
+*agate
+*jet
+	An expensive %d jewel.
+*white
+*red
+*blue
+*green
+*yellowish brown
+*violet
+*orange
+*black
+*yellow
+	A %d stone.
+*worthless piece of white glass
+*worthless piece of blue glass
+*worthless piece of red glass
+*worthless piece of yellowish brown glass
+*worthless piece of green glass
+*worthless piece of violet glass
+*worthless piece of orange glass
+*worthless piece of black glass
+*worthless piece of yellow glass
+	A shard of %d glass.
+#
+*luckstone
+	This mystic stone affects to your luck.
+*gray
+	A %d stone.
+*loadstone
+	This stone has much more weight than
+	it looks. And more, it has a curse
+	which you cannot drop it.
+*touchstone
+	A stone used by gemologists.
+	If you use it correctly, you can
+	distinguish a valuable gem from
+	a worthless piece of glass.
+*flint
+	A hard, angular rock.
+*rock
+	A normal piece of rock, or a stone.
+#
+#	miscellaneous
+#
+`boulder
+	A huge rock.
+`statue
+	A statue represents a monster.
+0heavy iron ball
+	An iron-made, very heavy ball.
+_iron chain
+	An iron-made chain.
+_sheaf of straw
+	A sheaf of straw.
+#.blinding venom:	
+#.splash of venom:	
+#.acid venom:		
+
+#
+#	artifacts - some of following text are copied from data.base
+#
+AExcalibur
+	A long sword welded by a legendary king.
+AStormbringer
+	A horrible sword which sucks and eats
+	a soul of a victim. Full of ancient runes
+	are engraved on its black blade.
+AMjollnir
+	An enormous magic hammer. It strikes
+	a target with a massive electric shock.
+	They say that it returns to you when
+	you throw it.
+ACleaver
+	A very strong battle-axe.
+AGrimtooth
+	A dagger with a dreadful sharp blade.
+AOrcrist
+	A fine sword weld by a famed elf in
+	ancient days. It senses an existence
+	of orcs near you, and gives a fatal
+	damage on them.
+ASting
+	A fine dagger which was crafted at a
+	legendary elven city in ancient days.
+	It senses an existence of orcs near
+	you, and gives a fatal damage on them.
+AMagicbane
+	This strange ritual knife contains a
+	complex magical spell in its blade,
+	and an opponent stabbed by it may be
+	suffered by various magical effects.
+	This magic blade hates to be enchanted,
+	and tries to nullify the effect.
+AFrost Brand
+	A powerful magic sword which gives off
+	a strong freezing aura from its blade.
+	This sword gives additional cold damage
+	to an opponent, and protects you from
+	cold attacks.
+AFire Brand
+	A powerful magic sword which gives off
+	a fire and heat from its blade.
+	This sword gives additional fire damage
+	to an opponent, and protects you from
+	fire attacks.
+##ADragonbane:		
+ADragonslayer
+	A magic sword which is crafted to slay
+	dragons. This sword has a power to
+	reflect dragon breathe.
+ADemonbane
+	A magic sword which is crafted to destroy
+	devils in Gehennom. Its silver blade and
+	enchantment strikes them with a blistering
+	attack.
+AWerebane
+	A magic hand gun which is crafted to
+	destroy lycanthropes.
+AGrayswandir
+	A silver saber which they say it is welded
+	by a prince of the true world. It is said
+	that the blade is composed from a part of
+	the pattern which represents the law of
+	the world.
+##AGiantslayer:		
+AGiantkiller
+	A large magic sword crafted to slay giants.
+AOgresmasher
+	A large spiked pole-hammer, crafted to
+	slay ogres.
+ATrollsbane
+	A large iron-chained spiked ball,
+	crafted to slay trolls. This weapon
+	has a magical ability to cancel the
+	reviving ability of trolls.
+AVorpal Blade
+	This strange sword has an exceptionally
+	sharp blade, which often beheads your
+	opponent by one swing.
+ASnickersnee
+	A strong katana, with very sharp blade.
+ASunsword
+	A magic sword which has a power of the
+	sun embedded in its blade.
+	It is very effective weapon to undeads.
+ADisrupter
+	A sacred silver mace, crafted to disrupt
+	unholy undeads.
+ASkullcrusher
+	A sturdy club, which seems to be made of
+	a bone of an unknown ancient creature.
+	This club crushes a skull of the opponent.
+AQuick Blade
+	This magic sword allows you to attack with
+	very swift speed.
+AGauntlets of Defense
+	This magic gauntlets protects you from
+	physical attacks very effectively.
+AFist of Fury
+	This magic gauntlets boosts the power who
+	fights without weapons.
+# A
+AThe Orb of Detection
+	This Orb is a crystal ball of exceptional powers.  When
+	carried, it grants ESP, limits damage done by spells, and
+	protects the carrier from magic missiles.  When invoked it
+	allows the carrier to become invisible.
+
+# B
+AThe Heart of Ahriman
+	A jewel which has an exceptionally powerful magics in it.
+
+# C
+AThe Sceptre of Might
+	This mace was created aeons ago in some unknown cave,
+	and has been passed down from generation to generation of
+	cave dwellers.  It is a very mighty mace indeed, and in
+	addition will protect anyone who carries it from magic
+	missile attacks.  When invoked, it causes conflict in the
+	area around it.
+
+# H
+AThe Staff of Aesculapius
+	This staff is considered sacred to all healers, as it truly
+	holds the powers of life and death.  When wielded, it
+	protects its user from all life draining attacks, and
+	additionally gives the wielder the power of regeneration.
+	When invoked it performs healing magic.
+
+# K
+AThe Magic Mirror of Merlin
+	This powerful mirror was created by Merlin, the druid, in ages
+	past, when trees sang and rocks danced.  It protects all who
+	carry it from magic missiles, and gives them ESP.
+
+# Mon
+AThe Eyes of the Overworld
+	They say it came from a different world from ours.
+	A strange lense, which grants you an ability to see
+	your surroundings as if there is no wall or obstacles.
+
+# P
+AThe Mitre of Holiness
+	This helm of brilliance performs all of the normal functions
+	of a helm of brilliance, but also has the ability to protect
+	anyone who carries it from fire.  When invoked, it boosts
+	the energy of the invoker, allowing them to cast more spells.
+
+# Ran
+AThe Longbow of Diana
+	This legendary bow grants ESP when carried and can reflect magical
+	attacks when wielded.  When invoked it provides a supply of arrows.
+
+# R
+AThe Master Key of Thievery
+	This skeleton key was fashioned in ages past and imbued with
+	a powerful magic which allows it to open any lock.  When
+	carried, it grants its owner warning, teleport control, and
+	reduces all physical damage by half.  Finally, when invoked,
+	it has the ability to disarm any trap.
+
+# S
+AThe Tsurugi of Muramasa
+	This most ancient of swords has been passed down through the
+	leadership of the Samurai legions for hundreds of years.  It
+	is said to grant luck to its wielder, but its main power is
+	terrible to behold.  It has the capability to cut in half any
+	creature it is wielded against, instantly killing them.
+
+# T
+AThe Platinum Yendorian Express Card
+	This is an ancient artifact made of an unknown material.  It
+	is rectangular in shape, very thin, and inscribed with
+	unreadable ancient runes.  When carried, it grants the one
+	who carries it ESP, and reduces all spell induced damage done to
+	the carrier by half.  It also protects from magic missile
+	attacks.  Finally, its power is such that when invoked, it
+	can charge other objects.
+
+# V
+AThe Orb of Fate
+	Some say that Odin himself created this ancient crystal ball,
+	although others argue that Loki created it and forged Odin's
+	signature on the bottom.  In any case, it is a powerful
+	artifact.  Anyone who carries it is granted the gift of
+	warning, and damage, both spell and physical, is partially
+	absorbed by the orb itself.  When invoked it has the power
+	to teleport the invoker between levels.
+
+# W
+AThe Eye of the Aethiopica
+	This is a powerful amulet of ESP.  In addition to its standard
+	powers, it regenerates the energy of anyone who carries
+	it, allowing them to cast spells more often.  It also reduces
+	any spell damage to the person who carries it by half, and
+	protects from magic missiles.  Finally, when invoked it has
+	the power to instantly open a portal to any other area of the
+	dungeon, allowing its invoker to travel quickly between
+	areas.
