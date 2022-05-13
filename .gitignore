@@ -14,3 +14,9 @@ otspells.xls
 nhmgc.txt
 tempmap.txt
 test2.pl
+*.map
+*.exe
+*.tds
+util/y.output
+*.lev
+*.dat

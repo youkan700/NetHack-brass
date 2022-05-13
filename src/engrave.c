@@ -12,6 +12,9 @@ STATIC_DCL int FDECL(getobj_filter_writewith, (struct obj *));
 STATIC_DCL boolean FDECL(is_engr, (struct engr *));
 STATIC_DCL struct engr *FDECL(more_engr, (struct engr *));
 
+STATIC_DCL boolean FDECL(is_wallsign, (struct engr *));
+STATIC_DCL struct engr *FDECL(wallsign_at, (XCHAR_P,XCHAR_P));
+
 #ifdef OVLB
 /* random engravings */
 static const char *random_mesg[] = {
@@ -60,6 +63,14 @@ static const char *random_mesg[] = {
 #endif
 	"冗談じゃない！",
 	"ゆっくりしていってね！！！",
+#endif /*JP*/
+};
+
+static const char *directions[4] = {
+#ifndef JP
+  "west", "north", "east", "south"
+#else  /*JP*/
+  "西", "北", "東", "南"
 #endif /*JP*/
 };
 
@@ -246,7 +257,7 @@ boolean
 is_engr(ep)
 struct engr *ep;
 {
-	return (ep && ep->engr_type <= N_ENGRAVE);
+	return (ep && !ep->engr_wall);
 }
 
 struct engr *
@@ -414,6 +425,9 @@ register int x,y;
 		ep->engr_read = 1;
 	    }
 	}
+
+	/* wall sign */
+	read_wallsign_at(x, y);
 }
 
 #endif /* OVL2 */
@@ -441,6 +455,7 @@ register xchar e_type;
 	if (!in_mklev && !strcmp(s, "Elbereth")) exercise(A_WIS, TRUE);
 	ep->engr_time = e_time;
 	ep->engr_type = e_type > 0 ? e_type : rnd(N_ENGRAVE-1);
+	ep->engr_wall = 0;
 	ep->engr_read = 0;
 	ep->engr_lth = strlen(s) + 1;
 }
@@ -1428,28 +1443,29 @@ static const char *epitaphs[] = {
 	"1994-1995. 史上最も長生きしたハッカー",
 	"名も無きハッカーの墓",
 	"誰かは知らねど、とにかくここに埋葬した誰かの墓",
-	"スパーキー ─ 素晴らしい犬だった",
+	"スパーキー ── 素晴らしい犬だった",
 	"送電用の第三軌条に注意",
 	"Made in Taiwan",
 	"シンユウ, オレノダチ. シンダアト, オレノメシ",
 	"ビートルジュース ビートルジュース ビートルジュース",
 	"下を見ろ！",
-	"掘り起こさないで下さい。今とっても幸せなんです ─ 住人",
+	"掘り起こさないで下さい。今とっても幸せなんです ── 住人",
 	"郵便屋さんへ、こちらに転居しました: ゲヘナ, アスモデウス要塞, 左から5番目の死霊宛",
 	"メリーさんの羊 まっしろ羊 メリーさんの危機に まず逃げた",
 	"気をつけよ、さもなくばお前もこうなるぞ！",
-	"お前もすぐにこやつ同様地獄行きよ！ ─ イェンダーの魔法使い",
+	"お前もすぐにこやつ同様地獄行きよ！ ── イェンダーの魔法使い",
 	"危険！　墓内に有害廃棄物収蔵",
 	"我はかつて汝であり、汝はやがて我となる",
 	"無神論者ここに眠る。旅支度済めども、行くべき所なし",
 	"エゼキエルここに眠る。享年102歳。いい奴ほど早く死ぬ",
-	"わが妻ここに眠る: ここに眠らせとこう！ 妻は安息を得、私もです",
+	"わが妻ここに眠る: 寝かせてあげて！ 妻は安息を得、私もです",
 	"ジョニー・イーストここに眠る。寝たままで失礼します", /* 実在のおもしろ碑文 */
 	"彼はいつも土の上で寝ていたが、今や土の中で寝ている",
 	"自分で自分を灰にした",
 	"早く咲き、早く散り、早く去ぬ。しかし決して忘られぬ",
 	"ジョナサン・ブレーキここに眠る。ブレーキとアクセルを間違えた",
 	"立ち去れ！"
+	"何を見て「ヨシ！」って言ったんですか？"
 #endif /*JP*/
 };
 
@@ -1472,6 +1488,180 @@ const char *str;
 	del_engr_at(x, y);
 	make_engr_at(x, y, str, 0L, HEADSTONE);
 	return;
+}
+
+/* wall sign */
+boolean
+is_wallsign(ep)
+struct engr *ep;
+{
+	return (ep && ep->engr_wall);
+}
+
+//                         0W    2N    4E    6S
+//const schar xdir[10] = { -1,-1, 0, 1, 1, 1, 0,-1, 0, 0 };
+//const schar ydir[10] = {  0,-1,-1,-1, 0, 1, 1, 1, 0, 0 };
+struct engr *
+wallsign_at(x, y)
+xchar x, y;
+{
+	struct engr *ep = head_engr;
+	struct engr *nxep;
+	int wx, wy;
+
+	while(ep) {
+	    if(x == ep->engr_x && y == ep->engr_y &&
+	       is_wallsign(ep)) {
+		/* check if the wall or door is broken */
+		wx = x + xdir[ep->engr_typ2 * 2];
+		wy = y + ydir[ep->engr_typ2 * 2];
+		if (levl[wx][wy].typ != ep->walltyp ||
+		    (ep->walltyp == DOOR && levl[wx][wy].flags <= D_BROKEN)) {
+		    /* sign was destroyed along with the wall or door */
+		    nxep = ep->nxt_engr;
+		    del_engr(ep);
+		    ep = nxep;
+		    continue;
+		}
+		return(ep);
+	    }
+	    ep = ep->nxt_engr;
+	}
+	return((struct engr *) 0);
+}
+
+void
+make_wallsign_at(sx,sy,wx,wy,s,e_type)
+int sx,sy;     /* coord you can read the sign */
+int wx,wy;     /* coord of the wall/door the sign is on. If 0, wy holds direction */
+const char *s; /* sign message */
+xchar e_type;  /* sign type */
+{
+	struct engr *ep;
+	int dx, dy, dir;
+
+	if (wx == 0) {
+	    /* wy holds direction */
+	    wx = sx + xdir[wy * 2];
+	    wy = sy + ydir[wy * 2];
+	}
+
+	if (!isok(sx, sy) || !isok(wx, wy)) return;
+	dx = wx - sx;
+	dy = wy - sy;
+	if      (dx == -1 && dy ==  0) dir = SIGN_WEST;
+	else if (dx ==  1 && dy ==  0) dir = SIGN_EAST;
+	else if (dx ==  0 && dy == -1) dir = SIGN_NORTH;
+	else if (dx ==  0 && dy ==  1) dir = SIGN_SOUTH;
+	else return;
+
+	if ((ep = wallsign_at(sx,sy)) != 0)
+	    del_engr(ep);
+	ep = newengr(strlen(s) + 1);
+	ep->nxt_engr = head_engr;
+	head_engr = ep;
+	ep->engr_x = sx;
+	ep->engr_y = sy;
+	ep->engr_wall = 1;
+	ep->walltyp  = levl[wx][wy].typ;
+	ep->wallflag = levl[wx][wy].flags;
+
+	ep->engr_txt = (char *)(ep + 1);
+	Strcpy(ep->engr_txt, s);
+	ep->engr_time = 0L;
+	ep->engr_type = e_type;
+	ep->engr_typ2 = dir;
+	ep->engr_read = 0;
+	ep->engr_lth = strlen(s) + 1;
+}
+
+void
+remember_wallsign_on()
+{
+	struct engr *ep = head_engr;
+	int wx, wy;
+
+	while(ep) {
+	    if(is_wallsign(ep)) {
+		/* remember the wall or door which the sign is on */
+		wx = ep->engr_x + xdir[ep->engr_typ2 * 2];
+		wy = ep->engr_y + ydir[ep->engr_typ2 * 2];
+		ep->walltyp = levl[wx][wy].typ;
+		ep->wallflag = levl[wx][wy].flags;
+	    }
+	    ep = ep->nxt_engr;
+	}
+}
+
+void
+read_wallsign_at(x,y)
+int x,y;
+{
+	struct engr *ep = wallsign_at(x,y);
+	int	sensed = 0;
+	const char *signmes;
+	char buf[BUFSZ];
+
+	/* Sensing an engraving does not require sight,
+	 * nor does it necessarily imply comprehension (literacy).
+	 */
+	if(ep && ep->engr_txt[0]) {
+	    switch (ep->engr_type) {
+		case DUST:
+		case MARK:
+		    signmes = E_J("Something is written","落書きがあ");
+		    break;
+		case ENGRAVE:
+		    signmes = E_J("Something is engraved","文字が刻まれてい");
+		    break;
+		case BURN:
+		    signmes = E_J("Some text is burned","文字が焼き付けられてい");
+		    break;
+		case ENGR_BLOOD:
+		    signmes = E_J("You see a message scrawled in blood","血文字の殴り書きがあ");
+		    break;
+		case HEADSTONE:
+		    signmes = E_J("There is a plate","銘板があ");
+		    break;
+		case WALLSIGN:
+		    signmes = E_J("There is a sign","看板が出てい");
+		    break;
+		default:
+		    signmes = E_J("There is a strange text","おかしな文字があ");
+		    break;
+	    }
+	    if(!Blind) {
+		sensed = 1;
+#ifndef JP
+		pline("%s on the % %s.", signmes,
+			directions[ep->engr_typ2],
+			(ep->walltyp == DOOR ? "door" : "wall"));
+#else
+		pline("%s側の%sに%sる。",
+			directions[ep->engr_typ2],
+			(ep->walltyp == DOOR ? "扉" : "壁"), signmes);
+#endif /*JP*/
+		}
+		if (sensed) {
+		    	char *et;
+		    	unsigned maxelen = BUFSZ - sizeof(E_J("You feel the words: \"\". ","あなたは文字を探った: 『』"));
+		    	if (strlen(ep->engr_txt) > maxelen) {
+		    		(void) strncpy(buf,  ep->engr_txt, (int)maxelen);
+				buf[maxelen] = '\0';
+				et = buf;
+			} else
+				et = ep->engr_txt;
+#ifndef JP
+			You("%s: \"%s\".",
+			      (Blind) ? "feel the words" : "read",  et);
+#else
+			You("%s: 『%s』",
+			      (Blind) ? "文字を探った" : "読んだ",  et);
+#endif /*JP*/
+			if(flags.run > 1) nomul(0);
+			ep->engr_read = 1;
+		}
+	}
 }
 
 

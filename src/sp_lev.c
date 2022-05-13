@@ -1137,7 +1137,11 @@ struct mkroom *croom;
 	else
 	    get_location(&x, &y, DRY);
 
-	make_engr_at(x, y, e->engr.str, 0L, e->etype);
+	if (!e->onwall)
+	    make_engr_at(x, y, e->engr.str, 0L, e->etype);
+	else
+	    make_wallsign_at(x, y, 0, e->dir, e->engr.str, e->etype);
+
 	free((genericptr_t) e->engr.str);
 }
 
@@ -2770,6 +2774,8 @@ dlb *fd;
     }
     if (has_transparent && level.flags.is_cavernous_lev) wallify_map();
     wallification(1, 0, COLNO-1, ROWNO-1);
+    /* wallification might change wall type */
+    remember_wallsign_on();
     if (rndvault) return TRUE;
 
     /*

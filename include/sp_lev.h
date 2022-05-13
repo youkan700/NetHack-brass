@@ -122,6 +122,8 @@ typedef struct {
 	xchar x, y;
 	Str_or_Len engr;
 	xchar etype;
+	boolean onwall;
+	xchar dir;
 } engraving;
 
 typedef struct {
