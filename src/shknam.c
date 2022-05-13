@@ -535,7 +535,7 @@ register struct mkroom *sroom;
 	    if(inside_shop(sx,sy+1)) n--;
 	    else if(inside_shop(sx,sy-1)) n++;
 	    Sprintf(buf, E_J("Closed for inventory","’I‰µ‚Ì‚½‚ß•Â“X’†"));
-	    make_engr_at(m, n, buf, 0L, DUST);
+	    make_wallsign_at(m,n,sx,sy,buf,WALLSIGN);
     }
 
     for(sx = sroom->lx; sx <= sroom->hx; sx++)

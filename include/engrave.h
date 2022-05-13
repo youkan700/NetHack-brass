@@ -8,11 +8,13 @@
 struct engr {
 	struct engr *nxt_engr;
 	char *engr_txt;
-//	xchar engr_type;
 	Bitfield(engr_read,1);	/* engraving has been read once */
-	Bitfield(engr_typ2,3);	/* reserve */
+	Bitfield(engr_wall,1);	/* engraving on wall or door */
+	Bitfield(engr_typ2,2);	/* reserve */
 	Bitfield(engr_type,4);
 	xchar engr_x, engr_y;
+        schar walltyp;          /* wallsign: wall typ the sign is on */
+        uchar wallflag;         /* wallsign: wall flag the sign is on */
 	unsigned engr_lth;	/* for save & restore; not length of text */
 	long engr_time;		/* moment engraving was (will be) finished */
 
@@ -23,6 +25,7 @@ struct engr {
 #define ENGR_BLOOD 5
 #define HEADSTONE  6
 #define N_ENGRAVE  6
+#define	WALLSIGN   7	/* sign on wall or door */
 };
 
 /* directions: should be ordered to follow xdir[],ydir[] */

@@ -137,6 +137,7 @@ RANDOM_CORRIDORS	return RAND_CORRIDOR_ID;
 CORRIDOR	return CORRIDOR_ID;
 GOLD		return GOLD_ID;
 ENGRAVING	return ENGRAVING_ID;
+WALLSIGN	return WALLSIGN_ID;
 NAME		return NAME_ID;
 CHANCE		return CHANCE_ID;
 levregion	return LEV;
@@ -194,6 +195,8 @@ engrave		{ yylval.i=ENGRAVE; return ENGRAVING_TYPE; }
 burn		{ yylval.i=BURN; return ENGRAVING_TYPE; }
 mark		{ yylval.i=MARK; return ENGRAVING_TYPE; }
 blood		{ yylval.i=ENGR_BLOOD; return ENGRAVING_TYPE; }
+wall-plate	{ yylval.i=HEADSTONE; return ENGRAVING_TYPE; }
+wall-sign	{ yylval.i=WALLSIGN; return ENGRAVING_TYPE; }
 blessed		{ yylval.i=1; return CURSE_TYPE; }
 uncursed	{ yylval.i=2; return CURSE_TYPE; }
 cursed		{ yylval.i=3; return CURSE_TYPE; }

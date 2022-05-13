@@ -149,6 +149,7 @@ extern const char *fname;
 %token	<i> PORTAL_ID TELEPRT_ID BRANCH_ID LEV CHANCE_ID
 %token	<i> CORRIDOR_ID GOLD_ID ENGRAVING_ID FOUNTAIN_ID POOL_ID SINK_ID NONE
 %token	<i> RAND_CORRIDOR_ID DOOR_STATE LIGHT_STATE CURSE_TYPE ENGRAVING_TYPE
+%token	<i> WALLSIGN_ID
 %token	<i> ROOMSHAPE
 %token	<i> DIRECTION RANDOM_TYPE O_REGISTER M_REGISTER P_REGISTER A_REGISTER
 %token	<i> ALIGNMENT LEFT_OR_RIGHT CENTER TOP_OR_BOT ALTAR_TYPE UP_OR_DOWN
@@ -580,6 +581,7 @@ room_detail	: room_name
 		| pool_detail
 		| gold_detail
 		| engraving_detail
+		| wallsign_detail
 		| stair_detail
 		;
 
@@ -836,6 +838,7 @@ map_detail	: monster_detail
 		| stair_detail
 		| gold_detail
 		| engraving_detail
+		| wallsign_detail
 		| diggable_detail
 		| passwall_detail
 		;
@@ -1528,9 +1531,43 @@ engraving_detail: ENGRAVING_ID ':' coordinate ',' engraving_type ',' string
 			tmpengraving[nengraving]->y = current_coord.y;
 			tmpengraving[nengraving]->engr.str = $7;
 			tmpengraving[nengraving]->etype = $<i>5;
+			tmpengraving[nengraving]->onwall = 0;
+			tmpengraving[nengraving]->dir = 0;
 			if (!in_room)
 			    check_coord(current_coord.x, current_coord.y,
 					"Engraving");
+			nengraving++;
+			if (nengraving >= MAX_OF_TYPE) {
+			    yyerror("Too many engravings in room or mazepart!");
+			    nengraving--;
+			}
+		  }
+		;
+
+wallsign_detail: WALLSIGN_ID ':' coordinate ',' DIRECTION ',' engraving_type ',' string
+		  {
+		  	int x, y, dir;
+
+			tmpengraving[nengraving] = New(engraving);
+			x = tmpengraving[nengraving]->x = current_coord.x;
+			y = tmpengraving[nengraving]->y = current_coord.y;
+			tmpengraving[nengraving]->engr.str = $9;
+			tmpengraving[nengraving]->etype = $<i>7;
+			tmpengraving[nengraving]->onwall = 1;
+			if (!in_room) check_coord(x, y, "Wallsign");
+			/* convert dir from a DIRECTION to a DB_DIR */
+			dir = $5;
+			switch(dir) {
+			case W_NORTH: dir = SIGN_NORTH; y--; break;
+			case W_SOUTH: dir = SIGN_SOUTH; y++; break;
+			case W_EAST:  dir = SIGN_EAST;  x++; break;
+			case W_WEST:  dir = SIGN_WEST;  x--; break;
+			default:
+			    yyerror("Invalid wallsign direction");
+			    break;
+			}
+			tmpengraving[nengraving]->dir = dir;
+			if (!in_room) check_coord(x, y, "Wallsign");
 			nengraving++;
 			if (nengraving >= MAX_OF_TYPE) {
 			    yyerror("Too many engravings in room or mazepart!");
