@@ -796,10 +796,10 @@ static const struct {
     const char *what;
     d_level *where;
 } level_detects[] = {
-  { "Delphi", &oracle_level },
-  { "Medusa's lair", &medusa_level },
-  { "a castle", &stronghold_level },
-  { "the Wizard of Yendor's tower", &wiz1_level },
+  { E_J("Delphi", "デルファイ"), &oracle_level },
+  { E_J("Medusa's lair", "メデューサの棲処"), &medusa_level },
+  { E_J("a castle", "城"), &stronghold_level },
+  { E_J("the Wizard of Yendor's tower","イェンダーの魔法使いの塔"), &wiz1_level },
 };
 
 void
@@ -908,7 +908,7 @@ struct obj *obj;
     /* read a single character */
     if (flags.verbose) You(E_J("may look for an object or monster symbol.",
 			       "物体か怪物のシンボル一つを見ることができる。"));
-    ch = yn_function("What do you look for?", (char *)0, '\0');
+    ch = yn_function(E_J("What do you look for?","何を探す？"), (char *)0, '\0');
     /* Don't filter out ' ' here; it has a use */
     if ((ch != def_monsyms[S_GHOST]) && index(quitchars,ch)) { 
 	if (flags.verbose) pline(Never_mind);

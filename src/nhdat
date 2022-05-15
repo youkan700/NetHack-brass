@@ -1,137 +1,137 @@
-  1      133     1719     3089   644512
+  1      133     1719     3089   643200
 nDirectory        0
 ndata      3089
 noracles    218208
 nttyoptions    223153
 nporthelp    223771
-nquest.dat    237512
-nrumors    332041
-nhelp    370836
-nhh    381549
-ncmdhelp    387334
-nhistory    392680
-nopthelp    403350
-nwizhelp    417847
-ndungeon    418533
-nlicense    421093
-nobjdesc    426063
-nair.lev    461937
-nArc-fila.lev    464636
-nArc-filb.lev    465168
-nArc-goal.lev    465700
-nArc-loca.lev    468362
-nArc-strt.lev    471153
-nasmodeus.lev    473463
-nastral.lev    475520
-nbaalz.lev    478640
-nBar-fila.lev    480119
-nBar-filb.lev    480436
-nBar-goal.lev    480973
-nBar-loca.lev    483476
-nBar-strt.lev    486008
-nbigrm-1.lev    488184
-nbigrm-2.lev    490490
-nbigrm-3.lev    492852
-nbigrm-4.lev    495158
-nbigrm-5.lev    497472
-ncastle.lev    499834
-nCav-fila.lev    503587
-nCav-filb.lev    503944
-nCav-goal.lev    504421
-nCav-loca.lev    506410
-nCav-strt.lev    508876
-nearth.lev    511001
-nfire.lev    513996
-nHea-fila.lev    517108
-nHea-filb.lev    517605
-nHea-goal.lev    518262
-nHea-loca.lev    519831
-nHea-strt.lev    521260
-njuiblex.lev    523589
-nKni-fila.lev    525783
-nKni-filb.lev    526140
-nKni-goal.lev    526597
-nKni-loca.lev    529251
-nKni-strt.lev    530858
-nknox.lev    532313
-nmedusa-1.lev    534758
-nmedusa-2.lev    537269
-nminefill.lev    540054
-nminend-1.lev    540539
-nminend-2.lev    543164
-nminend-3.lev    545928
-nminetn-1.lev    548301
-nminetn-2.lev    549148
-nminetn-3.lev    550107
-nminetn-4.lev    551000
-nminetn-5.lev    551887
-nminetn-6.lev    554228
-nminetn-7.lev    555471
-nmlcgate.lev    556738
-nMon-fila.lev    558102
-nMon-filb.lev    558656
-nMon-goal.lev    559097
-nMon-loca.lev    561357
-nMon-strt.lev    563811
-noracle.lev    565911
-norcus.lev    566610
-nPri-fila.lev    568993
-nPri-filb.lev    569445
-nPri-goal.lev    569997
-nPri-loca.lev    571257
-nPri-strt.lev    572283
-nRan-fila.lev    574417
-nRan-filb.lev    574774
-nRan-goal.lev    575211
-nRan-loca.lev    577746
-nRan-strt.lev    579562
-nrndv-000.lev    581272
-nrndv-001.lev    581525
-nrndv-002.lev    581847
-nrndv-003.lev    582237
-nrndv-004.lev    582606
-nRog-fila.lev    582745
-nRog-filb.lev    583333
-nRog-goal.lev    583921
-nRog-loca.lev    586753
-nRog-strt.lev    589405
-nSam-fila.lev    592111
-nSam-filb.lev    592508
-nSam-goal.lev    593904
-nSam-loca.lev    595768
-nSam-strt.lev    598756
-nsanctum.lev    600882
-nsoko1-1.lev    603358
-nsoko1-2.lev    604582
-nsoko2-1.lev    605828
-nsoko2-2.lev    606567
-nsoko3-1.lev    607390
-nsoko3-2.lev    608397
-nsoko4-1.lev    609328
-nsoko4-2.lev    609995
-nTou-fila.lev    610689
-nTou-filb.lev    611046
-nTou-goal.lev    611483
-nTou-loca.lev    614440
-nTou-strt.lev    617095
-ntower1.lev    619713
-ntower2.lev    620241
-ntower3.lev    620737
-nVal-fila.lev    621361
-nVal-filb.lev    621770
-nVal-goal.lev    622219
-nVal-loca.lev    623642
-nVal-strt.lev    625098
-nvalley.lev    627182
-nwater.lev    630261
-nWiz-fila.lev    633132
-nWiz-filb.lev    633684
-nWiz-goal.lev    634216
-nWiz-loca.lev    637045
-nWiz-strt.lev    639703
-nwizard1.lev    641944
-nwizard2.lev    643013
-nwizard3.lev    643623
+nquest.dat    237212
+nrumors    331741
+nhelp    370536
+nhh    381051
+ncmdhelp    386720
+nhistory    391945
+nopthelp    402416
+nwizhelp    416681
+ndungeon    417344
+nlicense    419904
+nobjdesc    424779
+nair.lev    460653
+nArc-fila.lev    463352
+nArc-filb.lev    463884
+nArc-goal.lev    464416
+nArc-loca.lev    467078
+nArc-strt.lev    469869
+nasmodeus.lev    472179
+nastral.lev    474236
+nbaalz.lev    477356
+nBar-fila.lev    478835
+nBar-filb.lev    479152
+nBar-goal.lev    479689
+nBar-loca.lev    482192
+nBar-strt.lev    484724
+nbigrm-1.lev    486900
+nbigrm-2.lev    489206
+nbigrm-3.lev    491568
+nbigrm-4.lev    493874
+nbigrm-5.lev    496188
+ncastle.lev    498550
+nCav-fila.lev    502303
+nCav-filb.lev    502660
+nCav-goal.lev    503137
+nCav-loca.lev    505126
+nCav-strt.lev    507592
+nearth.lev    509717
+nfire.lev    512712
+nHea-fila.lev    515824
+nHea-filb.lev    516321
+nHea-goal.lev    516978
+nHea-loca.lev    518547
+nHea-strt.lev    519976
+njuiblex.lev    522305
+nKni-fila.lev    524499
+nKni-filb.lev    524856
+nKni-goal.lev    525313
+nKni-loca.lev    527967
+nKni-strt.lev    529574
+nknox.lev    531029
+nmedusa-1.lev    533474
+nmedusa-2.lev    535985
+nminefill.lev    538770
+nminend-1.lev    539255
+nminend-2.lev    541880
+nminend-3.lev    544644
+nminetn-1.lev    547017
+nminetn-2.lev    547864
+nminetn-3.lev    548823
+nminetn-4.lev    549716
+nminetn-5.lev    550603
+nminetn-6.lev    552944
+nminetn-7.lev    554187
+nmlcgate.lev    555454
+nMon-fila.lev    556818
+nMon-filb.lev    557372
+nMon-goal.lev    557813
+nMon-loca.lev    560073
+nMon-strt.lev    562527
+noracle.lev    564627
+norcus.lev    565326
+nPri-fila.lev    567709
+nPri-filb.lev    568161
+nPri-goal.lev    568713
+nPri-loca.lev    569973
+nPri-strt.lev    570999
+nRan-fila.lev    573133
+nRan-filb.lev    573490
+nRan-goal.lev    573927
+nRan-loca.lev    576462
+nRan-strt.lev    578278
+nrndv-000.lev    579988
+nrndv-001.lev    580213
+nrndv-002.lev    580535
+nrndv-003.lev    580925
+nrndv-004.lev    581294
+nRog-fila.lev    581433
+nRog-filb.lev    582021
+nRog-goal.lev    582609
+nRog-loca.lev    585441
+nRog-strt.lev    588093
+nSam-fila.lev    590799
+nSam-filb.lev    591196
+nSam-goal.lev    592592
+nSam-loca.lev    594456
+nSam-strt.lev    597444
+nsanctum.lev    599570
+nsoko1-1.lev    602046
+nsoko1-2.lev    603270
+nsoko2-1.lev    604516
+nsoko2-2.lev    605255
+nsoko3-1.lev    606078
+nsoko3-2.lev    607085
+nsoko4-1.lev    608016
+nsoko4-2.lev    608683
+nTou-fila.lev    609377
+nTou-filb.lev    609734
+nTou-goal.lev    610171
+nTou-loca.lev    613128
+nTou-strt.lev    615783
+ntower1.lev    618401
+ntower2.lev    618929
+ntower3.lev    619425
+nVal-fila.lev    620049
+nVal-filb.lev    620458
+nVal-goal.lev    620907
+nVal-loca.lev    622330
+nVal-strt.lev    623786
+nvalley.lev    625870
+nwater.lev    628949
+nWiz-fila.lev    631820
+nWiz-filb.lev    632372
+nWiz-goal.lev    632904
+nWiz-loca.lev    635733
+nWiz-strt.lev    638391
+nwizard1.lev    640632
+nwizard2.lev    641701
+nwizard3.lev    642311
 #	This data file is generated by 'makedefs'.  Do not edit. 
 00003a37
 t”Í
@@ -9873,7 +9873,7 @@ d(	dõõdõõdõõd$        dô
 d@ ÿÿ          }ô	d@ ÿÿ          }ô	d@ ÿÿ          }ô	d@ ÿÿ          }ô
 d@ ÿÿ          }ô
 d@ ÿÿ          }ôd@ ÿÿ          }ôd@ ÿÿ          }ôd@ ÿÿ          ² ô!	dH            „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ô	dC  ÿ          „ ô	dC  ÿ          „ ô	dC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          „ ôdC  ÿ          ƒ ôõõdC  ÿ          ƒ ôõõdC  ÿ          ƒ ôõõdC  ÿ          ƒ ôõõdC  ÿ          ƒ ôõõdC  ÿ          ƒ ôõõdC  ÿ          a ôõõds  ÿ          a ôõõds  ÿ      ÿÿÿÿÎ ÿ
-d(  ÿ    F„&„¥¨             ş 	~~~~~~~~~~~~~~~~~~~~~~~~      )ÿ             ş               F„&„¥¨             ş                                                                  ş  ş  ş ş                ÿÿÿÿşÿÿõõdõ ÿ     ÿÿÿÿıÿÿõõdõ ÿ     ÿÿÿÿüÿÿõõdõ ÿ    F„&„¥¨             ş	      )ş   
+d(  ÿ    F„&„¥¨             ş 	~~~~~~~~~~~~~~~~~~~~~~~~      )ÿ              F„&„¥¨             ş                                                                  ş  ş  ş ş                ÿÿÿÿşÿÿõõdõ ÿ     ÿÿÿÿıÿÿõõdõ ÿ     ÿÿÿÿüÿÿõõdõ ÿ    F„&„¥¨             ş	      )ş   
 ş  ş  ş 	                 ôd@ ÿ          ôd@ ÿ          İ ôdT  ÿ          0 ôdh  ÿ          ~ô
 d@  ÿ          ôd@ ÿ      F„&„¥¨             ş~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      
 )    ş                   Aôd; ÿÿ          Aôd; ÿÿ          Aôd; ÿÿ          Aô

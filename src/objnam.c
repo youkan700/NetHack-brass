@@ -569,7 +569,7 @@ boolean ignore_oquan;
 		if (typ == STATUE) {
 		    if (get_material(obj) == LIQUID &&
 			can_be_frozen(&mons[obj->corpsenm])) { /* ice-bound monster */
-			Sprintf(eos(buf), "•X’Ð‚¯‚Ì%s", JMONNAM(obj->corpsenm));
+			Sprintf(eos(buf), "•X’Ð‚¯‚Ì%s‚ÌŽ€‘Ì", JMONNAM(obj->corpsenm));
 		    } else {
 			Sprintf(eos(buf), "%s‚Ì", JMONNAM(obj->corpsenm));
 			if (Role_if(PM_ARCHEOLOGIST) && (obj->spe & STATUE_HISTORIC))

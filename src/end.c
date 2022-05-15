@@ -612,7 +612,7 @@ winid endwin;
 #else
 		Sprintf(pbuf, "%s (%ld %s, %ldポイントの価値)",
 			otmp->oartifact ? artifact_name(xname(otmp), &dummy, 0) :
-				OBJ_NAME(objects[otmp->otyp]),
+				JOBJ_NAME(objects[otmp->otyp]),
 			value, currency(value), points);
 #endif /*JP*/
 		putstr(endwin, 0, pbuf);

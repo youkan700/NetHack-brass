@@ -456,6 +456,7 @@ int dnum;
 	    else if (!strcmp(p, "Gehennom"))		 p = "ゲヘナ";
 	    else if (!strcmp(p, "Fort Ludios"))		 p = "ローディオス砦";
 	    else if (!strcmp(p, "Vlad's Tower"))	 p = "ヴラド侯の塔";
+	    else if (!strcmp(p, "Yendor's Lab"))	 p = "魔法使いの塔";
 	    else if (!strcmp(p, "The Elemental Planes")) p = "精霊界";
 	    jdgnnamp[dnum] =p;
 	}
