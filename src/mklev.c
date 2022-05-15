@@ -2411,13 +2411,13 @@ mkasmolev()
 	selloc_tini();
 
 	/* ice-freezed monsters */
-	for (i=0; i<rn1(10,10); i++) {
+	for (i=0; i<rn1(5,5); i++) {
 	    for (j=100; j; j--) {
 		x = rn1(COLNO-1,2);
 		y = rn2(ROWNO);
 		if (levl[x][y].typ == ROOM ||
 		    levl[x][y].typ == ICE) {
-		    switch (rn2(5)) {
+		    switch (rn2(4)) {
 			case 0:
 			    maketrap(x,y,STATUE_TRAP);
 			    break;
