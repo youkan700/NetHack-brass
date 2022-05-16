@@ -133,6 +133,7 @@ demon_talk(mtmp)		/* returns 1 if it won't attack. */
 register struct monst *mtmp;
 {
 	long cash, demand, offer;
+	boolean sawmon;
 
 	if (uwep && uwep->oartifact == ART_EXCALIBUR) {
 	    pline(E_J("%s looks very angry.","%sは怒りに燃えているようだ。"), Amonnam(mtmp));
@@ -143,14 +144,17 @@ register struct monst *mtmp;
 	}
 
 	/* Slight advantage given. */
+	mtmp->mtrybribe = 0;
 	if (is_dprince(mtmp->data) && mtmp->minvis) {
+	    sawmon = canspotmons(mtmp);
 	    mtmp->minvis = mtmp->perminvis = 0;
-	    if (!Blind) pline(E_J("%s appears before you.","%sがあなたの前に現れた。"), Amonnam(mtmp));
+	    if (!Blind && !sawmon) pline(E_J("%s appears before you.","%sがあなたの前に現れた。"), Amonnam(mtmp));
 	    newsym(mtmp->mx,mtmp->my);
 	}
 	if (youmonst.data->mlet == S_DEMON) {	/* Won't blackmail their own. */
 	    pline(E_J("%s says, \"Good hunting, %s.\"","%sは言った:「よい狩を、わが%sよ。」"),
 		  Amonnam(mtmp), flags.female ? E_J("Sister","妹") : E_J("Brother","兄弟"));
+	    setmpeaceful(mtmp, TRUE);
 	    if (!tele_restrict(mtmp)) (void) rloc(mtmp, FALSE);
 	    return(1);
 	}

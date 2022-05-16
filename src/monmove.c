@@ -419,7 +419,7 @@ register struct monst *mtmp;
 
 	/* Demonic Blackmail! */
 	if(nearby && mdat->msound == MS_BRIBE &&
-	   mtmp->mpeaceful && !mtmp->mtame && !u.uswallow) {
+	   mtmp->mtrybribe && !mtmp->mtame && !u.uswallow) {
 		if (mtmp->mux != u.ux || mtmp->muy != u.uy) {
 			pline(E_J("%s whispers at thin air.",
 				  "%s‚Í‰½‚à‚È‚¢‹óŠÔ‚ÉŒü‚©‚Á‚Äš‘‚¢‚½B"),
