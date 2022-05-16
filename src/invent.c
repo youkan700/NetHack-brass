@@ -1183,11 +1183,7 @@ register struct obj *otmp;
 boolean
 wearing_armor()
 {
-	return((boolean)(uarm || uarmc || uarmf || uarmg || uarmh || uarms
-#ifdef TOURIST
-		|| uarmu
-#endif
-		));
+	return((boolean)(uarm || uarmc || uarmf || uarmg || uarmh || uarms || uarmu));
 }
 
 boolean
@@ -2620,17 +2616,11 @@ doprarm()
 	if(!wearing_armor())
 		You(E_J("are not wearing any armor.","–h‹ï‚ğ’…‚¯‚Ä‚¢‚È‚¢B"));
 	else {
-#ifdef TOURIST
 		char lets[8];
-#else
-		char lets[7];
-#endif
 		register int ct = 0;
 
-#ifdef TOURIST
 		if(uarmu) lets[ct++] = obj_to_let(uarmu);
-#endif
-		if(uarm) lets[ct++] = obj_to_let(uarm);
+		if(uarm)  lets[ct++] = obj_to_let(uarm);
 		if(uarmc) lets[ct++] = obj_to_let(uarmc);
 		if(uarmh) lets[ct++] = obj_to_let(uarmh);
 		if(uarms) lets[ct++] = obj_to_let(uarms);

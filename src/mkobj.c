@@ -582,9 +582,7 @@ boolean artif;
 					blessorcurse(otmp, 5);
 					break;
 #endif
-#ifdef TOURIST
 		case EXPENSIVE_CAMERA:
-#endif
 		case MAGIC_WHISTLE:
 		case TINNING_KIT:
 		case MAGIC_MARKER:	otmp->spe = rn1(70,30);
@@ -681,14 +679,12 @@ boolean artif;
 			otmp->oerodeproof = otmp->rknown = 1;
 #endif
 		}
-#ifdef TOURIST
 		if (otmp->otyp == HAWAIIAN_SHIRT ||
 		    otmp->otyp == T_SHIRT) {
 			int tmpc;
 			tmpc = rn2(CLR_MAX);
 			if (tmpc != NO_COLOR) otmp->corpsenm = tmpc;
 		}
-#endif
 		break;
 	case WAND_CLASS:
 		if(otmp->otyp == WAN_WISHING) otmp->spe = rnd(3); else

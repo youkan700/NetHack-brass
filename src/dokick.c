@@ -1515,9 +1515,7 @@ boolean shop_floor_obj;
 	    const char *result;
 
 	    if (get_material(otmp) == GLASS
-#ifdef TOURIST
 		|| otmp->otyp == EXPENSIVE_CAMERA
-#endif
 		) {
 		if (otmp->otyp == MIRROR)
 		    change_luck(-2);

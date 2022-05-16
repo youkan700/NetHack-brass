@@ -12,9 +12,7 @@ static const char tools_too[] = { ALL_CLASSES, TOOL_CLASS, POTION_CLASS,
 				  WEAPON_CLASS, ARMOR_CLASS,
 				  WAND_CLASS, GEM_CLASS, 0 };
 
-#ifdef TOURIST
 STATIC_DCL int FDECL(use_camera, (struct obj *));
-#endif
 STATIC_DCL int FDECL(use_towel, (struct obj *));
 STATIC_DCL boolean FDECL(its_dead, (int,int,int *));
 STATIC_DCL int FDECL(use_stethoscope, (struct obj *));
@@ -75,7 +73,6 @@ static NEARDATA struct {
 } bandage;
 #endif
 
-#ifdef TOURIST
 STATIC_OVL int
 use_camera(obj)
 	struct obj *obj;
@@ -115,7 +112,6 @@ use_camera(obj)
 	}
 	return 1;
 }
-#endif
 
 STATIC_OVL int
 use_towel(obj)
@@ -1895,10 +1891,8 @@ register struct obj *obj;
 		cnt = 3;
 		break;
 	    case TOWEL:
-#ifdef TOURIST
 	    case T_SHIRT:
 	    case HAWAIIAN_SHIRT:
-#endif /*TOURIST*/
 		cnt = 5;
 		break;
 	    case NURSE_UNIFORM:
@@ -2415,7 +2409,6 @@ struct obj *obj;
 #endif /*JP*/
 			return;
 		}
-#ifdef TOURIST
 		if ((otmp->owornmask & WORN_SHIRT) && (uarmc || uarm)) {
 			Strcpy(buf, uarmc ? xname(uarmc) : "");
 			if (uarmc && uarm) Strcat(buf, E_J(" and ","‚Æ"));
@@ -2427,7 +2420,6 @@ struct obj *obj;
 #endif /*JP*/
 			return;
 		}
-#endif
 		consume_obj_charge(obj, TRUE);
 
 		if (otmp != &zeroobj) {
@@ -3953,9 +3945,7 @@ doapply()
 		use_grease(obj);
 		break;
 	case LOCK_PICK:
-#ifdef TOURIST
 	case CREDIT_CARD:
-#endif
 	case SKELETON_KEY:
 		(void) pick_lock(obj);
 		break;
@@ -4032,11 +4022,9 @@ doapply()
 	case POT_OIL:
 		light_cocktail(obj);
 		break;
-#ifdef TOURIST
 	case EXPENSIVE_CAMERA:
 		res = use_camera(obj);
 		break;
-#endif
 	case KITCHEN_APRON:
 		if(!freehand()) {
 			You(E_J("have no free %s!",

@@ -290,9 +290,7 @@ fnd:
 	}
 
 	if (!strcmpi(buf, "Croesus") || !strcmpi(buf, "Kroisos")
-#ifdef TOURIST
 		|| !strcmpi(buf, "Creosote")
-#endif
 #ifdef JP
 		|| !strcmp(buf, "クロイソス")
 #endif /*JP*/

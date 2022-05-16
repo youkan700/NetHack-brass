@@ -1169,9 +1169,7 @@ role_tech()
 		case PM_RANGER:		return (ran_tech);
 		case PM_ROGUE:		return (rog_tech);
 		case PM_SAMURAI:	return (sam_tech);
-#ifdef TOURIST
 		case PM_TOURIST:	return (tou_tech);
-#endif
 		case PM_VALKYRIE:	return (val_tech);
 		case PM_WIZARD:		return (wiz_tech);
 		default: 		return ((struct innate_tech *) 0);

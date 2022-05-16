@@ -847,10 +847,8 @@ int attk;
 		 */
 		if (uarm)
 		    (void)rust_dmg(uarm, xname(uarm), hurt, TRUE, &youmonst);
-#ifdef TOURIST
 		else if (uarmu)
 		    (void)rust_dmg(uarmu, xname(uarmu), hurt, TRUE, &youmonst);
-#endif
 		break;
 	    case 2:
 		if (!uarms || !rust_dmg(uarms, xname(uarms), hurt, FALSE, &youmonst))
@@ -894,9 +892,7 @@ struct attack *mattk;
 {
 	struct obj *obj = (uarmc ? uarmc : uarm);
 
-#ifdef TOURIST
 	if (!obj) obj = uarmu;
-#endif
 	if (mattk->adtyp == AD_DRIN) obj = uarmh;
 
 	/* if your cloak/armor is greased, monster slips off; this
@@ -946,9 +942,7 @@ struct monst *mon;
 	if (mon == &youmonst) {
 		aa = uarm;	ac = uarmc;	ag = uarmg;
 		ah = uarmh;	af = uarmf;	as = uarms;
-#ifdef TOURIST
 		au = uarmu;
-#endif
 	} else {
 		aa = which_armor(mon, W_ARM);
 		ac = which_armor(mon, W_ARMC);
@@ -956,9 +950,7 @@ struct monst *mon;
 		ag = which_armor(mon, W_ARMG);
 		af = which_armor(mon, W_ARMF);
 		as = which_armor(mon, W_ARMS);
-#ifdef TOURIST
 		au = which_armor(mon, W_ARMU);
-#endif
 	}
 
 	/* shields are good for defense */
@@ -1673,9 +1665,7 @@ dopois:
 		    break;
 		}
 		if(!uwep
-#ifdef TOURIST
 		   && !uarmu
-#endif
 		   && !uarm && !uarmh && !uarms && !uarmg && !uarmc && !uarmf) {
 		    boolean goaway = FALSE;
 		    pline(E_J("%s hits!  (I hope you don't mind.)",
@@ -2195,9 +2185,7 @@ gulpmu(mtmp, mattk)	/* monster swallows you, or damage if u.uswallow */
                         /* no shield or suit, you're dead; wipe out cloak
                            and/or shirt in case of life-saving or bones */
                         if (uarmc) (void) destroy_arm(uarmc);
-#ifdef TOURIST
                         if (uarmu) (void) destroy_arm(uarmu);
-#endif
 			if (Disint_resistance) {
 			    You(E_J("are not disintegrated.",
 				    "•ª‰ğ‚³‚ê‚È‚©‚Á‚½B"));
@@ -2781,11 +2769,7 @@ register struct monst *mon;
 	    }
 	}
 
-	if (!uarmc && !uarmf && !uarmg && !uarms && !uarmh
-#ifdef TOURIST
-								&& !uarmu
-#endif
-									)
+	if (!uarmc && !uarmf && !uarmg && !uarms && !uarmh && !uarmu)
 #ifndef JP
 		pline("%s murmurs sweet nothings into your ear.",
 			Blind ? (fem ? "She" : "He") : Monnam(mon));
@@ -2809,10 +2793,8 @@ register struct monst *mon;
 		mayberem(uarmg, E_J("gloves","è‘Ü"));
 	mayberem(uarms, E_J("shield","‚"));
 	mayberem(uarmh, helm_simple_name(uarmh));
-#ifdef TOURIST
 	if(!uarmc && !uarm)
 		mayberem(uarmu, E_J("shirt","ƒVƒƒƒc"));
-#endif
 
 	if (uarm || uarmc) {
 		verbalize(E_J("You're such a %s; I wish...",
@@ -2959,9 +2941,7 @@ const char *str;
 	char qbuf[QBUFSZ];
 #ifdef JP
 	boolean nugi = obj && ((objects[obj->otyp].oc_armcat == ARM_SUIT)
-#ifdef TOURIST
 			    || (objects[obj->otyp].oc_armcat == ARM_SHIRT)
-#endif
 			);
 #endif /*JP*/
 
@@ -2991,9 +2971,7 @@ const char *str;
 			(obj == uarmc || obj == uarms) ? "it's in the way" :
 			(obj == uarmf) ? "let me rub your feet" :
 			(obj == uarmg) ? "they're too clumsy" :
-#ifdef TOURIST
 			(obj == uarmu) ? "let me massage you" :
-#endif
 			/* obj == uarmh */
 			hairbuf);
 #else
@@ -3002,9 +2980,7 @@ const char *str;
 			(obj == uarmc || obj == uarms) ? "×–‚‚¾‚à‚Ì" :
 			(obj == uarmf) ? "‘«‚ğ‚³‚·‚Á‚Ä‚ ‚°‚é" :
 			(obj == uarmg) ? "ãY—í‚Èè‚ğŒ©‚½‚¢‚È" :
-#ifdef TOURIST
 			(obj == uarmu) ? "”§‚ÉG‚ç‚¹‚Ä" :
-#endif
 			/* obj == uarmh */
 			hairbuf);
 #endif /*JP*/
@@ -3335,10 +3311,8 @@ int hitpart;
 			}
 		}
 /* Because Hawaiian shirt do not improve AC, it do not reduce damage */
-//#ifdef TOURIST
 //		if (uarmu)
 //			tmp += reduce_dmg_amount(uarmu);
-//#endif
 		break;
 	}
 	/* reduce damage by armor rating at the part being hit */
@@ -3395,10 +3369,8 @@ int hitpart;
 			}
 		}
 /* Because Hawaiian shirt do not improve AC, it do not reduce damage */
-//#ifdef TOURIST
 //		if (uarmu)
 //			tmp += reduce_dmg_amount(uarmu);
-//#endif
 		break;
 	}
 	/* reduce damage by armor rating at the part being hit */

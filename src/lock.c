@@ -74,10 +74,8 @@ lock_action()
 	/* otherwise we're trying to unlock it */
 	else if (xlock.picktyp == LOCK_PICK)
 		return actions[3];	/* "picking the lock" */
-#ifdef TOURIST
 	else if (xlock.picktyp == CREDIT_CARD)
 		return actions[3];	/* same as lock_pick */
-#endif
 	else if (xlock.door)
 		return actions[0];	/* "unlocking the door" */
 	else
@@ -289,9 +287,7 @@ pick_lock(pick) /* pick a lock with a given object */
 
 	    if (nohands(youmonst.data)) {
 		const char *what = (picktyp == LOCK_PICK) ? E_J("pick","鍵開け器具") : E_J("key","鍵");
-#ifdef TOURIST
 		if (picktyp == CREDIT_CARD) what = E_J("card","カード");
-#endif
 		pline(no_longer, E_J("hold the",what), E_J(what,"を持っていられない"));
 		reset_pick();
 		return 0;
@@ -314,9 +310,7 @@ pick_lock(pick) /* pick a lock with a given object */
 	}
 
 	if((picktyp != LOCK_PICK &&
-#ifdef TOURIST
 	    picktyp != CREDIT_CARD &&
-#endif
 	    picktyp != SKELETON_KEY)) {
 		impossible("picking lock with object %d?", picktyp);
 		return(0);
@@ -384,7 +378,6 @@ pick_lock(pick) /* pick a lock with a given object */
 				     "%sを使って壊された錠を直すことはできない。"), doname(pick));
 			return 0;
 		    }
-#ifdef TOURIST
 		    else if (picktyp == CREDIT_CARD && !otmp->olocked) {
 			/* credit cards are only good for unlocking */
 #ifndef JP
@@ -394,13 +387,10 @@ pick_lock(pick) /* pick a lock with a given object */
 #endif /*JP*/
 			return 0;
 		    }
-#endif
 		    switch(picktyp) {
-#ifdef TOURIST
 			case CREDIT_CARD:
 			    ch = ACURR(A_DEX) + 20*Role_if(PM_ROGUE);
 			    break;
-#endif
 			case LOCK_PICK:
 			    ch = 3*ACURR(A_DEX) + 25*Role_if(PM_ROGUE);
 			    break;
@@ -457,12 +447,10 @@ pick_lock(pick) /* pick a lock with a given object */
 	    if ((mtmp = m_at(cc.x, cc.y)) && canseemon(mtmp)
 			&& mtmp->m_ap_type != M_AP_FURNITURE
 			&& mtmp->m_ap_type != M_AP_OBJECT) {
-#ifdef TOURIST
 		if (picktyp == CREDIT_CARD &&
 		    (mtmp->isshk || mtmp->mnum == PM_ORACLE))
 		    verbalize(E_J("No checks, no credit, no problem.","いつもニコニコ現金払い。"));
 		else
-#endif
 		    pline(E_J("I don't think %s would appreciate that.",
 			      "%sにその価値がわかるとは思えない。"), mon_nam(mtmp));
 		return(0);
@@ -495,14 +483,12 @@ pick_lock(pick) /* pick a lock with a given object */
 		    pline(E_J("This door is broken.","この扉は壊されている。"));
 		    return(0);
 		default:
-#ifdef TOURIST
 		    /* credit cards are only good for unlocking */
 		    if(picktyp == CREDIT_CARD && !(door->doormask & D_LOCKED)) {
 			You_cant(E_J("lock a door with a credit card.",
 				     "クレジットカードで鍵をかけることはできない。"));
 			return(0);
 		    }
-#endif
 
 		    Sprintf(qbuf,E_J("%sock it?","鍵を%sけますか？"),
 			(door->doormask & D_LOCKED) ? E_J("Unl","開") : E_J("L","か") );
@@ -511,11 +497,9 @@ pick_lock(pick) /* pick a lock with a given object */
 		    if(c == 'n') return(0);
 
 		    switch(picktyp) {
-#ifdef TOURIST
 			case CREDIT_CARD:
 			    ch = 2*ACURR(A_DEX) + 20*Role_if(PM_ROGUE);
 			    break;
-#endif
 			case LOCK_PICK:
 			    ch = 3*ACURR(A_DEX) + 30*Role_if(PM_ROGUE);
 			    break;

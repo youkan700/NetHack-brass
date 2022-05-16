@@ -4101,11 +4101,8 @@ boolean altusage; /* some items have an "alternate" use with different cost */
 		tmp -= tmp / 5L;
 	} else if (otmp->otyp == CAN_OF_GREASE ||
 		   otmp->otyp == TINNING_KIT ||
-		   otmp->otyp == MAGIC_WHISTLE
-#ifdef TOURIST
-		   || otmp->otyp == EXPENSIVE_CAMERA
-#endif
-		   ) {
+		   otmp->otyp == MAGIC_WHISTLE ||
+		   otmp->otyp == EXPENSIVE_CAMERA) {
 		tmp /= 10L;
 	} else if (otmp->otyp == POT_OIL) {
 		tmp /= 5L;
@@ -5455,22 +5452,18 @@ boolean is_shk_buying;
 
 	if (!is_shk_buying) {
 		tmp += (tmp * (long)discount_factor[cha] / 100L);
-#ifdef TOURIST
 		if ((Role_if(PM_TOURIST) && u.ulevel < (MAXULEV/2))
 		    || (uarmu && !uarm && !uarmc))	/* touristy shirt visible */
 			tmp += tmp / 3L;
 		else
-#endif
 		if (uarmh && uarmh->otyp == DUNCE_CAP)
 			tmp += tmp / 3L;
 	} else {
 		tmp = tmp * trade_in_factor[cha] / 100L;
-#ifdef TOURIST
 		if ((Role_if(PM_TOURIST) && u.ulevel < (MAXULEV/2))
 		    || (uarmu && !uarm && !uarmc))	/* touristy shirt visible */
 			tmp -= tmp * 2 / 3;
 		else
-#endif
 		if (uarmh && uarmh->otyp == DUNCE_CAP)
 			tmp -= tmp * 2 / 3;
 	}

@@ -20,9 +20,7 @@ static NEARDATA const char see_yourself[] = "see yourself";
 static NEARDATA const char unknown_type[] = "Unknown type of %s (%d)";
 static NEARDATA const char c_armor[]  = E_J("armor","鎧"),
 			   c_suit[]   = E_J("suit","装備"),
-#ifdef TOURIST
 			   c_shirt[]  = E_J("shirt","シャツ"),
-#endif
 			   c_cloak[]  = E_J("cloak","クローク"),
 			   c_gloves[] = E_J("gloves","篭手"),
 			   c_boots[]  = E_J("boots","ブーツ"),
@@ -36,9 +34,7 @@ static NEARDATA const char c_armor[]  = E_J("armor","鎧"),
 static NEARDATA const long takeoff_order[] = { WORN_BLINDF, W_WEP,
 	WORN_SHIELD, WORN_GLOVES, LEFT_RING, RIGHT_RING, WORN_CLOAK,
 	WORN_HELMET, WORN_AMUL, WORN_ARMOR,
-#ifdef TOURIST
 	WORN_SHIRT,
-#endif
 	WORN_BOOTS, W_SWAPWEP, W_QUIVER, 0L };
 
 STATIC_DCL void FDECL(on_msg, (struct obj *));
@@ -49,9 +45,7 @@ STATIC_DCL int NDECL(Cloak_on);
 STATIC_PTR int NDECL(Helmet_on);
 STATIC_PTR int NDECL(Gloves_on);
 STATIC_PTR int NDECL(Shield_on);
-#ifdef TOURIST
 STATIC_PTR int NDECL(Shirt_on);
-#endif
 STATIC_DCL void NDECL(Amulet_on);
 STATIC_DCL void FDECL(Ring_off_or_gone, (struct obj *, BOOLEAN_P));
 STATIC_PTR int FDECL(select_off, (struct obj *));
@@ -99,12 +93,10 @@ static NEARDATA const struct armor_on_off_info{
 	Cloak_on, Cloak_off, &uarmc, WORN_CLOAK,
 	(char *)0
     },
-#ifdef TOURIST
     {	/* shirt */
 	Shirt_on, Shirt_off, &uarmu, WORN_SHIRT,
 	(char *)0
     }
-#endif /*TOURIST*/
 };
 #define otyp2uarmp(otyp) (armor_on_off_infotbl[objects[otyp].oc_armcat].uarmptr)
 #define otyp2mask(otyp)  (armor_on_off_infotbl[objects[otyp].oc_armcat].mask)
@@ -664,7 +656,6 @@ Shield_off()
     return 0;
 }
 
-#ifdef TOURIST
 STATIC_OVL int
 Shirt_on()
 {
@@ -694,7 +685,6 @@ Shirt_off()
     setworn((struct obj *)0, W_ARMU);
     return 0;
 }
-#endif	/*TOURIST*/
 
 /* This must be done in worn.c, because one of the possible intrinsics conferred
  * is fire resistance, and we have to immediately set HFire_resistance in worn.c
@@ -1397,9 +1387,7 @@ struct obj *ormv;
 void
 set_wear()
 {
-#ifdef TOURIST
 	if (uarmu) (void) Shirt_on();
-#endif
 	if (uarm)  (void) Armor_on();
 	if (uarmc) (void) Cloak_on();
 	if (uarmf) (void) Boots_on();
@@ -1420,11 +1408,9 @@ register struct obj *otmp;
     if (otmp == uarm)
 	result = (afternmv == Armor_on || afternmv == Armor_off ||
 		  what == WORN_ARMOR);
-#ifdef TOURIST
     else if (otmp == uarmu)
 	result = (afternmv == Shirt_on || afternmv == Shirt_off ||
 		  what == WORN_SHIRT);
-#endif
     else if (otmp == uarmc)
 	result = (afternmv == Cloak_on || afternmv == Cloak_off ||
 		  what == WORN_CLOAK);
@@ -1471,9 +1457,7 @@ struct obj *otmp;
 	if (otmp->oclass != ARMOR_CLASS) return 0;
 	if (!(otmp->owornmask & (W_ARMOR | W_RING | W_AMUL | W_TOOL))
 	     || (otmp==uarm && uarmc)
-#ifdef TOURIST
 	     || (otmp==uarmu && (uarm || uarmc))
-#endif
 	    ) return GETOBJ_ADDELSE;
 	return GETOBJ_CHOOSEIT;
 }
@@ -1576,11 +1560,9 @@ dotakeoff()
 	} else if (uarm) {
 		armorpieces++;
 		otmp = uarm;
-#ifdef TOURIST
 	} else if (uarmu) {
 		armorpieces++;
 		otmp = uarmu;
-#endif
 	}
 	if (!armorpieces) {
 	     /* assert( GRAY_DRAGON_SCALES > YELLOW_DRAGON_SCALE_MAIL ); */
@@ -1608,9 +1590,7 @@ dotakeoff()
 	/* note: the `uskin' case shouldn't be able to happen here; dragons
 	   can't wear any armor so will end up with `armorpieces == 0' above */
 	if (otmp == uskin || ((otmp == uarm) && uarmc)
-#ifdef TOURIST
 			  || ((otmp == uarmu) && (uarmc || uarm))
-#endif
 		) {
 	    You_cant(E_J("take that off.","まずその上のものを脱がなければ。"));
 	    return 0;
@@ -1645,9 +1625,7 @@ doremring()
 		pline(E_J("Not wearing any accessories.%s",
 			  "あなたは装身具を身につけていない。%s"), (iflags.cmdassist &&
 			    (uarm || uarmc ||
-#ifdef TOURIST
 			     uarmu ||
-#endif
 			     uarms || uarmh || uarmg || uarmf)) ?
 		      E_J("  Use 'T' command to take off armor.",
 			  "防具を外すには、'T'コマンドを使用します。") : "");
@@ -1782,9 +1760,7 @@ boolean noisy;
     const char *which;
 
     which = is_cloak(otmp) ? c_cloak :
-#ifdef TOURIST
 	    is_shirt(otmp) ? c_shirt :
-#endif
 	    is_suit(otmp) ? c_suit : 0;
     if (which && cantweararm(youmonst.data) &&
 	    /* same exception for cloaks as used in m_dowear() */
@@ -1800,9 +1776,7 @@ boolean noisy;
 
     if (welded(uwep) && bimanual(uwep) &&
 	    (is_suit(otmp)
-#ifdef TOURIST
 			|| is_shirt(otmp)
-#endif
 	    )) {
 	if (noisy)
 #ifndef JP
@@ -1897,7 +1871,6 @@ boolean noisy;
 	    err++;
 	} else
 	    *mask = W_ARMG;
-#ifdef TOURIST
     } else if (is_shirt(otmp)) {
 	if (uarm || uarmc || uarmu) {
 	    if (uarmu) {
@@ -1910,7 +1883,6 @@ boolean noisy;
 	    err++;
 	} else
 	    *mask = W_ARMU;
-#endif
     } else if (is_cloak(otmp)) {
 	if (uarmc) {
 	    if (noisy) already_wearing(E_J(an(cloak_simple_name(uarmc)),
@@ -2250,9 +2222,8 @@ find_ac()
 	if(uarmf) uac -= ARM_BONUS(uarmf);
 	if(uarms) uac -= ARM_BONUS(uarms);
 	if(uarmg) uac -= ARM_BONUS(uarmg);
-#ifdef TOURIST
 	if(uarmu) uac -= ARM_BONUS(uarmu);
-#endif
+
 	/* Special coding for monks and their natural defensive AC */
 	if(Role_if(PM_MONK) && !uwep && !uarms &&
 	   (!uarm || (uarm && is_clothes(uarm))))
@@ -2374,11 +2345,9 @@ struct monst *victim;
 	otmph = (victim == &youmonst) ? uarmc : which_armor(victim, W_ARMC);
 	if (!otmph)
 	    otmph = (victim == &youmonst) ? uarm : which_armor(victim, W_ARM);
-#ifdef TOURIST
 	if (!otmph)
 	    otmph = (victim == &youmonst) ? uarmu : which_armor(victim, W_ARMU);
-#endif
-	
+
 	otmp = (victim == &youmonst) ? uarmh : which_armor(victim, W_ARMH);
 	if(otmp && (!otmph || !rn2(4))) otmph = otmp;
 	otmp = (victim == &youmonst) ? uarmg : which_armor(victim, W_ARMG);
@@ -2512,21 +2481,15 @@ register struct obj *otmp;
 	    }
 	}
 	/* special suit and shirt checks */
-	if (otmp == uarm
-#ifdef TOURIST
-			|| otmp == uarmu
-#endif
-		) {
+	if (otmp == uarm || otmp == uarmu) {
 	    why = 0;	/* the item which prevents disrobing */
 	    if (uarmc && uarmc->cursed) {
 		Sprintf(buf, E_J("remove your %s",
 				 "%sを脱げ"), cloak_simple_name(uarmc));
 		why = uarmc;
-#ifdef TOURIST
 	    } else if (otmp == uarmu && uarm && uarm->cursed) {
 		Sprintf(buf, E_J("remove your %s", "%sを脱げ"), c_suit);
 		why = uarm;
-#endif
 	    } else if (welded(uwep) && bimanual(uwep)) {
 		Sprintf(buf, E_J("release your %s","%sを手放せ"),
 			is_sword(uwep) ? c_sword :
@@ -2557,9 +2520,7 @@ register struct obj *otmp;
 	else if(otmp == uarmg) takeoff_mask |= WORN_GLOVES;
 	else if(otmp == uarmh) takeoff_mask |= WORN_HELMET;
 	else if(otmp == uarms) takeoff_mask |= WORN_SHIELD;
-#ifdef TOURIST
 	else if(otmp == uarmu) takeoff_mask |= WORN_SHIRT;
-#endif
 	else if(otmp == uleft) takeoff_mask |= LEFT_RING;
 	else if(otmp == uright) takeoff_mask |= RIGHT_RING;
 	else if(otmp == uamul) takeoff_mask |= WORN_AMUL;
@@ -2611,11 +2572,9 @@ do_takeoff()
 	} else if (taking_off == WORN_SHIELD) {
 	  otmp = uarms;
 	  if(!cursed(otmp)) (void) Shield_off();
-#ifdef TOURIST
 	} else if (taking_off == WORN_SHIRT) {
 	  otmp = uarmu;
 	  if (!cursed(otmp)) (void) Shirt_off();
-#endif
 	} else if (taking_off == WORN_AMUL) {
 	  otmp = uamul;
 	  if(!cursed(otmp)) Amulet_off();
@@ -2687,13 +2646,11 @@ take_off()
 	  otmp = uarmh;
 	} else if (taking_off == WORN_SHIELD) {
 	  otmp = uarms;
-#ifdef TOURIST
 	} else if (taking_off == WORN_SHIRT) {
 	  otmp = uarmu;
 	  /* add the time to take off and put back on armor and/or cloak */
 	  if (uarm)  todelay += 2 * objects[uarm->otyp].oc_delay;
 	  if (uarmc) todelay += 2 * objects[uarmc->otyp].oc_delay + 1;
-#endif
 	} else if (taking_off == WORN_AMUL) {
 	  todelay = 1;
 	} else if (taking_off == LEFT_RING) {
@@ -2837,14 +2794,12 @@ register struct obj *atmp;
 			armor_simple_name(otmp), surface(u.ux,u.uy));
 		(void) Armor_gone();
 		useup(otmp);
-#ifdef TOURIST
 	} else if (DESTROY_ARM(uarmu)) {
 		if (donning(otmp)) cancel_don();
 		Your(E_J("shirt crumbles into tiny threads and falls apart!",
 			 "シャツはばらばらの糸屑となって崩れ落ちた！"));
 		(void) Shirt_off();
 		useup(otmp);
-#endif
 	} else if (DESTROY_ARM(uarmh)) {
 		if (donning(otmp)) cancel_don();
 		Your(E_J("%s turns to dust and is blown away!",

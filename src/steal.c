@@ -13,10 +13,7 @@ STATIC_OVL const char *
 equipname(otmp)
 register struct obj *otmp;
 {
-	return (
-#ifdef TOURIST
-		(otmp == uarmu) ? E_J("shirt","シャツ") :
-#endif
+	return ((otmp == uarmu) ? E_J("shirt","シャツ") :
 		(otmp == uarmf) ? E_J("boots","ブーツ") :
 		(otmp == uarms) ? E_J("shield","盾") :
 		(otmp == uarmg) ? E_J("gloves","手袋") :
@@ -159,9 +156,7 @@ boolean unchain_ball;	/* whether to unpunish or just unwield */
 	    else if (obj == uarmg) (void) Gloves_off();
 	    else if (obj == uarmh) (void) Helmet_off();
 	    else if (obj == uarms) (void) Shield_off();
-#ifdef TOURIST
 	    else if (obj == uarmu) (void) Shirt_off();
-#endif
 	    /* catchall -- should never happen */
 	    else setworn((struct obj *)0, obj->owornmask & W_ARMOR);
 	} else if (obj->owornmask & W_AMUL) {
@@ -256,10 +251,8 @@ nothing_to_steal:
 	    otmp = uwep;
 	/* can't steal armor while wearing cloak - so steal the cloak. */
 	else if(otmp == uarm && uarmc) otmp = uarmc;
-#ifdef TOURIST
 	else if(otmp == uarmu && uarmc) otmp = uarmc;
 	else if(otmp == uarmu && uarm) otmp = uarm;
-#endif
 gotobj:
 	if(otmp->o_id == stealoid) return(0);
 

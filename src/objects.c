@@ -409,13 +409,8 @@ ARMOR("elven mithril-coat", (char *)0,
 	1, 0, 0, 0,	 6, 1, 100, 240,  5, 3, ARM_SUIT, MITHRIL, 0, HI_METAL),
 ARMOR("chain mail", (char *)0,
 	1, 0, 0, 0,	70, 5, 300,  75,  4/*5*/, 1, ARM_SUIT, IRON, 0, HI_METAL),
-#ifdef TOURIST
 ARMOR("orcish chain mail", "crude chain mail",
 	0, 0, 0, 0,	10, 5, 300,  75,  5/*6*/, 1, ARM_SUIT, IRON, 0, CLR_BLACK),
-#else
-ARMOR("orcish chain mail", "crude chain mail",
-	0, 0, 0, 0,	20, 5, 300,  75,  5/*6*/, 1, ARM_SUIT, IRON, 0, CLR_BLACK),
-#endif
 ARMOR("scale mail", (char *)0,
 	1, 0, 0, 0,	70, 5, 250,  45,  5/*6*/, 0, ARM_SUIT, IRON, 0, HI_METAL),
 ARMOR("studded leather armor", (char *)0,
@@ -445,13 +440,11 @@ ARMOR("robe of weakness", "green robe",
 	0, 1, 0, 0,	10, 0,  20, 100,  9, 0, ARM_SUIT, CLOTH, 0, CLR_GREEN),
 /* ARMOR: known, magicobj, (bulky), power, %, delay, weight, cost, AC, can, subtype, material, color */
 
-#ifdef TOURIST
 /* shirts */
 ARMOR("Hawaiian shirt", (char *)0,
 	1, 0, 0, 0,	 8, 0,	 5,   3, 10, 0, ARM_SHIRT, CLOTH, 0, CLR_MAGENTA),
 ARMOR("T-shirt", (char *)0,
 	1, 0, 0, 0,	 2, 0,	 5,   2, 10, 0, ARM_SHIRT, CLOTH, 0, CLR_WHITE),
-#endif
 
 /* cloaks */
 /*  'cope' is not a spelling mistake... leave it be */
@@ -665,12 +658,8 @@ CONTAINER("bag of tricks", "bag",       0, 1, 1,  20, 15, 100, CLOTH, HI_CLOTH),
 
 /* lock opening tools */
 TOOL("skeleton key", "key",     0, 0, 0, 0,  80,  3,  10, IRON, HI_METAL),
-#ifdef TOURIST
 TOOL("lock pick", (char *)0,    1, 0, 0, 0,  60,  4,  20, IRON, HI_METAL),
 TOOL("credit card", (char *)0,  1, 0, 0, 0,  15,  1,  10, PLASTIC, CLR_WHITE),
-#else
-TOOL("lock pick", (char *)0,    1, 0, 0, 0,  75,  4,  20, IRON, HI_METAL),
-#endif
 /* light sources */
 TOOL("tallow candle", "candle", 0, 1, 0, 0,  18,  2,  10, WAX, CLR_WHITE),
 TOOL("wax candle", "candle",    0, 1, 0, 0,  15,  2,  20, WAX, CLR_WHITE),
@@ -679,13 +668,9 @@ TOOL("brass lantern", (char *)0,1, 0, 0, 0,  30, 30,  12, COPPER, CLR_YELLOW),
 TOOL("oil lamp", "lamp",        0, 0, 0, 0,  45, 20,  10, COPPER, CLR_YELLOW),
 TOOL("magic lamp", "lamp",      0, 0, 1, 0,   2, 20,1000, COPPER, CLR_YELLOW),
 /* other tools */
-#ifdef TOURIST
 TOOL("expensive camera", (char *)0,
 				1, 0, 0, 1,  15, 12, 200, PLASTIC, CLR_BLACK),
 TOOL("mirror", LOOKING_GLASS,   0, 0, 0, 0,  30, 13,  10, GLASS, HI_SILVER),
-#else
-TOOL("mirror", LOOKING_GLASS,   0, 0, 0, 0,  45, 13,  10, GLASS, HI_SILVER),
-#endif
 TOOL("crystal ball", "glass orb",
 				0, 0, 1, 1,  15, 75,  60, GLASS, HI_GLASS),
 /* STEPHEN WHITE'S NEW CODE */
