@@ -316,6 +316,7 @@ uchar hflg;
 			mtmp->mfrozen = 0;
 		}
 	}
+	mtmp->mtrybribe = 0;
 	if (is_orc(mtmp->data) && maybe_polyd(is_elf(youmonst.data),
 			Race_if(PM_ELF)))
 	    tmp++;

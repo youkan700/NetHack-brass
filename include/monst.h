@@ -86,6 +86,7 @@ struct monst {
 	Bitfield(mspeed,2);	/* current speed */
 	Bitfield(permspeed,2);	/* intrinsic mspeed value */
 	Bitfield(mrevived,1);	/* has been revived from the dead */
+#define mtrybribe mrevived	/* try to bribe */
 	Bitfield(mavenge,1);	/* did something to deserve retaliation */
 /*3*/
 	Bitfield(mflee,1);	/* fleeing */
