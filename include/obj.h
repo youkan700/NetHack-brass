@@ -329,12 +329,8 @@ struct obj {
 #define is_flimsy(otmp)		(get_material(otmp) <= LEATHER) /* material patch */
 #endif
 
-#ifdef TOURIST
 #define has_color_variation(otmp) ((otmp)->otyp == HAWAIIAN_SHIRT || \
 				   (otmp)->otyp == T_SHIRT)
-#else
-#define has_color_variation(otmp) (FALSE)
-#endif
 
 /* helpers, simple enough to be macros */
 #define is_plural(o)	((o)->quan > 1 || \

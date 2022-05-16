@@ -364,7 +364,6 @@ const struct Role roles[] = {
 	{  1, 0,  0, 1,  0, 1 },11,	/* Energy */
 	10, 10, 0, 0,  8, A_INT, SPE_CLAIRVOYANCE,    -4
 },
-#ifdef TOURIST
 {	{E_J("Tourist",		"観光客"	), 0}, {
 	{E_J("Rambler",		"散歩者"	), 0},
 	{E_J("Sightseer",	"観光客"	), 0},
@@ -396,7 +395,6 @@ const struct Role roles[] = {
 	{  1, 0,  0, 1,  0, 1 },14,	/* Energy */
 	0, 5, 1, 2, 10, A_INT, SPE_CHARM_MONSTER,   -4
 },
-#endif
 {	{E_J("Valkyrie",	"ワルキューレ"	), 0}, {
 	{E_J("Stripling",	"新兵"), 0},
 	{E_J("Skirmisher",	"斥候兵"), 0},
@@ -1617,10 +1615,8 @@ struct monst *mtmp;
 	    return (mtmp && mtmp->mnum == PM_SHOPKEEPER ?
 	    		"Irasshaimase" : "Konnichi wa"); /* Japanese */
 #endif /*JP*/
-#ifdef TOURIST
 	case PM_TOURIST:
 	    return (E_J("Aloha","アローハ"));       /* Hawaiian */
-#endif
 #ifndef JP
 	case PM_VALKYRIE:
 	    return (
@@ -1644,10 +1640,8 @@ Goodbye()
 #endif /*JP*/
 	case PM_SAMURAI:
 	    return (E_J("Sayonara","さらば"));        /* Japanese */
-#ifdef TOURIST
 	case PM_TOURIST:
 	    return (E_J("Aloha","アローハ"));           /* Hawaiian */
-#endif
 	case PM_VALKYRIE:
 	    return (E_J("Farvel","さらば"));          /* Norse */
 	default:

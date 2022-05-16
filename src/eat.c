@@ -1026,9 +1026,7 @@ register int pm;
 		    if (uarms) equipment[i++] = uarms;
 		    if (uarmf) equipment[i++] = uarmf;
 		    if (uarmh) equipment[i++] = uarmh;
-#ifdef TOURIST
 		    if (uarmu) equipment[i++] = uarmu;
-#endif
 
 		    if (uleft && uleft->oclass == RING_CLASS &&
 			objects[uleft->otyp].oc_charged) equipment[i++] = uleft;

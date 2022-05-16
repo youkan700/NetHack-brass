@@ -3437,9 +3437,7 @@ playersteal()
 		    if (otmp->oclass == ARMOR_CLASS && objects[otmp->otyp].oc_delay)
 			owt *= objects[otmp->otyp].oc_delay;
 		    if (((otmp->owornmask & W_ARM) && (mtmp->misc_worn_check & W_ARMC))
-#ifdef TOURIST
 			|| ((otmp->owornmask & W_ARMU) && (mtmp->misc_worn_check & (W_ARMC|W_ARM)))
-#endif
 		       ) failed = TRUE;
 		    ch = rn2(200);
 #ifdef WIZARD

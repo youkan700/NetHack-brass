@@ -790,11 +790,9 @@ register struct monst *mtmp;
     pline_msg = E_J("describes a recent article in \"Spelunker Today\" magazine.",
 		    "“今日の洞窟探検”誌の最近の記事を教えてくれた。");
 		    break;
-#ifdef TOURIST
 		case PM_TOURIST:
 		    verbl_msg = E_J("Aloha.","アローハ。");
 		    break;
-#endif
 		default:
 		    pline_msg = E_J("discusses dungeon exploration.",
 				    "地下迷宮の探検について意見を述べた。");
@@ -863,10 +861,8 @@ register struct monst *mtmp;
 			  E_J("Doc, I can't help you unless you cooperate.",
 			      "先生、協力していただかないとお手伝いできません。") :
 			  E_J("Please undress so I can examine you.","診察しますので、服を脱いでください。");
-#ifdef TOURIST
 	    else if (uarmu)
 		verbl_msg = E_J("Take off your shirt, please.","シャツを脱いでくださいね。");
-#endif
 	    else verbl_msg = E_J("Relax, this won't hurt a bit.","大丈夫、ちっとも痛くありませんよ。");
 	    break;
 	case MS_GUARD:

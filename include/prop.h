@@ -88,12 +88,8 @@ struct prop {
 #	define W_ARMS	    0x00000008L /* Shield */
 #	define W_ARMG	    0x00000010L /* Gloves/gauntlets */
 #	define W_ARMF	    0x00000020L /* Footwear */
-#ifdef TOURIST
 #	define W_ARMU	    0x00000040L /* Undershirt */
 #	define W_ARMOR	     (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF | W_ARMU)
-#else
-#	define W_ARMOR	     (W_ARM | W_ARMC | W_ARMH | W_ARMS | W_ARMG | W_ARMF)
-#endif
 #	define W_BODY	    0x00000080L	/* Body of this creature (i.e. flying sword) */
 	/* Weapons and artifacts */
 #	define W_WEP	    0x00000100L /* Wielded weapon */
@@ -143,8 +139,6 @@ struct prop {
 #define WORN_BOOTS	W_ARMF
 #define WORN_AMUL	W_AMUL
 #define WORN_BLINDF	W_TOOL
-#ifdef TOURIST
 #define WORN_SHIRT	W_ARMU
-#endif
 
 #endif /* PROP_H */

@@ -52,9 +52,7 @@ struct obj *otmp;
 	    otmp->oclass == SPBOOK_CLASS)
 		return GETOBJ_CHOOSEIT;
 	if (otmp->otyp == FORTUNE_COOKIE
-#ifdef TOURIST
 	    || otmp->otyp == T_SHIRT
-#endif
 	   ) return GETOBJ_ALLOWALL;
 	return 0;
 }
@@ -90,7 +88,6 @@ doread()
 	    if (!Blind) u.uconduct.literate++;
 	    useup(scroll);
 	    return(1);
-#ifdef TOURIST
 	} else if (scroll->otyp == T_SHIRT) {
 	    static const char *shirt_msgs[] = { /* Scott Bigham */
 #ifndef JP
@@ -153,7 +150,6 @@ doread()
 			     scroll->o_id ^ (unsigned)u.ubirthday);
 	    pline(E_J("\"%s\"","w%sx"), buf);
 	    return 1;
-#endif	/* TOURIST */
 	} else if (scroll->oclass != SCROLL_CLASS
 		&& scroll->oclass != SPBOOK_CLASS) {
 	    pline(silly_thing_to, E_J("read","“Ç‚Þ"));
@@ -405,9 +401,7 @@ int curse_bless;
 	    case MAGIC_MARKER:
 	    case TINNING_KIT:
 	    case MAGIC_WHISTLE:
-#ifdef TOURIST
 	    case EXPENSIVE_CAMERA:
-#endif
 		if (is_cursed) stripspe(obj);
 		else if (rechrg && obj->otyp == MAGIC_MARKER) {	/* previously recharged */
 		    obj->recharged = 1;	/* override increment done above */

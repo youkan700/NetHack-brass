@@ -106,11 +106,9 @@ struct monst *victim;
 		(void) burn_dmg(item, xname(item));
 		return TRUE;
 	    }
-#ifdef TOURIST
 	    item = (victim == &youmonst) ? uarmu : which_armor(victim, W_ARMU);
 	    if (item)
 		(void) burn_dmg(item, E_J("shirt","シャツ"));
-#endif
 	    return TRUE;
 	case 2:
 	    item = (victim == &youmonst) ? uarms : which_armor(victim, W_ARMS);
@@ -1206,10 +1204,8 @@ glovecheck:		(void) rust_dmg(uarmg, E_J("gauntlets","篭手"), 1, TRUE, &youmonst)
 						1, TRUE, &youmonst);
 			else if (uarm)
 			    (void) rust_dmg(uarm, armor_simple_name(uarm), 1, TRUE, &youmonst);
-#ifdef TOURIST
 			else if (uarmu)
 			    (void) rust_dmg(uarmu, E_J("shirt","シャツ"), 1, TRUE, &youmonst);
-#endif
 		}
 		update_inventory();
 		break;
@@ -2432,12 +2428,10 @@ glovecheck:		    target = which_armor(mtmp, W_ARMG);
 				target = which_armor(mtmp, W_ARM);
 				if (target)
 				    (void) rust_dmg(target, E_J("armor","鎧"), 1, TRUE, mtmp);
-#ifdef TOURIST
 				else {
 				    target = which_armor(mtmp, W_ARMU);
 				    (void) rust_dmg(target, E_J("shirt","シャツ"), 1, TRUE, mtmp);
 				}
-#endif
 			    }
 			}
 			if (mtmp->mnum == PM_IRON_GOLEM) {
@@ -3347,9 +3341,7 @@ boolean *lostsome;
 			  obj == uamul || obj == uleft || obj == uright ||
 			  obj == ublindf || obj == uarm || obj == uarmc ||
 			  obj == uarmg || obj == uarmf ||
-#ifdef TOURIST
 			  obj == uarmu ||
-#endif
 			  (obj->cursed && (obj == uarmh || obj == uarms)) ||
 			  welded(obj)))
 			otmp = obj;
