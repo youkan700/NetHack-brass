@@ -965,18 +965,15 @@
 	an enchanted gaze.
 (glasses of infravision
 	This magical glasses grants you an infravision.
-(glasses versus flash
-	This magical glasses protects you from
-	blinding by an intense flash.
-(glasses of see invisible
+(glasses of true sight
 	This magical glasses grants you a see invisible
-	ability.
+	ability and protects you from shape changers.
 (glasses of phantasmagoria
 	This magical glasses shows you
 	a hallucinated sight.
 (wire-rimmed glasses
 (rimless glasses
-(horn-rimmed glasses
+#(horn-rimmed glasses
 (silver-rimmed glasses
 (thick glasses
 (gold-rimmed glasses

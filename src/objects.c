@@ -618,11 +618,6 @@ OBJECT(OBJ("Amulet of Yendor",	/* note: description == name */
 #undef AMULET
 
 /* tools ... */
-#ifdef JP
-#define	LOOKING_GLASS	(char *)0
-#else /*JP*/
-#define	LOOKING_GLASS	"looking glass"
-#endif /*JP*/
 /* tools with weapon characteristics come last */
 #define TOOL(name,desc,kn,mrg,mgc,chg,prob,wt,cost,mat,color) \
 	OBJECT( OBJ(name,desc), \
@@ -670,7 +665,11 @@ TOOL("magic lamp", "lamp",      0, 0, 1, 0,   2, 20,1000, COPPER, CLR_YELLOW),
 /* other tools */
 TOOL("expensive camera", (char *)0,
 				1, 0, 0, 1,  15, 12, 200, PLASTIC, CLR_BLACK),
-TOOL("mirror", LOOKING_GLASS,   0, 0, 0, 0,  30, 13,  10, GLASS, HI_SILVER),
+#ifndef JP
+TOOL("mirror", "looking glass",   0, 0, 0, 0,  30, 13,  10, GLASS, HI_SILVER),
+#else /*JP*/
+TOOL("mirror", (char *)0,         1, 0, 0, 0,  30, 13,  10, GLASS, HI_SILVER),
+#endif /*JP*/
 TOOL("crystal ball", "glass orb",
 				0, 0, 1, 1,  15, 75,  60, GLASS, HI_GLASS),
 /* STEPHEN WHITE'S NEW CODE */
@@ -684,10 +683,9 @@ TOOL("orb of destruction", "glass orb",
 TOOL("lenses", (char *)0,	1, 0, 0, 0,  15,  3,  80, GLASS, HI_GLASS),
 #else
 GLASSES("glasses of magic reading",   "wire-rimmed glasses",   0, 0,	      10, 3, 80),
-GLASSES("glasses of gaze protection", "rimless glasses",       1, 0,	       1, 3, 80),
-GLASSES("glasses of infravision",     "horn-rimmed glasses",   1, INFRAVISION, 1, 3, 80),
-GLASSES("glasses versus flash",	      "silver-rimmed glasses", 1, 0,	       1, 3, 80),
-GLASSES("glasses of see invisible",   "thick glasses",	       1, SEE_INVIS,   1, 3, 80),
+GLASSES("glasses of gaze protection", "rimless glasses",       1, 0,	       2, 3, 80),
+GLASSES("glasses of infravision",     "silver-rimmed glasses", 1, INFRAVISION, 1, 3, 80),
+GLASSES("glasses of true sight",      "thick glasses",	       1, SEE_INVIS,   1, 3, 80),
 GLASSES("glasses of phantasmagoria",  "gold-rimmed glasses",   1, HALLUC,      1, 3, 80),
 #endif
 TOOL("blindfold", (char *)0,    1, 0, 0, 0,  50,  2,  20, CLOTH, CLR_BLACK),

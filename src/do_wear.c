@@ -1171,9 +1171,12 @@ register struct obj *otmp;
 #ifdef MAGIC_GLASSES
 	  else if (Is_glasses(otmp) && objects[otmp->otyp].oc_oprop)
 	    changed = TRUE;
-	if (otmp->otyp == GLASSES_OF_SEE_INVISIBLE) {
+	if (otmp->otyp == GLASSES_OF_TRUE_SIGHT) {
 	    if (see_invis_on(oldprop))
-		makeknown(GLASSES_OF_SEE_INVISIBLE);
+		makeknown(GLASSES_OF_TRUE_SIGHT);
+	    EProtection_from_shape_changers |= W_TOOL;
+	    if (rescham())
+		makeknown(GLASSES_OF_TRUE_SIGHT);
 	    return;
 	}
 	if (otmp->otyp == GLASSES_OF_PHANTASMAGORIA &&
@@ -1227,9 +1230,12 @@ register struct obj *otmp;
 		!EHallucination) {
 		make_hallucinated(TIMEOUT, TRUE, 0L);
 		makeknown(otmp->otyp);
-	    } else if (otmp->otyp == GLASSES_OF_SEE_INVISIBLE) {
+	    } else if (otmp->otyp == GLASSES_OF_TRUE_SIGHT) {
 		if (see_invis_off())
-		    makeknown(GLASSES_OF_SEE_INVISIBLE);
+		    makeknown(GLASSES_OF_TRUE_SIGHT);
+		EProtection_from_shape_changers &= ~W_TOOL;
+		if (restartcham())
+		    makeknown(GLASSES_OF_TRUE_SIGHT);
 		return;
 	    } else
 		see_monsters();
