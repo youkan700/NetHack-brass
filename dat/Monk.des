@@ -221,7 +221,7 @@ STAIR:(69,09),up
 ALTAR:(16,08),chaos,altar
 # Objects
 ###OBJECT:'(',"lenses",(16,09),blessed,0,"The Eyes of the Overworld"
-OBJECT:'(',"glasses of see invisible",(16,09),blessed,0,"The Eyes of the Overworld"
+OBJECT:'(',"glasses of true sight",(16,09),blessed,0,"The Eyes of the Overworld"
 OBJECT:random,random,random
 OBJECT:random,random,random
 OBJECT:random,random,random

@@ -985,50 +985,16 @@ register struct obj *obj;
 
 	switch(obj->otyp) {
 		case RIN_GAIN_STRENGTH:
-			if ((obj->owornmask & W_RING) && u_ring) {
-				ABON(A_STR) -= obj->spe;
-				flags.botl = 1;
-			}
-			break;
 		case RIN_GAIN_CONSTITUTION:
-			if ((obj->owornmask & W_RING) && u_ring) {
-				ABON(A_CON) -= obj->spe;
-				recalchpmax();
-				flags.botl = 1;
-			}
-			break;
 		case RIN_ADORNMENT:
-			if ((obj->owornmask & W_RING) && u_ring) {
-				ABON(A_CHA) -= obj->spe;
-				flags.botl = 1;
-			}
-			break;
 		case RIN_INCREASE_ACCURACY:
-			if ((obj->owornmask & W_RING) && u_ring)
-				u.uhitinc -= obj->spe;
-			break;
 		case RIN_INCREASE_DAMAGE:
-			if ((obj->owornmask & W_RING) && u_ring)
-				u.udaminc -= obj->spe;
-			break;
 		case RIN_PROTECTION:
-			if ((obj->owornmask & W_RING) && u_ring)
-				u.uprotection -= obj->spe;
-			break;
-//		case GAUNTLETS_OF_DEXTERITY:
-//			if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
-//				ABON(A_DEX) -= obj->spe;
-//				flags.botl = 1;
-//			}
-//			break;
 		case HELM_OF_BRILLIANCE:
-			if ((obj->owornmask & W_ARMH) && (obj == uarmh)) {
-				ABON(A_INT) -= obj->spe;
-				ABON(A_WIS) -= obj->spe;
-				flags.botl = 1;
-			}
+		case CLOAK_OF_PROTECTION:
+		case ROBE_OF_PROTECTION:
+			adj_abon(obj, -obj->spe);
 			break;
-		/* case RIN_PROTECTION:  not needed */
 	}
 	if (objects[obj->otyp].oc_magic
 	    || (obj->spe && (obj->oclass == ARMOR_CLASS ||

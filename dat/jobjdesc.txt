@@ -838,18 +838,17 @@
 (glasses of magic reading
 	この眼鏡は、魔法書を読む際に少しばかりの助けをもたらしてくれる。
 (glasses of gaze protection
-	この眼鏡は、魔力を帯びた眼光からあなたを保護してくれる。
+	この眼鏡は、魔力を帯びた眼光や閃光からあなたを保護してくれる。
 (glasses of infravision
 	この眼鏡は、あなたに赤外線視の能力をもたらしてくれる。
-(glasses versus flash
-	この眼鏡は、閃光からあなたを守り、目が眩むのを防いでくれる。
-(glasses of see invisible
-	この眼鏡をかけていると、透明な怪物を視認できる。
+(glasses of true sight
+	この眼鏡をかけていると、怪物の真の姿を見破ることができ、
+	また透明な怪物を視認することもできる。
 (glasses of phantasmagoria
 	この眼鏡は、あなたに幻覚を見せる。
 (wire-rimmed glasses
 (rimless glasses
-(horn-rimmed glasses
+#(horn-rimmed glasses
 (silver-rimmed glasses
 (thick glasses
 (gold-rimmed glasses

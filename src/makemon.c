@@ -660,7 +660,6 @@ xchar x, y;	/* clone's preferred location or 0 (near mon) */
 	coord mm;
 	struct monst *m2;
 
-/*debug*/return 0;
 	/* may be too weak or have been extinguished for population control */
 	if (mon->mhp <= 1 || (mvitals[monsndx(mon->data)].mvflags & G_EXTINCT))
 	    return (struct monst *)0;

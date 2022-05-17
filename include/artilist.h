@@ -225,7 +225,7 @@ A("The Magic Mirror of Merlin", MIRROR,	0,
 	0,		A_LAWFUL, PM_KNIGHT, NON_PM, 1500L ),
 
 #if !defined(LENSES) && defined(MAGIC_GLASSES)
-#define LENSES GLASSES_OF_SEE_INVISIBLE
+#define LENSES GLASSES_OF_TRUE_SIGHT
 #endif
 A("The Eyes of the Overworld",	LENSES, 0,
 	(SPFX_NOGEN|SPFX_INTEL|SPFX_XRAY), 0, 0,

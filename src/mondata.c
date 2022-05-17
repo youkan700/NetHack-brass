@@ -120,7 +120,7 @@ struct monst *mon;
 		    mon->msleeping))
 	    return TRUE;
 #ifdef MAGIC_GLASSES
-	if (is_you && ublindf && ublindf->otyp == GLASSES_VERSUS_FLASH)
+	if (is_you && ublindf && ublindf->otyp == GLASSES_OF_GAZE_PROTECTION)
 	    return TRUE;
 #endif
 	/* yellow light, Archon; !dust vortex, !cobra, !raven */
