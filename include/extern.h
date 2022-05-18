@@ -641,6 +641,7 @@ E long FDECL(newuexp, (int));
 E void FDECL(explode, (int,int,struct zapinfo *,int,int));
 E long FDECL(scatter, (int, int, int, unsigned int, struct obj *));
 E void FDECL(splatter_burning_oil, (int, int));
+E void FDECL(random_direction, (int *, int *));
 
 /* ### extralev.c ### */
 

@@ -451,14 +451,11 @@ int expltype;
 #ifdef OVL1
 
 struct scatter_chain {
-	struct scatter_chain *next;	/* pointer to next scatter item	*/
-	struct obj *obj;		/* pointer to the object	*/
-	xchar ox;			/* location of			*/
-	xchar oy;			/*	item			*/
-	schar dx;			/* direction of			*/
-	schar dy;			/*	travel			*/
-	int range;			/* range of object		*/
-	boolean stopped;		/* flag for in-motion/stopped	*/
+	struct	scatter_chain *next;	/* pointer to next scatter item	*/
+	struct	obj *obj;		/* pointer to the object	*/
+	struct	bresenham br;		/* location of item, direction of travel */
+	int	range;			/* range of object		*/
+	boolean	stopped;		/* flag for in-motion/stopped	*/
 };
 
 /*
@@ -490,6 +487,7 @@ struct obj *obj;			/* only scatter this obj        */
 	struct scatter_chain *stmp, *stmp2 = 0;
 	struct scatter_chain *schain = (struct scatter_chain *)0;
 	long total = 0L;
+	int dx, dy;
 
 	while ((otmp = individual_object ? obj : level.objects[sx][sy]) != 0) {
 	    if (otmp->quan > 1L) {
@@ -547,11 +545,8 @@ struct obj *obj;			/* only scatter this obj        */
 					alloc(sizeof(struct scatter_chain));
 		stmp->next = (struct scatter_chain *)0;
 		stmp->obj = otmp;
-		stmp->ox = sx;
-		stmp->oy = sy;
-		tmp = rn2(8);		/* get the direction */
-		stmp->dx = xdir[tmp];
-		stmp->dy = ydir[tmp];
+		random_direction(&dx, &dy);	/* get the direction */
+		bresenham_init(&stmp->br, sx, sy, sx+dx, sy+dy);
 		tmp = blastforce - (otmp->owt/40);
 		if (tmp < 1) tmp = 1;
 		stmp->range = rnd(tmp); /* anywhere up to that determ. by wt */
@@ -568,17 +563,16 @@ struct obj *obj;			/* only scatter this obj        */
 	while (farthest-- > 0) {
 		for (stmp = schain; stmp; stmp = stmp->next) {
 		   if ((stmp->range-- > 0) && (!stmp->stopped)) {
-			bhitpos.x = stmp->ox + stmp->dx;
-			bhitpos.y = stmp->oy + stmp->dy;
+			bresenham_step(&stmp->br);
+			bhitpos.x = stmp->br.x;
+			bhitpos.y = stmp->br.y;
 			typ = levl[bhitpos.x][bhitpos.y].typ;
 			if(!isok(bhitpos.x, bhitpos.y)) {
-				bhitpos.x -= stmp->dx;
-				bhitpos.y -= stmp->dy;
+				bresenham_back(&stmp->br);
 				stmp->stopped = TRUE;
 			} else if(!ZAP_POS(typ) ||
 					closed_door(bhitpos.x, bhitpos.y)) {
-				bhitpos.x -= stmp->dx;
-				bhitpos.y -= stmp->dy;
+				bresenham_back(&stmp->br);
 				stmp->stopped = TRUE;
 			} else if ((mtmp = m_at(bhitpos.x, bhitpos.y)) != 0) {
 				if (scflags & MAY_HITMON) {
@@ -616,8 +610,6 @@ struct obj *obj;			/* only scatter this obj        */
 				    /* delay_output(); */
 				}
 			}
-			stmp->ox = bhitpos.x;
-			stmp->oy = bhitpos.y;
 		   }
 		}
 	}
@@ -625,7 +617,7 @@ struct obj *obj;			/* only scatter this obj        */
 		int x,y;
 
 		stmp2 = stmp->next;
-		x = stmp->ox; y = stmp->oy;
+		x = stmp->br.x; y = stmp->br.y;
 		if (stmp->obj) {
 			if ( x!=sx || y!=sy )
 			    total += stmp->obj->quan;
@@ -660,6 +652,21 @@ splatter_burning_oil(x, y)
     setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, "”R‚¦‚é–û", 0, TRUE);
     zi.oclass = BURNING_OIL;
     explode(x, y, &zi, d(4,4), EXPL_FIERY);
+}
+
+/*
+ * Choose a random direction out of 32 directions.
+ */
+void
+random_direction(dx, dy)
+     int *dx, *dy;
+{
+    static const int xydelta[8] = { 5, 5, 5, 4, 3, 2, 1, 0 };
+    int dir;
+    if (!dx || !dy) return;
+    dir = rn2(32);
+    *dx = (dir & 16) ? xydelta[ dir & 7] : -xydelta[ dir & 7];
+    *dy = (dir &  8) ? xydelta[~dir & 7] : -xydelta[~dir & 7];
 }
 
 #endif /* OVL1 */
