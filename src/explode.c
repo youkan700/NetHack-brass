@@ -489,6 +489,7 @@ struct obj *obj;			/* only scatter this obj        */
 	struct scatter_chain *stmp, *stmp2 = 0;
 	struct scatter_chain *schain = (struct scatter_chain *)0;
 	long total = 0L;
+	long loss = 0L;
 	int dx, dy;
 
 	costly = (costly_spot(sx, sy) &&
@@ -653,9 +654,26 @@ struct obj *obj;			/* only scatter this obj        */
 			    total += stmp->obj->quan;
 			place_object(stmp->obj, x, y);
 			stackobj(stmp->obj);
+                if (costly &&
+                    (!costly_spot(x, y) ||
+                     levl[x][y].roomno != levl[sx][sy].roomno))
+		    loss += stolen_value(stmp->obj, sx, sy,
+					 (boolean)shkp->mpeaceful, TRUE);
 		}
 		free((genericptr_t)stmp);
 		newsym(x,y);
+	}
+	if(costly && loss) {
+		if(insider)
+		    You(E_J("owe %ld %s for objects blown out to the shop.",
+			    "店外に吹き飛ばした品物 %ld %s分の負債を抱えた。"),
+			loss, currency(loss));
+		else {
+		    You(E_J("caused %ld %s worth of damage!",
+			    "%ld %sに相当する損害を引き起こした！"),
+			loss, currency(loss));
+		    make_angry_shk(shkp, sx, sy);
+		}
 	}
 
 	return total;
