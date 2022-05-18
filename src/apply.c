@@ -2657,7 +2657,7 @@ struct obj *otmp;
 	int ttyp, tmp;
 	const char *what = (char *)0;
 	char buf[BUFSZ];
-	const char *occutext = E_J("setting the trap","ã©‚ğdŠ|‚¯‚é‚Ì‚ğ’†~‚µ‚½");
+	const char *occutext = E_J("setting the trap","ã©‚ğdŠ|‚¯‚é‚Ì");
 
 	if (nohands(youmonst.data))
 	    what = E_J("without hands","è‚ª‚È‚­‚Ä‚Í");
@@ -3409,7 +3409,7 @@ use_shield (obj)
 	    return (0);
 	}
 	if (obj != uarms) {
-	    You("are not wearing that.");
+	    You(E_J("are not wearing that.","‚»‚ê‚ğg‚É‚Â‚¯‚Ä‚¢‚È‚¢B"));
 	    return(0);
 	}
 

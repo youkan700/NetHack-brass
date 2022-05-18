@@ -3838,8 +3838,9 @@ boolean u_caused;
 		    pline("%s‚Í‰ð‚¯‚½B", xname(obj));
 #endif /*JP*/
 		}
-		(void) mkcorpstat(CORPSE, (struct monst *) 0,
-				  &mons[obj->corpsenm], x, y, TRUE);
+		if (can_be_frozen(&mons[obj->corpsenm]))
+		    (void) mkcorpstat(CORPSE, (struct monst *) 0,
+				      &mons[obj->corpsenm], x, y, TRUE);
 		if (u_caused) useupf(obj, 1);
 		else delobj(obj);
 	    }

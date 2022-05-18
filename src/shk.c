@@ -2534,15 +2534,20 @@ register boolean peaceful, silent;
 			You(E_J("have no credit remaining.","もうポイントを持っていない。"));
 			return 0;
 		    }
-		    still = E_J("still ","それでも");
+		    still = E_J("still ","いまだ");
 		}
 		if(obj->oclass == COIN_CLASS)
-		    You(E_J("%sowe %s %ld %s!","%s%sから%ld %sを奪った！"), still,
+		    You(E_J("%sowe %s %ld %s!","%s%sに%ld %s 返済しなければならない！"), still,
 			mon_nam(shkp), value, currency(value));
 		else
-		    You(E_J("%sowe %s %ld %s for %s!","%s%sから%ld %s相当の%sを奪った！"), still,
+#ifndef JP
+		    You("%sowe %s %ld %s for %s!", still,
 			mon_nam(shkp), value, currency(value),
-			E_J(obj->quan > 1L ? "them" : "it", "商品"));
+			obj->quan > 1L ? "them" : "it");
+#else
+		    You("%s%sの商品 %ld %s相当を弁償しなければならない！", still,
+			mon_nam(shkp), value, currency(value));
+#endif
 	    }
 	} else {
 	    eshkp->robbed += value;
