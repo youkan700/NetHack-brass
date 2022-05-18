@@ -4465,10 +4465,20 @@ boolean disarm;
 			  Sprintf(buf, "%s‚Ì”š”­‚Å", xname(obj));
 #endif /*JP*/
 
+			  /* temporalily place the contents to the floor */
+			  if (Has_contents(obj)) {
+			      while (obj->cobj) {
+				  otmp2 = obj->cobj;
+				  obj_extract_self(otmp2);
+				  place_object(otmp2, u.ux, u.uy);
+				  stackobj(otmp2);
+			      }
+			  }
+
 			  if(costly)
 			      loss += stolen_value(obj, ox, oy,
 						(boolean)shkp->mpeaceful, TRUE);
-			  delete_contents(obj);
+
 			  /* we're about to delete all things at this location,
 			   * which could include the ball & chain.
 			   * If we attempt to call unpunish() in the
@@ -4484,6 +4494,8 @@ boolean disarm;
 			  for(otmp = level.objects[ox][oy];
 							otmp; otmp = otmp2) {
 			      otmp2 = otmp->nexthere;
+			      if (otmp != obj &&
+				  obj_resists(otmp, 25, 95)) continue;
 			      if(costly)
 				  loss += stolen_value(otmp, otmp->ox,
 					  otmp->oy, (boolean)shkp->mpeaceful,
@@ -4527,6 +4539,10 @@ boolean disarm;
 #else
 			      pline("” ‚ÌüˆÍ‚É‚ ‚Á‚½•i•¨‚ª‚«”ò‚ÑA”j‰ó‚³‚ê‚½I");
 #endif /*JP*/
+			  (void)scatter(ox, oy, 4,
+					MAY_HIT | MAY_FRACTURE | VIS_EFFECTS,
+					(struct obj *)0);
+
 			  return TRUE;
 			}
 

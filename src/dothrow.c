@@ -1909,7 +1909,7 @@ boolean from_invent;
 							makeplural(body_part(EYE)),
 						 (numeyes == 1) ? "s" : "");
 #else
-					    Your("%s‚ª‚µ‚Î‚½‚½‚¢‚½B",
+					    You("%s‚ğ‚µ‚Î‚½‚¢‚½B",
 						 body_part(EYE));
 #endif /*JP*/
 					}

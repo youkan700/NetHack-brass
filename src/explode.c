@@ -486,12 +486,27 @@ struct obj *obj;			/* only scatter this obj        */
 	long qtmp;
 	boolean used_up;
 	boolean individual_object = obj ? TRUE : FALSE;
+	boolean costly, insider, ucaused;
 	struct monst *mtmp;
+	struct monst *shkp = 0;
 	struct scatter_chain *stmp, *stmp2 = 0;
 	struct scatter_chain *schain = (struct scatter_chain *)0;
 	long total = 0L;
 
+	costly = (costly_spot(sx, sy) &&
+		  (shkp = shop_keeper(*in_rooms(sx, sy, SHOPBASE))) != (struct monst *)0);
+	insider = (*u.ushops && inside_shop(u.ux, u.uy) &&
+		   *in_rooms(sx, sy, SHOPBASE) == *u.ushops);
+	ucaused = !flags.mon_moving;
+
 	while ((otmp = individual_object ? obj : level.objects[sx][sy]) != 0) {
+	    if (otmp == uball || otmp == uchain) {
+		boolean waschain = (otmp == uchain);
+		pline_The(E_J("chain shatters!", "½‚ª‚¿‚¬‚ê”ò‚ñ‚¾I"));
+		unpunish();
+		if (waschain)
+		    continue;
+	    }
 	    if (otmp->quan > 1L) {
 		qtmp = otmp->quan - 1;
 		if (qtmp > LARGEST_INT) qtmp = LARGEST_INT;
@@ -536,10 +551,25 @@ struct obj *obj;			/* only scatter this obj        */
 		used_up = TRUE;
 
 	    /* 1 in 10 chance of destruction of obj; glass, egg destruction */
-	    } else if ((scflags & MAY_DESTROY) && (!rn2(10)
-			|| (get_material(otmp) == GLASS
-			|| otmp->otyp == EGG))) {
-		if (breaks(otmp, (xchar)sx, (xchar)sy)) used_up = TRUE;
+	    } else if (scflags & MAY_DESTROY) {
+		if (breaktest(otmp)) {
+		    /* glass or crystal objects, eggs, etc. */
+		    if (ucaused ?
+			 breaks(otmp, (xchar)sx, (xchar)sy) :
+			 hero_breaks(otmp, (xchar)sx, (xchar)sy, FALSE)) used_up = TRUE;
+		} else if (obj_resists(otmp, 10, 99)) {
+#ifndef JP
+		    pline("%s blown up!", Tobjnam(otmp, "is"));
+#else
+		    pline("%s‚Í”š”j‚³‚ê‚½I", xname(otmp));
+#endif /*JP*/
+		    if(costly)
+			(void)stolen_value(otmp, otmp->ox, otmp->oy,
+					   (boolean)shkp->mpeaceful, FALSE);
+		    delobj(otmp);
+		    used_up = TRUE;
+		}
+
 	    }
 
 	    if (!used_up) {
