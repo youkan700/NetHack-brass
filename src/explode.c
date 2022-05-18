@@ -554,8 +554,8 @@ struct obj *obj;			/* only scatter this obj        */
 		if (breaktest(otmp)) {
 		    /* glass or crystal objects, eggs, etc. */
 		    if (ucaused ?
-			 breaks(otmp, (xchar)sx, (xchar)sy) :
-			 hero_breaks(otmp, (xchar)sx, (xchar)sy, FALSE)) used_up = TRUE;
+			 hero_breaks(otmp, (xchar)sx, (xchar)sy, FALSE) :
+			 breaks(otmp, (xchar)sx, (xchar)sy)) used_up = TRUE;
 		} else if (obj_resists(otmp, 10, 99)) {
 #ifndef JP
 		    pline("%s blown up!", Tobjnam(otmp, "is"));
