@@ -887,6 +887,11 @@ register struct obj *obj;
 	if (is_mriding(mtmp) || is_mridden(mtmp))
 	    return((struct monst *)0);
 #endif
+	if (mtmp->isshk && !obj) {
+	    make_happy_shk(mtmp, FALSE);
+	    return((struct monst *)0);
+	}
+
 	/* worst case, at least it'll be peaceful. */
 	setmpeaceful(mtmp, TRUE);
 

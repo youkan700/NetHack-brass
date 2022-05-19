@@ -767,9 +767,7 @@ struct obj *sobj;
 	if (sobj->cursed) {
 	    setmangry(mtmp);
 	} else {
-	    if (mtmp->isshk)
-		make_happy_shk(mtmp, FALSE);
-	    else if (!resist(mtmp, sobj->oclass, 0, NOTELL))
+	    if (!resist(mtmp, sobj->oclass, 0, NOTELL))
 		(void) tamedog(mtmp, (struct obj *) 0);
 	}
 }
