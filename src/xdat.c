@@ -356,15 +356,18 @@ struct xdat *xtmp;
 {
 	winid w;
 	char buf[BUFSZ];
+	static const char* xtypnam[] = {
+	    "NONE", "NAME", "EDOG", "EPRI", "ESHK", "EGD", "M_ID", "PERMONST"
+	};
 
 	w = create_nhwindow(NHW_MENU);
 	putstr(w, 0, "List of XDAT:");
 	putstr(w, 0, "");
 	while (xtmp) {
 	    if (xtmp->typ == XDAT_NAME)
-		Sprintf(buf, "Type: %d, Size: %d, \'%s\'", xtmp->typ, xtmp->siz, (char *)xtmp->dat);
+		Sprintf(buf, "Type: NAME, Size: %d, \'%s\'", xtmp->siz, (char *)xtmp->dat);
 	    else
-		Sprintf(buf, "Type: %d, Size: %d", xtmp->typ, xtmp->siz);
+		Sprintf(buf, "Type: %s, Size: %d", xtypnam[xtmp->typ], xtmp->siz);
 	    putstr(w, 0, buf);
 	    xtmp = xtmp->next;
 	}

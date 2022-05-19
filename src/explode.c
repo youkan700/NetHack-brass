@@ -612,6 +612,8 @@ struct obj *obj;			/* only scatter this obj        */
 					stmp->obj = (struct obj *)0;
 					stmp->stopped = TRUE;
 				    }
+//				    if (mtmp == shkp && shkp->mpeaceful)
+//					make_angry_shk(shkp, bhitpos.x, bhitpos.y);
 				}
 			} else if (bhitpos.x==u.ux && bhitpos.y==u.uy) {
 				if (scflags & MAY_HITYOU) {
@@ -650,15 +652,15 @@ struct obj *obj;			/* only scatter this obj        */
 		stmp2 = stmp->next;
 		x = stmp->br.x; y = stmp->br.y;
 		if (stmp->obj) {
-			if ( x!=sx || y!=sy )
-			    total += stmp->obj->quan;
-			place_object(stmp->obj, x, y);
-			stackobj(stmp->obj);
-                if (costly &&
-                    (!costly_spot(x, y) ||
-                     levl[x][y].roomno != levl[sx][sy].roomno))
-		    loss += stolen_value(stmp->obj, sx, sy,
-					 (boolean)shkp->mpeaceful, TRUE);
+		    if ( x!=sx || y!=sy )
+			total += stmp->obj->quan;
+		    place_object(stmp->obj, x, y);
+		    stackobj(stmp->obj);
+		    if (costly &&
+			(!costly_spot(x, y) ||
+			 levl[x][y].roomno != levl[sx][sy].roomno))
+			loss += stolen_value(stmp->obj, sx, sy,
+					     (boolean)shkp->mpeaceful, TRUE);
 		}
 		free((genericptr_t)stmp);
 		newsym(x,y);
