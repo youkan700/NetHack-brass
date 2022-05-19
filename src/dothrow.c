@@ -397,6 +397,13 @@ dovfire()
 	struct monst *mtmp;
 	int shotlimit;
 
+	if (uwep && uwep->oartifact == ART_MJOLLNIR &&
+	    Role_if(PM_VALKYRIE) &&
+	    !check_capacity((char *)0)) {
+	    if (!autotarget()) return dothrow();
+	    return throw_obj(uwep, SHOOT_LASTTGT);
+	}
+
 	if (!autotarget()) return dofire();
 
 	if (uwep && is_gun(uwep)) {

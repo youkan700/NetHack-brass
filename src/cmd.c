@@ -3161,6 +3161,11 @@ dovattack()
 	}
 	if (is_ranged(uwep) ||
 	    (u.twoweap && uswapwep && is_ranged(uswapwep))) return autothrust();
+
+	if (uwep->oartifact == ART_MJOLLNIR &&
+	    Role_if(PM_VALKYRIE) &&
+	    !check_capacity((char *)0)) return dovfire();
+
 	if (is_launcher(uwep)) {
 	    if (is_gun(uwep)) return dovfire();
 	    if (!uquiver || !ammo_and_launcher(uquiver, uwep))
