@@ -2308,6 +2308,9 @@ boolean from_user;
 #ifdef JP
 	/* ˆê•”‚Ì‘SŠp•¶š‚ğ”¼Šp‚É•ÏŠ·‚µ‚Ä‚¨‚­ */
 	ztoh(bp);
+	/* ‚±‚Ä‘Îô */
+	if (!strcmpr(bp, "¬è") || !strcmpr(bp, "âÄè"))
+	    strcpy(eos(bp) - 4, "˜Uè");
 #endif /*JP*/
 
 	/* allow wishing for "nothing" to preserve wishless conduct...
