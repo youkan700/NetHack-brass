@@ -2,8 +2,6 @@
 /* Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985. */
 /* NetHack may be freely redistributed.  See license for details. */
 
-#define OTHER_SERVICES
-
 #include "hack.h"
 #include "eshk.h"
 
@@ -66,7 +64,6 @@ STATIC_DCL void FDECL(dropped_container, (struct obj *, struct monst *,
 STATIC_DCL void FDECL(add_to_billobjs, (struct obj *));
 STATIC_DCL void FDECL(bill_box_content, (struct obj *, BOOLEAN_P, BOOLEAN_P,
 				     struct monst *));
-#ifdef OTHER_SERVICES
 #define SHK_NOMATCH     0       /* Shk !know this class of object       */
 #define SHK_MATCH       1       /* Shk is expert                        */
 #define SHK_GENERAL     2       /* Shk runs a general store             */
@@ -75,14 +72,12 @@ STATIC_DCL void NDECL(shk_other_services);
 STATIC_DCL void FDECL(shk_identify, (char *, struct monst *));
 STATIC_DCL void FDECL(shk_uncurse, (char *, struct monst *));
 STATIC_OVL void FDECL(shk_repair, (char *, struct monst *, struct obj *));
-STATIC_DCL void FDECL(shk_appraisal, (char *, struct monst *));
 STATIC_DCL void FDECL(shk_weapon_works, (char *, struct monst *));
 STATIC_DCL void FDECL(shk_armor_works, (char *, struct monst *));
 STATIC_DCL void FDECL(shk_charge, (char *, struct monst *));
 STATIC_DCL int FDECL(shk_class_match, (long class, struct monst *shkp));
 STATIC_DCL boolean FDECL(shk_offer_price, (char *, long, struct monst *));
 STATIC_DCL long FDECL(shk_smooth_charge, (long, long, long));
-#endif
 
 STATIC_DCL void FDECL(scan_gold_inshop, (struct monst *));
 STATIC_DCL long FDECL(shk_pickup_allgold, (struct monst *, struct obj *));
@@ -1283,12 +1278,10 @@ proceed:
 		if(!ltmp && NOTANGRY(shkp)) {
 		    You(E_J("do not owe %s anything.",
 			    "%sに何も支払う必要はない。"), mon_nam(shkp));
-		    if (!u.ugold)
+		    if (!u.ugold && !eshkp->credit)
 			pline(no_money, stashed_gold ? E_J(" seem to","ようだ") : "");
-#ifdef OTHER_SERVICES
 		    else
 			shk_other_services();
-#endif
 		} else if(ltmp) {
 		    pline(E_J("%s is after blood, not money!",
 			      "%sは金でなく、復讐を求めている！"), Monnam(shkp));
@@ -4350,7 +4343,6 @@ sasc_bug(struct obj *op, unsigned x){
 
 #endif /* OVLB */
 
-#ifdef OTHER_SERVICES
 static NEARDATA const char identify_types[] = { ALL_CLASSES, 0 };
 static NEARDATA const char weapon_types[] = { WEAPON_CLASS, TOOL_CLASS, 0 };
 static NEARDATA const char armor_types[] = { ARMOR_CLASS, 0 };
@@ -4414,7 +4406,6 @@ shk_other_services()
 	** Figure out what services he offers
 	**
 	** i = identify
-	** a = appraise weapon's worth
 	** u = uncurse
 	** w = weapon-works
 	** r = armor-works
@@ -4423,23 +4414,13 @@ shk_other_services()
 	i = 0;
 	Strcpy(svc_buffer, E_J("Services available: ","提供中のサービス:"));
 
-//	/* Only speciality stores can identify */
-//	if (/*wizard || shk_class_match(RANDOM_CLASS, shkp) != SHK_GENERAL*/)
-	{
-		svc_chars[i++] = 'i';
-		strcat(svc_buffer, E_J("[i]dentify,","[i]識別,"));
-	}
+	/* All shops can identify */
+	svc_chars[i++] = 'i';
+	strcat(svc_buffer, E_J("[i]dentify,","[i]識別,"));
 
 	/* All shops can uncurse */
 	svc_chars[i++] = 'u';
 	strcat(svc_buffer, E_J(" [u]ncurse,"," [u]解呪,"));
-
-	/* Weapon appraisals.  Weapon stores can do this. */
-	if (/*wizard || */shk_class_match(WEAPON_CLASS, shkp) == SHK_MATCH)
-	{
-		svc_chars[i++] = 'a';
-		strcat(svc_buffer, E_J(" [a]ppraise,"," [a]武器の見立て,"));
-	}
 
 	/* Weapon-works!  Only a weapon store. */
 	if (/*wizard || */shk_class_match(WEAPON_CLASS, shkp) == SHK_MATCH)
@@ -4488,10 +4469,6 @@ shk_other_services()
 
 	    case 'u':
 		shk_uncurse(slang, shkp);
-		break;
-
-	    case 'a':
-		shk_appraisal(slang, shkp);
 		break;
 
 	    case 'w':
@@ -4759,60 +4736,6 @@ shk_repair(slang, shkp, obj)
 	obj->oeroded = obj->oeroded2 = 0;
 	/*obj->odamaged = 0;*/
 	update_inventory();
-}
-
-
-/*
-** FUNCTION shk_appraisal
-**
-** Appraise a weapon or armor
-*/
-
-STATIC_OVL void
-shk_appraisal(slang, shkp)
-	char *slang;
-	struct monst *shkp;
-{
-	struct obj *obj;		/* The object picked	  */
-	long charge;			/* How much for appraisal */
-#ifdef JP
-	static const struct getobj_words shkappw = { 0, 0, "査定してもらう", "査定してもらい" };
-#endif /*JP*/
-
-	/* Pick object */
-	if ( !(obj = getobj(weapon_types, E_J("appraise",&shkappw), getobj_filter_shk_weapon))) return;
-
-	charge = (get_cost(obj, shop_keeper(/* roomno= */*u.ushops)) * 3)/10;
-
-	/* Smooth out the charge a bit */
-	charge = shk_smooth_charge(charge, 5, 50);
-
-	/* If not identified, complain. */
-	if ( ! (obj->known && objects[obj->otyp].oc_name_known) )
-	{
-		verbalize(E_J("This weapon needs to be identified first!",
-			      "この武器はまず識別してください！"));
-		return;
-	}
-	verbalize(E_J("Ok, %s, let's see what we have here.",
-		      "では%s、これがどんなものか見てみるとしましょう。"), slang);
-
-	/* Go ahead? */
-	if (shk_offer_price(slang, charge, shkp) == FALSE) return;
-
-	/* Shopkeeper deviousness */
-	if (Confusion) {
-		pline(E_J("The numbers get all mixed up in your head.",
-			  "数字があなたの頭の中でこんがらがってしまった。"));
-		return;
-	} else if (Hallucination) {
-		You(E_J("hear %s say it'll \"knock 'em dead\"",
-			"%sが「こいつでぶっ殺せるぜ」と言ったのを聞いた。"),
-			mon_nam(shkp));
-		return;
-	}
-
-	know_enchantment(obj);
 }
 
 
@@ -5368,7 +5291,6 @@ check_lower:
 	return pcharge;
 }
 
-#endif /* OTHER_SERVICES */
 
 void
 scan_gold_inshop(shkp)

@@ -52,7 +52,6 @@ int shotlimit;
 	}
 
 	/* ask "in what direction?" */
-/*test*/
 	if (obj->otyp == BOOMERANG) {
 	    if (!getdir((char *)0)) return 0;
 	} else {
@@ -68,17 +67,8 @@ int shotlimit;
 	    if ((mtmp = m_at(u.ux+u.dx, u.uy+u.dy)) != 0 &&
 		(mtmp->mx == (u.ux+u.dx) && mtmp->my == (u.uy+u.dy)))
 		u.ulasttgt = mtmp;
-	}/*test*/
-# if 0
-	if (!getdir((char *)0)) {
-		if (obj->oclass == COIN_CLASS) {
-		    u.ugold += obj->quan;
-		    flags.botl = 1;
-		    dealloc_obj(obj);
-		}
-		return(0);
 	}
-# endif
+
 	if(obj->oclass == COIN_CLASS) return(throw_gold(obj));
 
 skip_getdir:
@@ -398,7 +388,7 @@ dovfire()
 	int shotlimit;
 
 	if (uwep && uwep->oartifact == ART_MJOLLNIR &&
-	    Role_if(PM_VALKYRIE) &&
+	    Role_if(PM_VALKYRIE) && ACURR(A_STR) >= STR19(20) &&
 	    !check_capacity((char *)0)) {
 	    if (!autotarget()) return dothrow();
 	    return throw_obj(uwep, SHOOT_LASTTGT);
@@ -991,18 +981,6 @@ sho_obj_return_to_u(obj)
 struct obj *obj;
 {
     /* might already be our location (bounced off a wall) */
-//    if (bhitpos.x != u.ux || bhitpos.y != u.uy) {
-//	int x = bhitpos.x - u.dx, y = bhitpos.y - u.dy;
-//
-//	tmp_at(DISP_FLASH, obj_to_glyph(obj));
-//	while(x != u.ux || y != u.uy) {
-//	    tmp_at(x, y);
-//	    delay_output();
-//	    x -= u.dx; y -= u.dy;
-//	}
-//	tmp_at(DISP_END, 0);
-//    }
-    /* might already be our location (bounced off a wall) */
     tmp_at(DISP_FLASH, obj_to_glyph(obj));
     while (bhitpos.x != u.ux || bhitpos.y != u.uy) {
 	bresenham_back(&bhitpos);
@@ -1424,11 +1402,7 @@ register struct obj   *obj;
 	tmp = abon_luck() + find_mac(mon) + u.uhitinc +
 		maybe_polyd(youmonst.data->mlevel, xlev_to_rank(u.ulevel));
 
-	tmp +=  abon_dex();
-//	if (ACURR(A_DEX) < 4) tmp -= 3;
-//	else if (ACURR(A_DEX) < 6) tmp -= 2;
-//	else if (ACURR(A_DEX) < 8) tmp -= 1;
-//	else if (ACURR(A_DEX) >= 14) tmp += (ACURR(A_DEX) - 14);
+	tmp += abon_dex();
 
 	/* Modify to-hit depending on distance; but keep it sane.
 	 * Polearms get a distance penalty even when wielded; it's

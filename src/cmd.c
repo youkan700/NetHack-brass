@@ -3163,7 +3163,7 @@ dovattack()
 	    (u.twoweap && uswapwep && is_ranged(uswapwep))) return autothrust();
 
 	if (uwep->oartifact == ART_MJOLLNIR &&
-	    Role_if(PM_VALKYRIE) &&
+	    Role_if(PM_VALKYRIE) && ACURR(A_STR) >= STR19(20) &&
 	    !check_capacity((char *)0)) return dovfire();
 
 	if (is_launcher(uwep)) {
