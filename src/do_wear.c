@@ -707,10 +707,14 @@ Armor_on()
 			makeknown(uarm->otyp);
 		}
 		break;
-	/* green dragon scales conveys poison _and_ sick resistance */
+	/* dragon scales which convey additional property */
+	case CHROMATIC_DRAGON_SCALES:
+	case CHROMATIC_DRAGON_SCALE_MAIL:
+		/* bad things happen */
+		uarm->age = rn1(200, 50);
 	case GREEN_DRAGON_SCALES:
 	case GREEN_DRAGON_SCALE_MAIL:
-		ESick_resistance |= W_ARM;
+		dragon_armor_on(uarm->otyp);
 		break;
 	/* ladies wear */
 	case MAID_DRESS:
@@ -732,7 +736,9 @@ void Armor_off_sub()
 		break;
 	case GREEN_DRAGON_SCALES:
 	case GREEN_DRAGON_SCALE_MAIL:
-		ESick_resistance &= ~W_ARM;
+	case CHROMATIC_DRAGON_SCALES:
+	case CHROMATIC_DRAGON_SCALE_MAIL:
+		dragon_armor_off(uarm->otyp);
 		break;
 	case MAID_DRESS:
 	case NURSE_UNIFORM:
@@ -752,6 +758,69 @@ Armor_off()
     setworn((struct obj *)0, W_ARM);
     cancelled_don = FALSE;
     return 0;
+}
+
+/*
+ *  Additional property handling for dragon scales
+ *  It is also used at merging scales
+ */
+void
+dragon_armor_on(otyp)
+short otyp;
+{
+    switch (otyp) {
+	case GREEN_DRAGON_SCALES:
+	case GREEN_DRAGON_SCALE_MAIL:
+		ESick_resistance |= W_ARM;
+		break;
+	case CHROMATIC_DRAGON_SCALES:
+	case CHROMATIC_DRAGON_SCALE_MAIL:
+		EFire_resistance   |= W_ARM;
+		ECold_resistance   |= W_ARM;
+		ESleep_resistance  |= W_ARM;
+		EDisint_resistance |= W_ARM;
+		EShock_resistance  |= W_ARM;
+		EPoison_resistance |= W_ARM;
+		EDrain_resistance  |= W_ARM;
+		ESick_resistance   |= W_ARM;
+		EStone_resistance  |= W_ARM;
+		EAcid_resistance   |= W_ARM;
+		EAntimagic         |= W_ARM;
+		EReflecting        |= W_ARM;
+		EFree_action       |= W_ARM;
+		break;
+	default:
+		break;
+    }
+}
+void
+dragon_armor_off(otyp)
+short otyp;
+{
+    switch (otyp) {
+	case GREEN_DRAGON_SCALES:
+	case GREEN_DRAGON_SCALE_MAIL:
+		ESick_resistance &= ~W_ARM;
+		break;
+	case CHROMATIC_DRAGON_SCALES:
+	case CHROMATIC_DRAGON_SCALE_MAIL:
+		EFire_resistance   &= ~W_ARM;
+		ECold_resistance   &= ~W_ARM;
+		ESleep_resistance  &= ~W_ARM;
+		EDisint_resistance &= ~W_ARM;
+		EShock_resistance  &= ~W_ARM;
+		EPoison_resistance &= ~W_ARM;
+		EDrain_resistance  &= ~W_ARM;
+		ESick_resistance   &= ~W_ARM;
+		EStone_resistance  &= ~W_ARM;
+		EAcid_resistance   &= ~W_ARM;
+		EAntimagic         &= ~W_ARM;
+		EReflecting        &= ~W_ARM;
+		EFree_action       &= ~W_ARM;
+		break;
+	default:
+		break;
+    }
 }
 
 /* The gone functions differ from the off functions in that if you die from

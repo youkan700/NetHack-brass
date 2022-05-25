@@ -370,6 +370,7 @@ DRGN_ARMR("blue dragon scale mail",   1, SHOCK_RES,   900, 2, CLR_BLUE),
 DRGN_ARMR("green dragon scale mail",  1, POISON_RES,  900, 2, CLR_GREEN),
 DRGN_ARMR("deep dragon scale mail",   1, DRAIN_RES,   900, 2, CLR_BLACK),
 DRGN_ARMR("yellow dragon scale mail", 1, ACID_RES,    900, 2, CLR_YELLOW),
+DRGN_ARMR("Chromatic Dragon scale mail",  1, 0,      5000, 0, CLR_BRIGHT_MAGENTA),
 
 /* For now, only dragons leave these. */
 /* 3.4.1: dragon scales left classified as "non-magic"; they confer
@@ -387,10 +388,12 @@ DRGN_ARMR("blue dragon scales",   0, SHOCK_RES,  500, 7, CLR_BLUE),
 DRGN_ARMR("green dragon scales",  0, POISON_RES, 500, 7, CLR_GREEN),
 DRGN_ARMR("deep dragon scales",   0, DRAIN_RES,  500, 7, CLR_BLACK),
 DRGN_ARMR("yellow dragon scales", 0, ACID_RES,   500, 7, CLR_YELLOW),
+DRGN_ARMR("Chromatic Dragon scales",  0, 0,     1000, 5, CLR_BRIGHT_MAGENTA),
 
 /* gray and silver dragon armor is worn out and becomes this */
 DRGN_ARMR("plain dragon scales",      0, 0,           50, 7, CLR_BROWN),
 DRGN_ARMR("plain dragon scale mail",  0, 0,          100, 2, CLR_BROWN),
+
 #undef DRGN_ARMR
 
 ARMOR("plate mail", (char *)0,

@@ -1044,7 +1044,7 @@ int final;	/* 0 => still in progress; 1 => over, survived; 2 => dead */
 	if (Sick_resistance) enl_msg("あなたには", "る", "った", "病気に対する免疫があ");
 	if (Antimagic) you_have("魔法防御の能力を持って");
 	if (Acid_resistance)
-	    if (is_full_resist(ACID_RES)) you_are("酸から完全に守られて");
+	    if (is_full_resist(ACID_RES)) you_have("酸から完全に守られて");
 	    else you_have("酸への耐性を持って");
 	if (Stone_resistance)
 		you_have("石化への耐性を持って");
@@ -3559,6 +3559,8 @@ wiz_gain_fullstat()
 	int i;
 	for(i = 0; i < A_MAX; i++) adjattrib(i, ATTRMAX(i)-ABASE(i), FALSE);
 	addhpmax(400);
+	u.uenmax += 100;
+	u.uen += 100;
 	flags.botl = 1;
 	return 0;
 }

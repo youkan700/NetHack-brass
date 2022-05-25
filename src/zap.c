@@ -4310,8 +4310,11 @@ int nd;
     struct bresenham save_bhitpos;
     boolean shopdamage = FALSE;
     boolean doloop = TRUE;
+    boolean byyou;
     register const char *fltxt;
     struct obj *otmp;
+
+    byyou = (sx == u.ux) && (sy == u.uy);
 
     for (i=0; i<10; i++) adtyp[i] = AD_MAGM + i;
     for (i=0; i<5; i++) {
@@ -4319,7 +4322,7 @@ int nd;
 	tmp = adtyp[j];  adtyp[j] = adtyp[i]; adtyp[i] = tmp;
     }
     for (i=0; i<5; i++) {
-	setup_zapinfo(&zi[i], AT_BREA, adtyp[i], nd, 6, 0, 0, FALSE);
+	setup_zapinfo(&zi[i], AT_BREA, adtyp[i], nd, 6, 0, 0, byyou);
 	range[i] = rn1(7,7);
     }
     bresenham_init(&bb[4], sx, sy, sx+dx, sy+dy);
@@ -5213,9 +5216,14 @@ int damval;
 	struct obj *otmp;
 
 	if (e & (W_ART|W_ARTI)) return;	/* artifacts */
+	if ((e & W_ARM) && uarm && uarm->otyp == CHROMATIC_DRAGON_SCALE_MAIL) return;
 
 	for ( tbl = resiobjtbl; tbl->mask; tbl++ ) {
 		if ( e & tbl->mask ) {
+			if (!*(tbl->objp)) {
+			    impossible("damage to null object?");
+			    return;
+			}
 			/* artifacts do not get damaged */
 			if ((*(tbl->objp))->oartifact) return;
 			oc1 = tbl->objclass;

@@ -686,6 +686,58 @@ register struct monst	*mtmp;
 	}
 }
 
+void
+curse_of_chromatic_dragon(oarm)
+struct obj *oarm;
+{
+	switch (rn2(6)) {
+	    case 0:
+		polyself(FALSE);
+		if (oarm->recharged < 7) oarm->recharged++;
+          pline("Way to Chromatic Dragon: %d/7", oarm->recharged);
+		u.mtimedone = rn1(100, 100) * oarm->recharged * oarm->recharged;
+		if (oarm->recharged == 7) {
+		    HUnchanging |= FROMOUTSIDE;
+		}
+		break;
+
+	    case 1:
+		You_feel(E_J("vaguely nervous.",
+			     "なんとなく不安になった。"));
+		break;
+
+	    case 2:
+		if (!Blind)
+		    You(E_J("notice a %s glow surrounding you.",
+			    "%s翳りがあなたを取り巻いたのに気づいた。"),
+			hcolor(NH_BLACK));
+		rndcurse();
+		if (oarm->blessed) unbless(oarm);
+		else if(!oarm->cursed) curse(oarm);
+		break;
+
+	    case 3:
+		if (!Blind)
+		    You(E_J("notice a %s glow surrounding your armor.",
+			    "、%s翳りがあなたの鎧を取り巻いたのに気づいた。"),
+			hcolor(NH_BLACK));
+		if (oarm->blessed) unbless(oarm);
+		else if(!oarm->cursed) curse(oarm);
+		oarm->bknown=1;
+		break;
+
+	    case 4:
+		You(E_J("suddenly feel skeptic about the path of %s.",
+			"不意に、%sの道を歩むことに疑問を感じた。"), align_str(u.ualign.type));
+		adjalign(-rnd(5));
+		break;
+
+	    case 5:
+		You_feel(E_J("you lost consciousness for a moment",
+			     "一瞬意識が途切れたような気がした。"));
+		break;
+	}
+}
 #endif /* OVLB */
 
 /*wizard.c*/

@@ -464,7 +464,7 @@ boolean ignore_oquan;
 	    case ARMOR_CLASS:
 		/* depends on order of the dragon scales objects */
 		if (typ >= GRAY_DRAGON_SCALES && typ <= YELLOW_DRAGON_SCALES ||
-		    typ == PLAIN_DRAGON_SCALES) {
+		    typ == PLAIN_DRAGON_SCALES || typ == CHROMATIC_DRAGON_SCALES) {
 			Sprintf(eos(buf), E_J("set of %s","ˆê‘µ‚¢‚Ì%s"), actualn);
 			break;
 		}
@@ -2680,6 +2680,13 @@ prefixes:
 	    if (mntmp != NON_PM) {
 		if ((typ == GRAY_DRAGON_SCALE_MAIL ||
 		     typ == GRAY_DRAGON_SCALES) &&
+		    mntmp == PM_CHROMATIC_DRAGON) {
+		    typ = (typ == GRAY_DRAGON_SCALES) ?
+			    CHROMATIC_DRAGON_SCALES : CHROMATIC_DRAGON_SCALE_MAIL;
+		    mntmp = NON_PM;	/* no monster */
+		} else
+		if ((typ == GRAY_DRAGON_SCALE_MAIL ||
+		     typ == GRAY_DRAGON_SCALES) &&
 		    mntmp >= PM_GRAY_DRAGON &&
 		    mntmp <= PM_YELLOW_DRAGON) {
 		    typ += mntmp - PM_GRAY_DRAGON;
@@ -2851,11 +2858,16 @@ prefixes:
     }
 
 	/* dragon scales - assumes order of dragons */
-	if(!strcmpi(bp, "scales") &&
-			mntmp >= PM_GRAY_DRAGON && mntmp <= PM_YELLOW_DRAGON) {
+	if(!strcmpi(bp, "scales")) {
+	    if(mntmp >= PM_GRAY_DRAGON && mntmp <= PM_YELLOW_DRAGON) {
 		typ = GRAY_DRAGON_SCALES + mntmp - PM_GRAY_DRAGON;
 		mntmp = NON_PM;	/* no monster */
 		goto typfnd;
+	    } else if (mntmp == PM_CHROMATIC_DRAGON) {
+		typ = CHROMATIC_DRAGON_SCALES;
+		mntmp = NON_PM;	/* no monster */
+		goto typfnd;
+	    }
 	}
 
 	p = eos(bp);
@@ -3479,6 +3491,8 @@ typfnd:
 						mntmp <= PM_YELLOW_DRAGON)
 			    otmp->otyp = GRAY_DRAGON_SCALE_MAIL +
 						    mntmp - PM_GRAY_DRAGON;
+			else if (mntmp == PM_CHROMATIC_DRAGON)
+			    otmp->otyp = CHROMATIC_DRAGON_SCALE_MAIL;
 			break;
 		}
 	}

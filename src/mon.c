@@ -208,6 +208,13 @@ register struct monst *mtmp;
 		}
 		goto default_1;
 
+	    case PM_CHROMATIC_DRAGON:
+		obj = mksobj_at(CHROMATIC_DRAGON_SCALES, x, y, FALSE, FALSE);
+		obj->spe = 0;
+		obj->cursed  = TRUE;
+		obj->blessed = FALSE;
+		goto default_1;
+
 	    case PM_WHITE_UNICORN:
 	    case PM_GRAY_UNICORN:
 	    case PM_BLACK_UNICORN:

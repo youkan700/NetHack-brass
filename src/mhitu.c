@@ -3243,6 +3243,11 @@ uchar prop;
 	if (m & (W_RING | W_ART | W_ARTI)) return TRUE;
 	if ((m & W_ARM) && uarm && Is_dragon_armor(uarm)) return TRUE;
 	if ((m & W_WEP) && uwep && uwep->oartifact) return TRUE;
+	if (Upolyd) {
+	    if (youmonst.data->mnum == PM_CHROMATIC_DRAGON) return TRUE;
+	    if (youmonst.data->mlet == S_DRAGON &&
+		youmonst.data->mconveys == (1 << (prop - 1))) return TRUE;
+	}
 	return FALSE;
 }
 
