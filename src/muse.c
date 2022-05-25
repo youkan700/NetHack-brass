@@ -2163,7 +2163,8 @@ const char *fmt, *str;
 	    if (fmt && str)
 	    	pline(fmt, str, E_J("armor","ŠZ"));
 	    return TRUE;
-	} else if (youmonst.data == &mons[PM_SILVER_DRAGON]) {
+	} else if (youmonst.data->mnum == PM_SILVER_DRAGON ||
+		   youmonst.data->mnum == PM_CHROMATIC_DRAGON) {
 	    if (fmt && str)
 	    	pline(fmt, str, E_J("scales","—Ø"));
 	    return TRUE;

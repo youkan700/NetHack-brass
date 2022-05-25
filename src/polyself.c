@@ -233,7 +233,7 @@ dead: /* we come directly here if their experience level went to 0 or less */
 
 void
 polyself(forcecontrol)
-boolean forcecontrol;     
+boolean forcecontrol;
 {
 	char buf[BUFSZ];
 	int old_light, new_light;
@@ -241,9 +241,15 @@ boolean forcecontrol;
 	int tries=0;
 	boolean draconian = (uarm &&
 				uarm->otyp >= GRAY_DRAGON_SCALE_MAIL &&
-				uarm->otyp <= YELLOW_DRAGON_SCALES);
+				uarm->otyp <= CHROMATIC_DRAGON_SCALES);
 	boolean iswere = (u.ulycn >= LOW_PM || is_were(youmonst.data));
 	boolean isvamp = (youmonst.data->mlet == S_VAMPIRE || u.umonnum == PM_VAMPIRE_BAT);
+
+	/* avoid to polymorph into another monster from Chromatic Dragon */
+	if (Upolyd && youmonst.data->mnum == PM_CHROMATIC_DRAGON) {
+	    if (!Unchanging) rehumanize();
+	    return;
+	}
 
         if(!Polymorph_control && !forcecontrol && !draconian && !iswere && !isvamp) {
 	    if (rn2(20) > ACURR(A_CON)) {
@@ -287,6 +293,7 @@ boolean forcecontrol;
 				You(E_J("merge with your scaly armor.",
 					"g‚É‚Â‚¯‚Ä‚¢‚é—Ø‚Æ—Z‡‚µ‚½B"));
 				uskin = uarm;
+				dragon_armor_off(uarm->otyp);
 				uarm = (struct obj *)0;
 				/* save/restore hack */
 				uskin->owornmask |= I_SPECIAL;
@@ -903,11 +910,14 @@ dobreathe()
 	mattk = attacktype_fordmg(youmonst.data, AT_BREA, AD_ANY);
 	if (!mattk)
 	    impossible("bad breath attack?");	/* mouthwash needed... */
-	else
+	else if (mattk->adtyp == AD_RBRE)
+	    buzz_chromatic(u.ux, u.uy, u.dx, u.dy, mattk->damn);
+        else {
 	    setup_zapinfo(&zi, AT_BREA, mattk->adtyp, mattk->damn, 6,
 			       (const char *)0, (const char *)0, /* use default names */
 			       TRUE);
 	    buzz(&zi, u.ux, u.uy, u.dx, u.dy);
+	}
 	return(1);
 }
 
@@ -1336,6 +1346,7 @@ boolean silently;
 		uskin = (struct obj *)0;
 		/* undo save/restore hack */
 		uarm->owornmask &= ~I_SPECIAL;
+		dragon_armor_on(uarm->otyp);
 	}
 }
 
@@ -1559,6 +1570,10 @@ STATIC_OVL int
 armor_to_dragon(atyp)
 int atyp;
 {
+  if (atyp == CHROMATIC_DRAGON_SCALE_MAIL ||
+      atyp == CHROMATIC_DRAGON_SCALES) {
+    return PM_CHROMATIC_DRAGON;
+  }
 	if (atyp >= GRAY_DRAGON_SCALE_MAIL &&
 	    atyp <= YELLOW_DRAGON_SCALE_MAIL) {
 		return (PM_GRAY_DRAGON + atyp - GRAY_DRAGON_SCALE_MAIL);

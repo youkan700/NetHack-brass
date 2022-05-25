@@ -327,6 +327,14 @@ once_per_turn_things()
 		u.udg_cnt = rn1(200, 50);
 	    }
 	}
+	if (uarm && (uarm->otyp == CHROMATIC_DRAGON_SCALES ||
+		     uarm->otyp == CHROMATIC_DRAGON_SCALE_MAIL)) {
+	    if (uarm->age) uarm->age--;
+	    if (!uarm->age) {
+		uarm->age = rn1(200, 50) / (uarm->recharged + 1);
+		curse_of_chromatic_dragon(uarm);
+	    }
+	}
 	restore_attrib();
 	/* underwater and waterlevel vision are done here */
 	if (Is_waterlevel(&u.uz))

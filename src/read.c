@@ -905,7 +905,7 @@ register struct obj	*sobj;
 		    otmp->spe >= 9 ? (rn2(otmp->spe) == 0) :
 		    sobj->blessed ? rnd(3-otmp->spe/3) : 1;
 		if (s >= 0 && otmp->otyp >= GRAY_DRAGON_SCALES &&
-					otmp->otyp <= YELLOW_DRAGON_SCALES) {
+					otmp->otyp <= CHROMATIC_DRAGON_SCALES) {
 			scales_to_dsm(otmp);
 			if (sobj->blessed) {
 				otmp->spe++;
@@ -971,6 +971,9 @@ register struct obj	*sobj;
 	case SCR_DESTROY_ARMOR:
 	    {
 		otmp = some_armor(&youmonst);
+		if (otmp && (otmp->otyp == CHROMATIC_DRAGON_SCALES ||
+			     otmp->otyp == CHROMATIC_DRAGON_SCALE_MAIL))
+		    goto vibrates;
 		if(confused) {
 			if(!otmp) {
 				strange_feeling(sobj,E_J("Your bones itch.","Ç†Ç»ÇΩÇÕçúÇ…·yÇ›Çä¥Ç∂ÇΩÅB"));
@@ -991,6 +994,7 @@ register struct obj	*sobj;
 		    } else
 			known = TRUE;
 		} else {	/* armor and scroll both cursed */
+                vibrates:
 #ifndef JP
 		    Your("%s %s.", xname(otmp), otense(otmp, "vibrate"));
 #else

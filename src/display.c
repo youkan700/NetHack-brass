@@ -1564,7 +1564,7 @@ zapdir_to_glyph(dx, dy, beam_type)
 	1/*hbeam*/, 2/*lslant*/, 0/*vbeam*/, 3/*rslant*/
     };
     if (beam_type >= NUM_ZAP) {
-	impossible("zapdir_to_glyph:  illegal beam type");
+	impossible("zapdir_to_glyph:  illegal beam type %d", beam_type);
 	beam_type = 0;
     }
 //    dx = (dx == dy) ? 2 : (dx && dy) ? 3 : dx ? 1 : 0;

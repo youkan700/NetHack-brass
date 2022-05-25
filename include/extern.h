@@ -416,6 +416,8 @@ E int FDECL(destroy_arm, (struct obj *));
 E void FDECL(adj_abon, (struct obj *,SCHAR_P));
 E void FDECL(quickdowear, (struct obj *));
 E int NDECL(udaminc_bonus);
+E void FDECL(dragon_armor_on, (short));
+E void FDECL(dragon_armor_off, (short));
 
 /* ### dog.c ### */
 
@@ -2506,6 +2508,7 @@ E void NDECL(resurrect);
 E void NDECL(intervene);
 E void NDECL(wizdead);
 E void FDECL(cuss, (struct monst *));
+E void FDECL(curse_of_chromatic_dragon, (struct obj *));
 
 /* ### worm.c ### */
 

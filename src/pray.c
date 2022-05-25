@@ -24,6 +24,7 @@ STATIC_DCL void FDECL(consume_offering,(struct obj *));
 STATIC_DCL boolean FDECL(water_prayer,(BOOLEAN_P));
 STATIC_DCL boolean FDECL(blocked_boulder,(int,int));
 STATIC_DCL int FDECL(getobj_filter_sacrifice, (struct obj *));
+STATIC_OVL void NDECL(chromatic_dragon_ending);
 
 
 /* simplify a few tests */
@@ -1614,6 +1615,10 @@ dosacrifice()
 	    u.uevent.ascended = 1;
 	    if(carried(otmp)) useup(otmp); /* well, it's gone now */
 	    else useupf(otmp, 1L);
+	    if ((Upolyd && youmonst.data->mnum == PM_CHROMATIC_DRAGON) ||
+		(uarm && (uarm->otyp == CHROMATIC_DRAGON_SCALES ||
+		          uarm->otyp == CHROMATIC_DRAGON_SCALE_MAIL)))
+		chromatic_dragon_ending();
 	    You(E_J("offer the Amulet of Yendor to %s...",
 		    "イェンダーの魔除けを%sに捧げた…。"), a_gname());
 	    if (u.ualign.type != altaralign) {
@@ -2313,6 +2318,35 @@ int dx,dy;
 	return TRUE;
 
     return FALSE;
+}
+
+STATIC_OVL void
+chromatic_dragon_ending()
+{
+	char buf[BUFSZ];
+	adjalign(-99);
+#ifndef JP
+	You("stopped offering the Amulet of Yendor to %s.", a_gname());
+	pline("Why I have to give away the Amulet?");
+	pline("This Amulet should belong to... ME!");
+	if (!Upolyd) polyself(FALSE);
+	You_feel("loud laughter of the Mother of all Dragons, and rage of %s.", u_gname());
+	pline("But everything seems to fly away fast.");
+	Your("conscious awareness fades out...",
+	Sprintf(buf, "sacrificed %sself to Chromatic Dragon", uhim());
+#else
+	You("イェンダーの魔除けを%sに捧げようとして、不意に動きを止めた。", a_gname());
+	pline("なぜ自分がこの素晴らしい魔除けを手放さねばならない？");
+	pline("この魔除けは、……わらわにこそふさわしい！");
+	if (!Upolyd) polyself(FALSE);
+	You("竜の大母の哄笑と、%sの激しい怒りをないまぜに感じたが、全ては急速に遠ざかっていった。",
+	    a_gname());
+	Your("意識は遠のき、魂は消滅した…。");
+	Sprintf(buf, "自らの肉体をクロマティック・ドラゴンに捧げた");
+#endif /*JP*/
+	killer = buf;
+	killer_format = NO_KILLER_PREFIX;
+	done(DIED);
 }
 
 /*pray.c*/
