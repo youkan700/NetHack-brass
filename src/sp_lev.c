@@ -25,6 +25,7 @@
 #include "rect.h"
 
 extern void FDECL(mkmap, (lev_init *));
+extern void FDECL(mktown, (lev_init *));
 
 STATIC_DCL void FDECL(get_room_loc, (schar *, schar *, struct mkroom *));
 STATIC_DCL void FDECL(get_free_room_loc, (schar *, schar *, struct mkroom *));
@@ -1810,21 +1811,24 @@ int typ;
 	/* Read the level initialization data */
 	Fread((genericptr_t) &init_lev, 1, sizeof(lev_init), fd);
 	switch (init_lev.init_present) {
-	  case 1: /* mkmap */
+	  case IM_MKMAP: /* mkmap */
 	    if(init_lev.lit < 0)
 		init_lev.lit = rn2(2);
 	    mkmap(&init_lev);
 	    break;
-	  case 2: /* ice cavern */
+	  case IM_ICE_CAVERN: /* ice cavern */
 	    if(init_lev.lit < 0)
 		init_lev.lit = rn2(2);
 	    mk_ice_cavern(init_lev.fg, init_lev.bg, init_lev.lit, 0);
 	    break;
-	  case 3: /* ghost town */
+	  case IM_GHOST_TOWN: /* ghost town */
 	    mkghosttown(init_lev.arg);
 	    break;
-	  case 4: /* deserted field */
+	  case IM_DESERTED: /* deserted field */
 	    mkbaallev(ROOM, BOG, init_lev.arg);
+	    break;
+	  case IM_TOWNLIKE: /* town like map */
+	    mktown(&init_lev);
 	    break;
 	  default: /* none */
 	    break;

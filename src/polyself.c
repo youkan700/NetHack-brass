@@ -250,9 +250,26 @@ boolean forcecontrol;
 	    if (!Unchanging) rehumanize();
 	    return;
 	}
+	if (uarm && (uarm->otyp == CHROMATIC_DRAGON_SCALES ||
+		     uarm->otyp == CHROMATIC_DRAGON_SCALE_MAIL)) {
+	    if (Unchanging) {
+		struct obj *otmp;
+		if (uamul && uamul->otyp == AMULET_OF_UNCHANGING &&
+		    rn2(5))
+		    goto sysshock;
+		Your(E_J("medallion vibrates violently, and breaks in pieces!",
+			 "メダリオンは激しく震えると、こなごなに砕け散った！"));
+		otmp = uamul;
+		Amulet_off();
+		useup(otmp);
+	    }
+	    /* override polymorph control */
+	    goto do_merge;
+	}
 
         if(!Polymorph_control && !forcecontrol && !draconian && !iswere && !isvamp) {
 	    if (rn2(20) > ACURR(A_CON)) {
+	      sysshock:
 		You(shudder_for_moment);
 		losehp(rnd(30), E_J("system shock","システム\tショックで"), KILLED_BY_AN);
 		exercise(A_CON, FALSE);

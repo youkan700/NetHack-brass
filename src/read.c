@@ -139,6 +139,12 @@ doread()
 #endif /*JP*/
 		return 0;
 	    }
+	    if (scroll->oprint == TSHIRT_PRINT_NONE ||
+		scroll->oprint != TSHIRT_PRINT_TEXT) {
+		pline(E_J("Nothing is printed on the shirt.",
+			  "このTシャツは無地だ。"));
+		return(0);
+	    }
 	    u.uconduct.literate++;
 	    if(flags.verbose)
 		pline(E_J("It reads:","こう書いてある:"));

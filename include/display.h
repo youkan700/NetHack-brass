@@ -321,19 +321,17 @@
 	    random_monster() + GLYPH_TYPE_BODY :			      \
 	 (otg_temp == STATUE) ?						      \
 	    random_monster() +						      \
-		(rnd(MAX_MATERIAL) << GLYPH_SUB_SHIFT) + GLYPH_TYPE_STATUE :  \
+		(rn2(CLR_MAX) << GLYPH_SUB_SHIFT) + GLYPH_TYPE_STATUE :       \
 	    otg_temp +							      \
-		(rnd(MAX_MATERIAL) << GLYPH_SUB_SHIFT) + GLYPH_TYPE_OBJ) :    \
+		(rn2(CLR_MAX) << GLYPH_SUB_SHIFT) + GLYPH_TYPE_OBJ) :         \
 	((obj)->otyp == CORPSE ?					      \
 	    (int) (obj)->corpsenm + GLYPH_TYPE_BODY :			      \
 	 (obj)->otyp == STATUE ?					      \
 	    (int) (obj)->corpsenm +					      \
-		((obj)->madeof << GLYPH_SUB_SHIFT) + GLYPH_TYPE_STATUE :      \
-	 has_color_variation(obj) ?					      \
-	    (int) (obj)->otyp + GLYPH_TYPE_OBJ +			      \
-		(((obj)->corpsenm + 32) << GLYPH_SUB_SHIFT) :		      \
-	    (int) (obj)->otyp +						      \
-		((obj)->madeof << GLYPH_SUB_SHIFT) + GLYPH_TYPE_OBJ))
+		((obj)->color << GLYPH_SUB_SHIFT) + GLYPH_TYPE_STATUE :       \
+	 (int) (obj)->otyp + GLYPH_TYPE_OBJ +				      \
+		((obj)->color << GLYPH_SUB_SHIFT)))
+
 #define detected_obj_to_glyph(obj)	(obj_to_glyph(obj)|GLYPH_ATTR_DETECT)
 #define pet_obj_to_glyph(obj)		(obj_to_glyph(obj)|GLYPH_ATTR_FRIEND)
 

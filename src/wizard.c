@@ -695,6 +695,7 @@ struct obj *oarm;
 		polyself(FALSE);
 		if (oarm->recharged < 7) oarm->recharged++;
           pline("Way to Chromatic Dragon: %d/7", oarm->recharged);
+		if (!Upolyd) break; /* maybe you are unchanging */
 		u.mtimedone = rn1(100, 100) * oarm->recharged * oarm->recharged;
 		if (oarm->recharged == 7) {
 		    HUnchanging |= FROMOUTSIDE;

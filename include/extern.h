@@ -2215,6 +2215,7 @@ E int FDECL(water_damage, (struct obj *,BOOLEAN_P,BOOLEAN_P));
 E boolean NDECL(drown);
 E void FDECL(drain_en, (int));
 E int NDECL(dountrap);
+E void FDECL(cnv_trap_obj, (int, int, struct trap *));
 E int FDECL(untrap, (BOOLEAN_P));
 E boolean FDECL(chest_trap, (struct obj *,int,BOOLEAN_P));
 E void FDECL(deltrap, (struct trap *));

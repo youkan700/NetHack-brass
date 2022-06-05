@@ -663,10 +663,16 @@ newsym(x,y)
     if (Underwater && !Is_waterlevel(&u.uz)) {
 	/* don't do anything unless (x,y) is an adjacent underwater position */
 	int dx, dy;
-	if (!is_pool(x,y)) return;
+	if (!is_pool(x,y)) {
+	    show_glyph(x,y,cmap_to_glyph(S_stone));
+	    return;
+	}
 	dx = x - u.ux;	if (dx < 0) dx = -dx;
 	dy = y - u.uy;	if (dy < 0) dy = -dy;
-	if (dx > 1 || dy > 1) return;
+	if (dx > 1 || dy > 1) {
+	    show_glyph(x,y,cmap_to_glyph(S_stone));
+	    return;
+	}
     }
 
     /* Can physically see the location. */

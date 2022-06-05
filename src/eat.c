@@ -2890,8 +2890,8 @@ floorfood(verb,corpsecheck)	/* get food from floor or pack */
 				E_J("holding you","‚ ‚È‚½‚ð•ß‚ç‚¦‚Ä‚¢‚é") : E_J("armed","ŽdŠ|‚¯‚ç‚ê‚½"));
 		if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y') {
 		    u.utrap = u.utraptype = 0;
-		    deltrap(ttmp);
-		    return mksobj(BEARTRAP, TRUE, FALSE);
+		    cnv_trap_obj(BEARTRAP, 1, ttmp);
+		    return sobj_at(BEARTRAP, u.ux, u.uy);
 		} else if (c == 'q') {
 		    return (struct obj *)0;
 		}

@@ -438,6 +438,7 @@ boolean artif;
 	if (!otmp->o_id) otmp->o_id = flags.ident++;	/* ident overflowed */
 	otmp->quan = 1L;
 	otmp->oclass = let;
+	otmp->color = objects[otyp].oc_color;
 	otmp->otyp = otyp;
 	otmp->where = OBJ_FREE;
 	otmp->odamaged = 0;
@@ -679,11 +680,21 @@ boolean artif;
 			otmp->oerodeproof = otmp->rknown = 1;
 #endif
 		}
-		if (otmp->otyp == HAWAIIAN_SHIRT ||
-		    otmp->otyp == T_SHIRT) {
+		if (otmp->otyp == HAWAIIAN_SHIRT) {
 			int tmpc;
 			tmpc = rn2(CLR_MAX);
-			if (tmpc != NO_COLOR) otmp->corpsenm = tmpc;
+			if (tmpc != NO_COLOR) otmp->color = tmpc;
+		} else if (otmp->otyp == T_SHIRT) {
+			if (Role_if(PM_TOURIST) && Is_qstart(&u.uz)) {
+			    /* underwear */
+			    otmp->color = CLR_WHITE;
+			    otmp->oprint = TSHIRT_PRINT_NONE;
+			} else {
+			    int tmpc;
+			    tmpc = rn2(CLR_MAX);
+			    if (tmpc != NO_COLOR) otmp->color = tmpc;
+			    otmp->oprint = TSHIRT_PRINT_TEXT;
+			}
 		}
 		break;
 	case WAND_CLASS:
@@ -1155,7 +1166,8 @@ int material;
 	if (is_material_variable(obj) || !material) {
 	    if (objects[obj->otyp].oc_material == (unsigned)material ||
 		!material) {
-		obj->madeof = 0;			/* natural material */
+		obj->madeof = 0;			  /* natural material */
+		obj->color = objects[obj->otyp].oc_color; /* natural color */
 		obj->owt = weight(obj);
 		return TRUE;
 	    } else {
@@ -1164,6 +1176,7 @@ int material;
 		for ( i=0; mat[i].imat != 0; i++ ) {
 		    if ( mat[i].imat == material ) {
 			obj->madeof = material;		/* special material */
+			obj->color = materialcolor[material]; /* material color */
 			adjust_weight_by_material(obj);
 			return TRUE;
 		    }

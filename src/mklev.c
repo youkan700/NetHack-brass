@@ -60,6 +60,9 @@ STATIC_OVL int  NDECL (gtwn_findcorner);
 STATIC_OVL void NDECL (gtwn_adddoor);
 STATIC_OVL void NDECL (gtwn_cleanup);
 
+/* normal townlike random map */
+STATIC_OVL void FDECL (town_cleanup, (SCHAR_P,SCHAR_P,BOOLEAN_P));
+
 /* asmodeus */
 STATIC_OVL void NDECL (mkasmolev);
 
@@ -2232,6 +2235,84 @@ int xlimit;
 	for(i = rn1(8,8); i; i--)
 	    if (gtwn_rndloc(&x, &y))
 		mktrap(0,1,(struct mkroom *) 0, (coord*) 0);
+}
+
+/*****************************************************************
+   Townlike random map
+ *****************************************************************/
+STATIC_OVL void
+town_cleanup(ground, tree, lit)
+schar ground, tree;
+boolean lit;
+{
+	int x,y;
+	char c;
+	for (y=YMIN; y<YMAX; y++) {
+	    for (x=XMIN; x<XMAX; x++) {
+		c = levl[x][y].typ;
+		if (c == CORR) {
+		    levl[x][y].typ = ROOM;
+		} else if (c == ROOM) {
+		    levl[x][y].typ = ROOM;
+		    if (x < COLNO-4 &&
+			 IS_WALL(levl[x+1][y].typ) && IS_WALL(levl[x+2][y].typ) &&
+			 levl[x+3][y].typ == ROOM) {
+			levl[x+1][y].typ = ICE;
+			levl[x+2][y].typ = ICE;
+		    }
+		    if (y < ROWNO-4 &&
+			 IS_WALL(levl[x][y+1].typ) && IS_WALL(levl[x][y+2].typ) &&
+			 levl[x][y+3].typ == ROOM) {
+			levl[x][y+1].typ = ICE;
+			levl[x][y+2].typ = ICE;
+		    }
+		} else if (c == INVALID_TYPE) {
+		    levl[x][y].typ = (!rn2(10)) ? tree : ground;
+		} else if (c == DOOR) {
+		    if (levl[x][y].doormask == D_NODOOR)
+			levl[x][y].doormask = D_CLOSED;
+		}
+	    }
+	}
+	for (y=YMIN; y<YMAX; y++) {
+	    for (x=XMIN; x<XMAX; x++) {
+		if (levl[x][y].typ == ICE) levl[x][y].typ = ROOM;
+		levl[x][y].lit = lit;
+	    }
+	}
+}
+
+void mktown(init_lev)
+lev_init *init_lev;
+{
+	int i;
+	int x, y;
+	struct mkroom *croom, *troom;
+
+	XMIN = 2;
+	XMAX = (COLNO-1);
+	YMIN = 1;
+	YMAX = (ROWNO);
+
+	level.flags.is_maze_lev = TRUE;
+	level.flags.is_cavernous_lev = FALSE;
+
+	gtwn_initmap();
+	gtwn_1stpath();
+	if (gtwn_findcorner())
+	    if (gtwn_findcorner())
+		gtwn_findcorner();
+	gtwn_path();
+	if (gtwn_findcorner())
+	    if (gtwn_findcorner())
+		gtwn_findcorner();
+	gtwn_path();
+	if (gtwn_findcorner())
+	    gtwn_findcorner();
+	gtwn_path();
+	gtwn_adddoor();
+	town_cleanup(init_lev->fg, init_lev->bg, init_lev->lit);
+	wallification(XMIN, YMIN, XMAX-1, YMAX-1);
 }
 
 /*****************************************************************

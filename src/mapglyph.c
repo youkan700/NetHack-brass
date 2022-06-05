@@ -138,12 +138,7 @@ unsigned *ospecial;
 	    {
 		/* check if color is overriden by material patch etc. */
 		tmp = ((glyph & GLYPH_SUB_MASK) >> GLYPH_SUB_SHIFT);
-		if (tmp == 0)
-		    obj_color(STATUE);
-		else if (tmp <= MAX_MATERIAL)
-		    mat_color(tmp);
-		else if (tmp >= 32 && tmp < (32+CLR_MAX))
-		    std_color(tmp - 32);
+		std_color(tmp);
 	    }
 	    if (glyph & GLYPH_ATTR_RIDING) special |= MG_RIDING;
 	    if (glyph & GLYPH_ATTR_FRIEND) special |= MG_PET;
@@ -180,12 +175,7 @@ unsigned *ospecial;
 #endif
 	    {
 		tmp = ((glyph & GLYPH_SUB_MASK) >> GLYPH_SUB_SHIFT);
-		if (tmp == 0)
-		    obj_color(offset);
-		else if (tmp <= MAX_MATERIAL)
-		    mat_color(tmp);
-		else if (tmp >= 32 && tmp < (32+CLR_MAX))
-		    std_color(tmp - 32);
+		std_color(tmp);
 	    }
 	    if (glyph & GLYPH_ATTR_RIDING) special |= MG_RIDING;
 	    if (glyph & GLYPH_ATTR_FRIEND) special |= MG_PET;

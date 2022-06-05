@@ -156,7 +156,7 @@ extern const char *fname;
 %token	<i> SUBROOM_ID NAME_ID FLAGS_ID FLAG_TYPE MON_ATTITUDE MON_ALERTNESS
 %token	<i> MON_APPEARANCE
 %token	<i> CONTAINED
-%token	<i> MPICKUP MINVENT BURIED OBJ_RANK
+%token	<i> MPICKUP MINVENT BURIED OBJ_RANK INITMAP_TYPE
 %token	<i> ',' ':' '(' ')' '[' ']'
 %token	<map> STRING MAP_ID
 %type	<i> h_justif v_justif trap_name room_type door_state light_state
@@ -285,7 +285,7 @@ lev_init	: /* nothing */
 			init_lev.walled = $13;
 			$$ = 1;
 		  }
-		| LEV_INIT_ID ':' CHAR ',' CHAR ',' INTEGER ',' INTEGER ',' light_state
+		| LEV_INIT_ID ':' CHAR ',' CHAR ',' INITMAP_TYPE ',' INTEGER ',' light_state
 		  {
 			init_lev.init_present = $7;
 			init_lev.arg = $9;
@@ -1567,7 +1567,6 @@ wallsign_detail: WALLSIGN_ID ':' coordinate ',' DIRECTION ',' engraving_type ','
 			    break;
 			}
 			tmpengraving[nengraving]->dir = dir;
-			if (!in_room) check_coord(x, y, "Wallsign");
 			nengraving++;
 			if (nengraving >= MAX_OF_TYPE) {
 			    yyerror("Too many engravings in room or mazepart!");

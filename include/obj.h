@@ -53,6 +53,10 @@ struct obj {
 #define OBJ_ONBILL	7		/* object on shk bill */
 #define NOBJ_STATES	8
 	xchar timed;		/* # of fuses (timers) attached to this obj */
+
+	uchar color;		/* color of the obj */
+	xchar reserved1;	/*  */
+
 /*0*/
 	Bitfield(cursed,1);
 	Bitfield(blessed,1);
@@ -80,6 +84,9 @@ struct obj {
 #define opoisoned otrapped	/* object (weapon) is coated with poison */
 /*2*/
 	Bitfield(recharged,3);	/* number of times it's been recharged */
+#define oprint recharged	/* print type of T-shirt */
+#define TSHIRT_PRINT_NONE 0
+#define TSHIRT_PRINT_TEXT 1
 	Bitfield(lamplit,1);	/* a light-source -- can be lit */
 #ifdef PICKUP_THROWN
 	Bitfield(othrown,1);	/* object is thrown by you */

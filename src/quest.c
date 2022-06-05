@@ -18,7 +18,7 @@ STATIC_DCL void NDECL(on_goal);
 STATIC_DCL boolean NDECL(not_capable);
 STATIC_DCL int FDECL(is_pure, (BOOLEAN_P));
 STATIC_DCL void FDECL(expulsion, (BOOLEAN_P));
-STATIC_DCL void NDECL(chat_with_leader);
+STATIC_DCL void FDECL(chat_with_leader, (MONST_P));
 STATIC_DCL void NDECL(chat_with_nemesis);
 STATIC_DCL void NDECL(chat_with_guardian);
 STATIC_DCL void FDECL(prisoner_speaks, (struct monst *));
@@ -206,7 +206,8 @@ struct obj *obj;	/* quest artifact; possibly null if carrying Amulet */
 }
 
 STATIC_OVL void
-chat_with_leader()
+chat_with_leader(mtmp)
+struct monst *mtmp;
 {
 /*	Rule 0:	Cheater checks.					*/
 	if(u.uhave.questart && !Qstat(met_nemesis))
@@ -265,9 +266,43 @@ chat_with_leader()
 	      expulsion(FALSE);
 	    }
 	  } else {	/* You are worthy! */
+	    struct obj *otmp;
 	    qt_pager(QT_ASSIGNQUEST);
 	    exercise(A_WIS, TRUE);
 	    Qstat(got_quest) = TRUE;
+
+	    /* gift from leader */
+	    for (otmp = level.objects[mtmp->mx][mtmp->my]; otmp; otmp = otmp->nexthere) {
+	      if (Is_box(otmp)) {
+		qt_pager(QT_SUPPORT);
+		obj_extract_self(otmp);
+		newsym(mtmp->mx, mtmp->my);
+		if (!flooreffects(otmp, u.ux, u.uy, E_J("fall","—‚¿‚½"))) {
+		  place_object(otmp, u.ux, u.uy);
+		  stackobj(otmp);
+		  if (Is_box(otmp)) {
+		    otmp->olocked = otmp->obroken = otmp->otrapped = 0;
+		  }
+		  newsym(u.ux, u.uy);
+		  look_here(0, FALSE);
+		}
+		break;
+	      } else if (otmp->sokoprize) {
+		qt_pager(QT_SUPPORT);
+		obj_extract_self(otmp);
+		otmp->sokoprize = 0;
+		newsym(mtmp->mx, mtmp->my);
+#ifndef JP
+		(void) hold_another_object(otmp, "Oops!  %s out of your grasp!",
+					       The(aobjnam(otmp, "slip")),
+					       (const char *)0);
+#else
+		(void) hold_another_object(otmp, "‚¨‚Á‚ÆI %s‚ª‚ ‚È‚½‚Ìè‚©‚çŠŠ‚è—‚¿‚½I",
+					       xname(otmp), (const char *)0);
+#endif /*JP*/
+		break;
+	      }
+	    }
 	  }
 	}
 }
@@ -288,7 +323,7 @@ leader_speaks(mtmp)
 	if(Qstat(pissed_off)) {
 	  qt_pager(QT_LASTLEADER);
 	  expulsion(TRUE);
-	} else chat_with_leader();
+	} else chat_with_leader(mtmp);
 }
 
 STATIC_OVL void
@@ -352,7 +387,7 @@ quest_chat(mtmp)
 	register struct monst *mtmp;
 {
     if (mtmp->m_id == Qstat(leader_m_id)) {
-	chat_with_leader();
+	chat_with_leader(mtmp);
 	return;
     }
     switch(mtmp->data->msound) {

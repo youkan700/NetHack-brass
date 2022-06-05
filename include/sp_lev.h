@@ -28,6 +28,13 @@
 #define SP_LEV_ROOMS	1
 #define SP_LEV_MAZE	2
 
+    /* special level initialization */
+#define IM_MKMAP	1
+#define IM_ICE_CAVERN	2
+#define IM_GHOST_TOWN	3
+#define IM_DESERTED	4
+#define IM_TOWNLIKE	5
+
 /*
  * Structures manipulated by the special levels loader & compiler
  */

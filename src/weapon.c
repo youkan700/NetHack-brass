@@ -339,7 +339,7 @@ doubleattack_roll()
 		roll = (roll+5 < 10) ? 10 : (roll+5);	/* Quick Blade is really quick! */
 #ifdef WIZARD
 	if (wizard) pline("[x2:%d]", roll);
-#endif WIZARD
+#endif /* WIZARD */
 	return (roll < 0) ? 0 : roll;
 }
 

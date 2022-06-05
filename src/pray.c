@@ -2346,6 +2346,7 @@ chromatic_dragon_ending()
 #endif /*JP*/
 	killer = buf;
 	killer_format = NO_KILLER_PREFIX;
+	Lifesaved = 0L; /* not allowed */
 	done(DIED);
 }
 

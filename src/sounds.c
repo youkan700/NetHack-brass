@@ -1008,7 +1008,8 @@ dochat()
     }
 
     /* if this monster is waiting for something, prod it into action */
-    mtmp->mstrategy &= ~STRAT_WAITMASK;
+    if (mtmp->m_id != quest_status.leader_m_id)
+	mtmp->mstrategy &= ~STRAT_WAITMASK;
 
     if (mtmp->mtame && mtmp->meating) {
 	if (!canspotmons(mtmp))

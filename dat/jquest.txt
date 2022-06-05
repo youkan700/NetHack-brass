@@ -148,7 +148,7 @@
 #most difficult task of your career."
 「ついに戻ってきたか、%p。
   君はいつも、私の期待にもっとも応えてくれる生徒だった。
-  君のなしてきた仕事の中でも、最も困難といえる今回の仕事を
+  君の成してきた仕事と比べても、最も困難といえる今回の仕事を
   任せられるかどうか、私に確かめさせてくれ。」
 %E
 %Cp Arc 00016
@@ -222,6 +222,9 @@
 
 　%dの知恵が君を導かんことを。」
 %E
+%Cp Arc 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
+%E
 %Cp Arc 00025
 #"Beware, for %n is powerful and cunning."
 「気をつけろ！%nは力強く狡猾なやつだ。」
@@ -241,7 +244,7 @@
 %E
 %Cp Arc 00029
 #"You must destroy %n.  It will pursue you otherwise."
-「君は%nを滅ぼさねばならない。でなければ追い回されることになる。」
+「君は%nを滅ぼさねばならない。さもなくば、どこまでも追われることになる。」
 %E
 %Cp Arc 00030
 #"%oC is a mighty talisman.  With it you
@@ -254,7 +257,7 @@
 %E
 %Cp Arc 00032
 #"I will have my %gP watch for your return."
-「我%gが君の帰還を見守らんことを。」
+「君が帰還したらすぐ分かるよう、私の%gたちに見守らせるよ。」
 %E
 %Cp Arc 00033
 #"Remember not to stray from the true %a path."
@@ -354,7 +357,7 @@
 %E
 %Cp Arc 00067
 #"A mere %r cannot hope to defeat me!"
-「ただの%rが俺には勝てるものか！」
+「ただの%rが俺に勝てるものか！」
 %E
 %Cp Arc 00068
 #"If you are the best %l can send, I have nothing to fear."
@@ -620,6 +623,9 @@
   お前は%iへ行かねばならぬ。そこから%nの
   行方を突き止め、奴を倒し、%oを我々に取り戻してほしい。
   それが世界を救う唯一の方法だ。」
+%E
+%Cp Bar 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
 %E
 %Cp Bar 00025
 #"%nC is strong in the dark arts, but not immune to cold steel."
@@ -1041,6 +1047,9 @@
   だがそれを取り返せれば、我らの洞窟は再び安全になる。
 
   頼む、%p。我らのために%oを取り返し、ここへ戻してほしい。」
+%E
+%Cp Cav 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
 %E
 %Cp Cav 00025
 #"%nC is immune to her own breath weapons.
@@ -1464,6 +1473,9 @@
     沼地を通って%iへ赴き、そこから%nの
     隠れ家となっている島への手がかりを追うのだ。気をつけて行け。
 %E
+%Cp Hea 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
+%E
 %Cp Hea 00025
 #"Remember, %p, to always wash your hands before operating."
 「忘れるな、%p。手術の前には必ず手を洗うのだ。」
@@ -1855,6 +1867,9 @@
   かの獣を滅ぼし、%oを我らの手に取り戻せ。
   そうしなければ、マーリンを回復させることはできぬのだ。」
 %E
+%Cp Kni 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
+%E
 %Cp Kni 00025
 #"Remember, %p, follow always the path of %d."
 「%pよ、常に%dの道に従うことを忘れるでない。」
@@ -2218,6 +2233,9 @@
   我々は生徒たちを殺した精霊どもを駆逐できるだろう。
 
   さあ、%dの加護のもと、行くのだ、%pよ。」
+%E
+%Cp Mon 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
 %E
 %Cp Mon 00025
 #"You can prevail, if you rely on %d."
@@ -2585,6 +2603,9 @@
   我らはこの土地を汚す死人どもを駆逐できるだろう。
 
   さあ、%dの加護のもと、行くのだ、%p。」
+%E
+%Cp Pri 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
 %E
 %Cp Pri 00025
 #"You can prevail, if you rely on %d."
@@ -2963,6 +2984,9 @@
   我々のために%oを取り戻してくれ、%p！
   そうして初めて、%dは安全になるだろう。」
 %E
+%Cp Ran 00022
+「%nの毒は死に至る病を引き起こす。これを使いたまえ。」
+%E
 %Cp Ran 00025
 #"It is rumored that the Forest and Mountain Centaurs have resolved
 #their ancient feud and now band together against us."
@@ -3292,7 +3316,7 @@
 #maybe you could work off your back dues by performing a little job for
 #me.  Let us just see if you are ready..."
 「よし、誰か来たのか見てやろう ── %pのお出ましだ。
-  お前はギルドへの支払いを滞納しているようだな。俺はお前を
+  お前はギルドへの上納金を滞納しているようだな。俺はお前を
   こいつら能無し盗人どもへの見せしめに殺してもいいが、
   もっといい計画がある。俺のためにちょいと仕事をしてくれるなら、
   滞納金を免除にしてやってもいいぞ。
@@ -3365,6 +3389,9 @@
   %nが%oを持っている。お前は
   %oを取りに行き、俺のところへ持ってくる。
   簡単なこった。お前の頭でも十分理解できるな。」
+%E
+%Cp Rog 00022
+「こいつをやる。噂じゃ、奴の隠れ家は入ったら出られないって話だからな！」
 %E
 %Cp Rog 00025
 #"You don't seem to understand,
@@ -3746,11 +3773,14 @@
 
   わかったか？」
 %E
+%Cp Sam 00022
+「これは佐藤家に伝わる刀である。持って行くがよい。」
+%E
 %Cp Sam 00025
 #"To defeat %n you must overcome the seven emotions:
 #hate, adoration, joy, anxiety, anger, grief, and fear."
 「%nを倒すには、おぬしは七つの感情を打ち破らねばならぬ:
-憎しみ、愛慕、楽しみ、不安、怒り、悲しみ、そして恐れだ。」
+憎しみ、愛慕、享楽、不安、怒り、悲しみ、そして恐れだ。」
 %E
 %Cp Sam 00026
 #"Remember your honor is my honor, you perform in my name."
@@ -3842,7 +3872,7 @@
 %E
 %Cp Sam 00060
 #"Ahh, I finally meet the daimyo of the kyokaku!"
-「おお、私はとうとう侠客の大名に会った！」
+「おお、わしはとうとう侠客の大名に会った！」
 %E
 %Cp Sam 00061
 #"There is no honor for me in your death."
@@ -3858,7 +3888,7 @@
 %E
 %Cp Sam 00064
 #"I will make tea with your hair and serve it to %l."
-「おぬしの髪を茶にして、%lにさし出そうぞ。」
+「おぬしの髪で茶を立てて、%lにさし出そうぞ。」
 %E
 %Cp Sam 00065
 #"Your fear shows in your eyes, coward!"
@@ -3866,7 +3896,7 @@
 %E
 %Cp Sam 00066
 #"I have not heard of you, %p-san; has your life been that unworthy?"
-「%p？ 聞いたこともないな。何の勲功もなく生きてきたのか？」
+「%p？ 聞かぬ名じゃな。一つのいさおしもあげぬ半生であったか？」
 %E
 %Cp Sam 00067
 #"If you will not obey me, you will die."
@@ -3880,7 +3910,7 @@
 %Cp Sam 00069
 #"Your master was a poor teacher.  You will pay for his mistakes in
 #your teaching."
-「おぬしの師は無能じゃな。誤った指導の報いを受けるがよい。」
+「おぬしの師は無能じゃな。やつの教えの不首尾、その身で知ることとなろう。」
 %E
 %Cc Sam 00070
 #As you pick up %o, you feel the strength of its karma.
@@ -3904,9 +3934,9 @@
 #thrown into the sea.
 自らの癒しの心得が、%nの傷は致命傷であると告げていた。
 
-武士道に従うならば、止めを刺し、名誉のうちに死なせるべきであったが、
-数多くの侍がこの男の非道によって殺されたことを思うと、
-あなたは最後の一撃を与えるのをやめた。
+武士道に従うならば、止めを刺し、名誉のうちに死なせるべきであった。
+しかし、数多くの侍がこの男の非道によって殺されたことを思うと、
+あなたは最後の一撃を与えることができなかった。
 
 あなたは彼の首がカラスにつつかれ、死体が海へと流されるに任せた。
 %E
@@ -3928,7 +3958,7 @@
 #
 #With that, %l bows, and places his sword atop
 #%o.
-%lのにひざまずくと、彼はあなたを迎えた:
+%lの前にひざまずくと、彼はあなたを迎えた:
 
     おぬしは己の一族に大いなる名誉をもたらした、%p。
 
@@ -4149,6 +4179,9 @@
   これなければ、我々は全てを失ってしまうかもしれないんだ。
   %dが君を導き、安全に守ってくれることを祈ろう。」
 
+%E
+%Cp Tou 00022
+「これを持って行きなさい。きっと役に立つだろう。」
 %E
 %Cp Tou 00025
 #"Do not be fooled by the false promises of %n."
@@ -4589,6 +4622,9 @@
   ここから地下へと旅を進めれば、%nの隠れ家に着くでしょう。
   彼を倒し、%oを私の元へと戻すのです。」
 %E
+%Cp Val 00022
+「我々に残された最後の物資です。あなたの使命に役立てなさい。」
+%E
 %Cp Val 00025
 #"Go with the blessings of %d."
 「%dの祝福のあらんことを。」
@@ -4816,9 +4852,9 @@
 #tower...  unless something were dreadfully wrong!
 突然、あなたは自分が見慣れた景色の中にいることに気がついた。傍には、
 大きくてずんぐりした石造りの建物がある。ちょっと待て！　この建造物は
-あなたのかつての師、%lの塔のように見える。
+あなたのかつての師、%lの塔ではないか？
 
-だが、以前あなたがここにいた時とは、様々な面で違ってしまっている。
+だが、以前あなたがここにいた時とは、あらゆる事柄が違ってしまっている。
 霧と、名状しがたい暗黒とが塔を覆っている。闇の中では何かが蠢いている。
 
 あなたの師は、こんな悪趣味なものが塔を覆うことなど決して許しはしない
@@ -4886,7 +4922,7 @@
 #determine if you have all of the skills required to take on the task
 #I require of you."
 「%pよ、もっと近くに来てくれ。年のせいで声がかすれて
-  しまうのでな。ああ、おまえはこの塔の閉ざされた安全から去り、
+  しまうのでな。ああ、おまえは安全で閉ざされたこの塔を出て、
   世に旅立ってから、長い道程を経てきたようだな。
   だがまずは、今から与える使命を果たす技量がおまえにあるか、
   見極めねばならん。」
@@ -4967,18 +5003,21 @@
 
   %nは忌まわしきものの大軍で攻め寄せてきた。その中には
   魔法で操られた、意思のない使い魔がおり、混乱の最中に
-  我々の防衛線は突破されてしまった。その怪物は
-  %oを盗み出し、ああ、すでに%nのもとへ届けたのではないかと
-  わたしは恐れている。
+  我々の防衛線は突破されてしまった。%oは
+  その怪物に盗み出され、ああ、わたしが恐れるに、
+  すでに%nのもとへと運ばれたに違いない。
 
   長年の間、わたしは自らの力のほとんどを、あの魔除けに織り込んだ。
   従ってあれなしでは、わたしは己がかつての力の影にすぎず、
   そしてまもなく滅びてしまうかもしれん。
 
-  おまえは%iへ行き、その地下迷宮の中で%nを見つけ打倒し、
+  おまえは%iへ行き、その地下迷宮の中で%nを見つけ、打倒し、
   %oをわたしのもとへ取り戻さねばならない。
 
   %dとともに行け。手遅れになる前にこの使命を果たすのだ。」
+%E
+%Cp Wiz 00022
+「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
 %E
 %Cp Wiz 00025
 #"Beware, for %n is immune to most magical attacks."

@@ -10,7 +10,6 @@ STATIC_DCL void FDECL(dofiretrap, (struct obj *));
 STATIC_DCL void NDECL(domagictrap);
 STATIC_DCL boolean FDECL(emergency_disrobe,(boolean *));
 STATIC_DCL int FDECL(untrap_prob, (struct trap *ttmp));
-STATIC_DCL void FDECL(cnv_trap_obj, (int, int, struct trap *));
 STATIC_DCL void FDECL(move_into_trap, (struct trap *));
 STATIC_DCL int FDECL(try_disarm, (struct trap *,BOOLEAN_P));
 STATIC_DCL void FDECL(reward_untrap, (struct trap *, struct monst *));
@@ -3637,7 +3636,7 @@ struct trap *ttmp;
 }
 
 /* Replace trap with object(s).  Helge Hafting */
-STATIC_OVL void
+void
 cnv_trap_obj(otyp, cnt, ttmp)
 int otyp;
 int cnt;

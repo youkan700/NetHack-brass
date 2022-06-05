@@ -96,7 +96,12 @@ MONSTER: 'C',random,random
 # Twoflower
 MONSTER:'@',"Twoflower",(64,03)
 # The treasure of Twoflower
-OBJECT:'(',"chest",(64,03)
+CONTAINER:'(',"large box",(64,03)
+OBJECT:'!',"water",contained,uncursed,0
+OBJECT:'(',"towel",contained,uncursed,0
+OBJECT:'[',"T-shirt",contained,uncursed,0
+OBJECT:'[',"T-shirt",contained,uncursed,0
+OBJECT:'[',"T-shirt",contained,uncursed,0
 # guides for the audience chamber
 MONSTER:'@',"guide",(29,03)
 MONSTER:'@',"guide",(32,04)
@@ -459,7 +464,7 @@ WALLIFY
 #
 
 MAZE: "Tou-fila" , ' '
-INIT_MAP: '.' , ' ', true, true, random, true
+INIT_MAP: 'g' , 'T', townlike, 0, lit
 NOMAP
 #
 STAIR: random, up
@@ -487,7 +492,7 @@ MONSTER: 'H', random, random, hostile
 MONSTER: 'C', random, random, hostile
 
 MAZE: "Tou-filb" , ' '
-INIT_MAP: '.' , ' ', true, true, random, true
+INIT_MAP: 'e' , 'g', townlike, 0, lit
 NOMAP
 #
 STAIR: random, up

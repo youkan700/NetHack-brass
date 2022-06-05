@@ -54,7 +54,9 @@ DOOR:closed,(50,06)
 # Lord Sato
 MONSTER:'@',"Lord Sato",(20,04)
 # The treasure of Lord Sato
-OBJECT:'(',"chest",(20,04)
+CONTAINER:'(',"chest",(20,04)
+OBJECT:')',"short sword",contained,blessed,7
+OBJECT:')',"katana",contained,blessed,7
 # roshi guards for the audience chamber
 MONSTER:'@',"roshi",(18,04)
 MONSTER:'@',"roshi",(18,05)

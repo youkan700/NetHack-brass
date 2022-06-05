@@ -274,7 +274,7 @@ TRAP:"magic",random
 #
 MAZE:"orcus",' '
 FLAGS: noteleport,shortsighted
-INIT_MAP: '.','.', 3, 33, unlit
+INIT_MAP: '.','.', ghosttown, 33, unlit
 GEOMETRY:right,center
 # A ghost town
 MAP
@@ -414,7 +414,7 @@ MONSTER:random,random,random
 #
 MAZE: "asmodeus", ' '
 FLAGS: noteleport
-INIT_MAP: 'I','.', 2, 0, unlit
+INIT_MAP: 'I','.', icecavern, 0, unlit
 GEOMETRY: center, center
 MAP
 ///IIIIIIIIIIIIIIIIIIIIIII////IIIIIIIIIIIII///////////////
@@ -525,7 +525,7 @@ ENDMAP
 #
 MAZE:"baalz",' '
 FLAGS: noteleport
-INIT_MAP: 'M','t', 4, 28, unlit
+INIT_MAP: 'M','t', deserted, 28, unlit
 GEOMETRY: right, center
 MAP
 //M/MMMMtttttttttt|tttt|------ttttttttttt////////

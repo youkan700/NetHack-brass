@@ -145,6 +145,9 @@ close this college.
 
 "May the wisdom of %d be your guide."
 %E
+%Cp Arc 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Arc 00025
 "Beware, for %n is powerful and cunning."
 %E
@@ -399,6 +402,9 @@ and with %d behind you, you alone can defeat %n.
 "You must go to %i.  From there, you can track down
 %n, defeat him, and return %o to us.  Only
 then will the world be safe."
+%E
+%Cp Bar 00022
+"Here is my support. Please take it to your mission."
 %E
 %Cp Bar 00025
 "%nC is strong in the dark arts, but not immune to cold steel."
@@ -662,6 +668,9 @@ jealously as she guards all treasures she attains.  But with it,
 we can make our caves safe once more.
 
 "Please, %p, recover %o for us, and return it here."
+%E
+%Cp Cav 00022
+"Here is my support. Please take it to your mission."
 %E
 %Cp Cav 00025
 "%nC is immune to her own breath weapons.
@@ -929,6 +938,9 @@ For the first time, you sense a smile on %ls face.
     You must travel into the swamps to %i, and from there
     follow the trail to %ns island lair.  Be careful.
 %E
+%Cp Hea 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Hea 00025
 "Remember, %p, to always wash your hands before operating."
 %E
@@ -1180,6 +1192,9 @@ Merlin will not regain his health.
 beast, and return to Us %o.  Only then can
 We restore Merlin to health."
 %E
+%Cp Kni 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Kni 00025
 "Remember, %p, follow always the path of %d."
 %E
@@ -1422,6 +1437,9 @@ legions of elementals that slay our students.
 
 "Go with %d as your guide, %p."
 %E
+%Cp Mon 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Mon 00025
 "You can prevail, if you rely on %d."
 %E
@@ -1660,6 +1678,9 @@ to %ns lair.  If you can manage to defeat %n and return
 undead that befoul the land.
 
 "Go with %d as your guide, %p."
+%E
+%Cp Pri 00022
+"Here is my support. Please take it to your mission."
 %E
 %Cp Pri 00025
 "You can prevail, if you rely on %d."
@@ -1909,6 +1930,9 @@ underground cavern of %n.  He has always coveted
 %o, and will surely keep it.
 
 "Recover %o for us, %p!  Only then will %d be safe."
+%E
+%Cp Ran 00022
+"Here is my support. Please take it to your mission."
 %E
 %Cp Ran 00025
 "It is rumored that the Forest and Mountain Centaurs have resolved
@@ -2166,6 +2190,9 @@ has %o.  You are going to get %o
 and bring it back to me.  So simple an assignment even you can understand
 it."
 %E
+%Cp Rog 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Rog 00025
 "You don't seem to understand,
 %o isn't here so neither should you be!"
@@ -2414,6 +2441,9 @@ emperor's property.  Be quick!  The emperor will be here for the
 cha-no-you in 5 sticks.
 
 "Wakarimasu?"
+%E
+%Cp Sam 00022
+"Here is my support. Please take it to your mission."
 %E
 %Cp Sam 00025
 "To defeat %n you must overcome the seven emotions:
@@ -2668,6 +2698,9 @@ and recover %o.
 that all will be lost.  Let us both pray now that %d will guide you
 and keep you safe."
 %E
+%Cp Tou 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Tou 00025
 "Do not be fooled by the false promises of %n."
 %E
@@ -2920,6 +2953,9 @@ unless %o is returned into my care, %n may start Ragnarok.
 from there and you will find %ns lair.  Defeat him and
 return %o to me."
 %E
+%Cp Val 00022
+"Here is my support. Please take it to your mission."
+%E
 %Cp Val 00025
 "Go with the blessings of %d."
 %E
@@ -3170,6 +3206,9 @@ shall soon perish.
 find and overcome %n, and return %o to me.
 
 "Go now, with %d, and complete this quest before it is too late."
+%E
+%Cp Wiz 00022
+"Here is my support. Please take it to your mission."
 %E
 %Cp Wiz 00025
 "Beware, for %n is immune to most magical attacks."

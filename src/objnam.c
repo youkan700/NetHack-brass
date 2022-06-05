@@ -2785,7 +2785,7 @@ prefixes:
 		    (can_be_frozen(&mons[mntmp])
 #ifdef WIZARD
 		     || wizard
-#endif WIZARD
+#endif /* WIZARD */
 		    )
 		) return mkicefrozenmon(mntmp);
 	}
@@ -3348,11 +3348,12 @@ typfnd:
 	}
 
 	if(material) {
-		/* avoid illegal ice-frozen monsters by "ice statue of foo" */
-		if (typ == STATUE && material == LIQUID)
-			material = 0;
-		change_material(otmp, material);
+	    /* avoid illegal ice-frozen monsters by "ice statue of foo" */
+	    if (typ == STATUE && material == LIQUID)
+		    material = 0;
+	    change_material(otmp, material);
 	} else {
+	    if (is_material_variable(otmp))
 		change_material(otmp, 0); /* natural material */
 	}
 
