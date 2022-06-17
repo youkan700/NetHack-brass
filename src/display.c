@@ -408,6 +408,7 @@ display_monster(x, y, mon, sightflags, worm_tail)
 		obj.oy = y;
 		obj.otyp = mon->mappearance;
 		obj.madeof = 0;			/* avoid unintentional material changing */
+		obj.color = objects[obj.otyp].oc_color; /* natural color */
 		obj.corpsenm = mon->m_id % (SPECIAL_PM - LOW_PM + 1) + LOW_PM/*PM_TENGU*/;	/* if mimicing a corpse */
 		map_object(&obj,!sensed);
 		break;
