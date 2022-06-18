@@ -20,3 +20,10 @@ test2.pl
 util/y.output
 *.lev
 *.dat
+dat/data
+dat/dungeon
+dat/objdesc
+dat/oracles
+dat/rumors
+src/jtrnstbl.c
+src/nhdat

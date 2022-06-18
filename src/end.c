@@ -298,12 +298,19 @@ char *buf;
 #else
 		if (mtmp->has_name)
 		    Sprintf(eos(buf), "%sという名の", NAME(mtmp));
+		if (mtmp->cham == CHAM_DOPPELGANGER && is_mplayer(mtmp->data) &&
+		    mtmp->data == &mons[u.umonster]) {
+		    Strcat(buf, "あなた");
+		} else
 		if (mtmp->mnum == PM_MASTER_MIND_FLAYER)
 		    Strcat(buf, "マスター\tマインドフレア");
 		else if (mtmp->mnum == PM_GIANT_BEETLE)
 		    Strcat(buf, "ジャイアント\tビートル");
 		else
 		    Strcat(buf, JMONNAM(monsndx(mtmp->data)));
+		if (mtmp->cham != CHAM_ORDINARY) {
+		    Sprintf(eos(buf), "に化けた%s", JMONNAM(get_true_pm(mtmp)));
+		}
 #endif /*JP*/
 	}
 }

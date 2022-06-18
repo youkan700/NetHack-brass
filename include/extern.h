@@ -1228,6 +1228,7 @@ E struct permonst * NDECL(morguemon);
 E int FDECL(undead_to_corpse, (int));
 E int FDECL(genus, (int,int));
 E int FDECL(pm_to_cham, (int));
+E int FDECL(get_true_pm, (struct monst *));
 E int FDECL(minliquid, (struct monst *));
 E int NDECL(movemon);
 E int FDECL(meatmetal, (struct monst *));
