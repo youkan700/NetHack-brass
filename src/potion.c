@@ -1341,7 +1341,7 @@ boolean your_fault;
 			pline("%s‚Í‹ê’É%s‚½I", Monnam(mon),
 			      is_silent(mon->data) ? "‚Ég‚ğ‚æ‚¶‚ç‚¹" : "‚Ì‹©‚Ñ‚ğ‚ ‚°");
 #endif /*JP*/
-			mlosehp(mon, d(2,6));
+			mlosehp(mon, d(5,10));
 			/* should only be by you */
 			if (mon->mhp < 1) killed(mon);
 			else if (is_were(mon->data) && !is_human(mon->data))

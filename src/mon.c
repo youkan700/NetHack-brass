@@ -158,6 +158,13 @@ STATIC_VAR short cham_to_pm[] = {
 		PM_SANDESTIN,
 };
 
+int get_true_pm(mtmp)
+struct monst *mtmp;
+{
+	if (mtmp->cham == CHAM_ORDINARY) return mtmp->mnum;
+	return cham_to_pm[mtmp->cham];
+}
+
 /* for deciding whether corpse or statue will carry along full monster data */
 #define KEEPTRAITS(mon)	((mon)->isshk || (mon)->mtame ||		\
 			 ((mon)->data->geno & G_UNIQ) ||		\
