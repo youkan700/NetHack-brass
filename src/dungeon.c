@@ -1864,10 +1864,14 @@ donamelevel()
 /*JP
 	Sprintf(qbuf,"What do you want to call this dungeon level? ");
 */
-	Sprintf(qbuf,"‚±‚ÌŠK‚ð‰½‚ÆŒÄ‚Ñ‚Ü‚·‚©H");
+	Sprintf(qbuf, E_J("What do you want to call this dungeon level? ",
+			  "‚±‚ÌŠK‚ð‰½‚ÆŒÄ‚Ñ‚Ü‚·‚©H"));
 	getlin(qbuf, nbuf);
 
 	if (index(nbuf, '\033')) return 0;
+
+	/* strip leading and trailing spaces; unnames the level if all spaces */
+	(void)mungspaces(nbuf);
 
 	len = strlen(nbuf) + 1;
 	if (mptr->custom) {

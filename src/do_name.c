@@ -876,9 +876,13 @@ ddocall()
 #ifdef REDO
 		ch =
 #endif
-		ynq(E_J("Name an individual object?",
-			"個々の品物に名前をつけますか？"))) {
+		yn_function(E_J("Name an individual object?",
+				"個々の品物に名前をつけますか？"),
+			    ynaqchars, 'q')) {
 	case 'q':
+		break;
+	case 'a':
+		donamelevel();
 		break;
 	case 'y':
 #ifdef REDO
