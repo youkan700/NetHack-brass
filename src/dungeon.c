@@ -1861,9 +1861,6 @@ donamelevel()
 
 	if (!(mptr = find_mapseen(&u.uz))) return 0;
 
-/*JP
-	Sprintf(qbuf,"What do you want to call this dungeon level? ");
-*/
 	Sprintf(qbuf, E_J("What do you want to call this dungeon level? ",
 			  "‚±‚ÌŠK‚ğ‰½‚ÆŒÄ‚Ñ‚Ü‚·‚©H"));
 	getlin(qbuf, nbuf);
