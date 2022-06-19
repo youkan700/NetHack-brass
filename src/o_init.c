@@ -400,6 +400,24 @@ dodiscovered()				/* free after Robert Viduya */
     for (s = classes; *s; s++) {
 	oclass = *s;
 	prev_class = oclass + 1;	/* forced different from oclass */
+	if (oclass == FOOD_CLASS) {
+	    int eggcnt = 0;
+	    struct obj tmpegg = zeroobj;
+	    tmpegg.oclass = FOOD_CLASS;
+	    tmpegg.otyp = EGG;
+	    tmpegg.quan = 1;
+	    /* nothing is displayed for FOOD_CLASS except for eggs */
+	    for (i=LOW_PM; i<NUMMONS; i++) {
+		if (mvitals[i].mvflags & MV_KNOWS_EGG) {
+		    if (eggcnt++ == 0)
+			putstr(tmpwin, iflags.menu_headings, let_to_name(oclass, FALSE));
+		    tmpegg.corpsenm = i;
+		    Sprintf(buf, "  %s", doname(&tmpegg));
+		    putstr(tmpwin, 0, buf);
+		}
+	    }
+	    continue;
+	}
 	for (i = bases[(int)oclass];
 	     i < NUM_OBJECTS && objects[i].oc_class == oclass; i++) {
 	    if ((dis = disco[i]) && interesting_to_discover(dis)) {
