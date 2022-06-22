@@ -926,7 +926,7 @@ P = (108, 145, 182)
   JJAAMMMMMMMMMMMM
   JAAMMMMMMMMMMMMM
 }
-# tile 48 (long poleaxe / bardiche)
+# tile 48 (long axe / bardiche)
 {
   MMMMMMMMMMMMMNAM
   MMMMMMMMMMMMPOPA

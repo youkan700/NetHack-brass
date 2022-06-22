@@ -157,7 +157,7 @@
 )angled poleaxe
 	斧状の刃、槍の穂先、そして鈎の役割も果たすスパイクを備えた長斧だ。
 )bardiche
-)long poleaxe
+)long axe
 	非常に巨大な刃を持った斧、あるいは鉈のような武器だ。
 )voulge
 )pole cleaver
