@@ -153,6 +153,8 @@ WEAPON("axe", (char *)0,
 WEAPON("battle-axe", "double-headed axe",
 	0, 0, 1, 10,120, 40, DAM(2,6), DAM(2,8), 0, 0, S,   P_AXE_GROUP, 0, IRON, 0, HI_METAL),
 						/* "double-bitted" ? */
+WEAPON("bardiche", "long axe",
+	0, 0, 1,  4,150, 75, DAM(2,10), DAM(3,8), 0, 0, S,  P_AXE_GROUP, 0, IRON, 0, HI_METAL),
 
 /*** swords ***/
 /* short blades */
@@ -212,9 +214,6 @@ WEAPON("glaive", "single-edged polearm",
 /* axe-type */
 WEAPON("halberd", "angled poleaxe",
 	0, 0, 1,  8,180, 10, DAM(1,12), DAM(2, 8), 0,       0, P|S, P_POLEARM_GROUP, WP_RANGED, IRON, 0, HI_METAL),
-
-WEAPON("bardiche", "long poleaxe",
-	0, 0, 1,  4,120,  7, DAM(2, 4), DAM(3, 4), 0,         0, S, P_POLEARM_GROUP, WP_RANGED, IRON, 0, HI_METAL),
 
 WEAPON("voulge", "pole cleaver",
 	0, 0, 1,  4,125,  5, DAM(3, 4), DAM(3, 4), 0,         0, S, P_POLEARM_GROUP, WP_RANGED, IRON, 0, HI_METAL),
