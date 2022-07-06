@@ -3501,7 +3501,11 @@ struct obj *obj;
 	otmp = getobj(bullets, E_J("load with",&gunw), getobj_filter_bullet);
 	if(!otmp) return 0;
 	if (!is_bullet(otmp)) {
+#ifndef JP
 		You_cant("load %s with %s.", yname(obj), the(xname(otmp)));
+#else
+		pline("%s‚ğ%s‚É‘•“U‚·‚é‚±‚Æ‚Í‚Å‚«‚È‚¢B", xname(otmp), xname(obj));
+#endif /*JP*/
 		return (0);
 	}
 

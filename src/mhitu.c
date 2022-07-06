@@ -657,6 +657,7 @@ mattacku(mtmp)
 			if(!range2 && (!MON_WEP(mtmp) || mtmp->mconf || Conflict ||
 					!touch_petrifies(youmonst.data))) {
 			    if (foundyou) {
+				if (parry_with_shield(mtmp, &youmonst, mattk)) break;
 				if(tmp > (j = rnd(20+i))) {
 				    if (mattk->aatyp != AT_KICK ||
 					    !thick_skinned(youmonst.data))
@@ -761,6 +762,7 @@ mattacku(mtmp)
 				    if (!is_animobj(mtmp->data))
 					mswings(mtmp, otmp);
 				}
+				if (parry_with_shield(mtmp, &youmonst, mattk)) break;
 				if(tmp > (j = dieroll = rnd(20+i)))
 				    sum[i] = hitmu(mtmp, mattk);
 				else
@@ -3268,7 +3270,6 @@ reduce_damage(dmg, hitpart)
 int dmg;
 int hitpart;
 {
-#if 1 /* test... */
 	int tmp;	/* damage is reduced by rnd(tmp) */
 
 	tmp = 0;
@@ -3279,9 +3280,9 @@ int hitpart;
 	dmg -= u.ublessed;
 	if (dmg < 1) return 1;
 
-	/* shield */
-	if (uarms)
-		tmp += reduce_dmg_amount(uarms);
+//	/* shield */
+//	if (uarms)
+//		tmp += reduce_dmg_amount(uarms);
 
 	switch ( (hitpart > 0) ? hitpart : rn2(DAMCAN_MAX) ) {
 	    case DAMCAN_HEAD:	/* head */
@@ -3326,64 +3327,108 @@ int hitpart;
 	if (dmg < 1) dmg = 1;
 	return dmg;
 
-#else /* test... */
+}
 
-	int tmp;	/* damage is reduced by rnd(tmp) */
+int
+parry_with_shield(magr, mdef, mattk)
+struct monst *magr, *mdef;
+struct attack *mattk;
+{
+	struct obj *shield;
+	char nbuf[BUFSZ];
+	int tmp;
+	int parried;
 
 	tmp = 0;
+	parried = 0;
+	/* huge monsters are hard to parry */
+	if (magr->data->msize > MZ_MEDIUM)
+	    tmp = MZ_MEDIUM - (int)magr->data->msize;
+	tmp -= magr->m_lev;
 
-	/* protection from rings/spells */
-	dmg -= u.uprotection;
-	dmg -= u.uspellprot;
-	dmg -= u.ublessed;
-	if (dmg < 0) return 0;
-
-	/* shield */
-	if (uarms)
-		tmp += reduce_dmg_amount(uarms);
-
-	switch ( (hitpart > 0) ? hitpart : rn2(DAMCAN_MAX) ) {
-	    case DAMCAN_HEAD:	/* head */
-		if (uarmh) {
-			tmp += reduce_dmg_amount(uarmh);
-			/* maid dress' special power */
-			if(flags.female && uarm && uarm->otyp == MAID_DRESS &&
-			   uarmh->otyp == KATYUSHA) tmp += 2;
-		}
-		break;
-	    case DAMCAN_FEET:	/* feet */
-		if (uarmf)
-			tmp += reduce_dmg_amount(uarmf);
-		break;
-	    case DAMCAN_HAND:	/* hand(s) */
-		if (uarmg)
-			tmp += reduce_dmg_amount(uarmg);
-		break;
-	    default:
-		if (uarm) {
-			int tmp2;
-			tmp2 = reduce_dmg_amount(uarm);
-			tmp += tmp2;
-		}
-		if (uarmc) {
-			tmp += reduce_dmg_amount(uarmc);
-			/* maid dress' special power */
-			if(flags.female && uarm && uarm->otyp == MAID_DRESS) {
-				if (uarmc->otyp == KITCHEN_APRON) tmp += 3;
-				if (uarmc->otyp == FRILLED_APRON) tmp += 4;
-			}
-		}
-/* Because Hawaiian shirt do not improve AC, it do not reduce damage */
-//		if (uarmu)
-//			tmp += reduce_dmg_amount(uarmu);
-		break;
+	if (mdef == &youmonst) {
+	    shield = uarms;
+	    tmp += P_SKILL(P_SHIELD) * (30 + u.ulevel) / 300;
+	    tmp += abon();
+	} else {
+	    if (!(mdef->misc_worn_check & W_ARMS))
+		return (0);
+	    shield = which_armor(mdef, W_ARMS);
+	    tmp += mdef->m_lev;
 	}
-	/* reduce damage by armor rating at the part being hit */
-	if (tmp > 0) dmg -= rnd(tmp);
-	/* at least 1 damage remains */
-	if (dmg < 0) dmg = 0;
-	return dmg;
+	if (!shield) return 0;
+	tmp += (int)(shield->spe);
+	if (is_elf(mdef->data) && is_elven_armor(shield)) tmp++;
+	else if (is_dwarf(mdef->data) && is_dwarvish_armor(shield)) tmp++;
+pline("(parry:%d)", tmp);
+	if (rn2(20) < tmp) {
+	    if (mdef == &youmonst) {
+		switch (mattk->aatyp) {
+		    case AT_CLAW:
+		    case AT_BITE:
+		    case AT_STNG:
+		    case AT_TUCH:
+			hitmsg(magr, mattk);
+			You(E_J("block the attack with your shield!","UŒ‚‚ğ‚‚Å–h‚¢‚¾I"));
+			parried = 1;
+			break;
+		    case AT_KICK:
+		    case AT_BUTT:
+			hitmsg(magr, mattk);
+			You(E_J("parry the attack with your shield!","UŒ‚‚ğ‚‚Åó‚¯—¬‚µ‚½I"));
+			parried = 1;
+			break;
+		    case AT_WEAP:
+			if (!MON_WEP(magr))
+			    hitmsg(magr, mattk);
+			You(E_J("parry the attack with your shield!","UŒ‚‚ğ‚‚Åó‚¯—¬‚µ‚½I"));
+			parried = 1;
+			break;
+		    default:
+			break;
+		}
+		if (parried) {
+		    if (rn2(100) >= P_SKILL(P_SHIELD)) use_skill(P_SHIELD, 1);
+		}
+	    } else {
+		switch (mattk->aatyp) {
+		    case AT_CLAW:
+		    case AT_BITE:
+		    case AT_STNG:
+		    case AT_TUCH:
+#ifndef JP
+			pline("%s blocks the attack with %s shield!", Monnam(mdef), mhis(mdef));
+#else
+			pline("%s‚ÍUŒ‚‚ğ‚‚Å–h‚¢‚¾I", Monnam(mdef));
 #endif
+			parried = 1;
+			break;
+		    case AT_KICK:
+		    case AT_BUTT:
+#ifndef JP
+			pline("%s parrys the attack with %s shield!", Monnam(mdef), mhis(mdef));
+#else
+			pline("%s‚ÍUŒ‚‚ğ‚‚Åó‚¯—¬‚µ‚½I", Monnam(mdef));
+#endif
+			parried = 1;
+			break;
+		    case AT_WEAP:
+			if (magr == &youmonst) {
+			    You(E_J("hit %s.","%s‚ğUŒ‚‚µ‚½B"), mon_nam(mdef));
+			}
+#ifndef JP
+			pline("%s parrys the attack with %s shield!", Monnam(mdef), mhis(mdef));
+#else
+			pline("%s‚ÍUŒ‚‚ğ‚‚Åó‚¯—¬‚µ‚½I", Monnam(mdef));
+#endif
+			parried = 1;
+			break;
+		    default:
+			break;
+		}
+	    }
+	}
+	return (parried);
 }
 
 /*mhitu.c*/

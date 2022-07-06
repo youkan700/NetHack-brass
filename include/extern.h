@@ -1071,6 +1071,7 @@ E boolean FDECL(is_full_resist, (uchar));
 E int FDECL(reduce_dmg_amount, (struct obj *));
 E int FDECL(reduce_damage, (int, int));
 E void FDECL(hurtarmor,(int));
+E int FDECL(parry_with_shield, (struct monst *,struct monst *,struct attack *));
 
 /* ### minion.c ### */
 

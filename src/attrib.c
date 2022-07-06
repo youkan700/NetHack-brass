@@ -770,6 +770,17 @@ int x;
 	if (x == A_STR) {
 		int bon = u.abon.a[A_STR];
 		tmp -= bon;		/* Str bonus is specially handled */
+		/* gauntlets of power */
+		if (uarmg &&
+		    (uarmg->otyp == GAUNTLETS_OF_POWER ||
+		     uarmg->oartifact == ART_FIST_OF_FURY)) {
+		    for ( i=0; i<=uarmg->spe; i++ ) {
+			if (tmp<18) tmp=18;
+			else if (tmp<(118-25)) tmp+=25;
+			else if (tmp<118) tmp=118;
+			else tmp++;
+		    }
+		} else  if (uarm && uarm->otyp == ROBE_OF_WEAKNESS) return(3);
 		/* ring of gain strength */
 		if (bon > 0) {
 		    for ( i=0; i<bon; i++ ) {
@@ -786,17 +797,6 @@ int x;
 			else tmp--;
 		    }
 		}
-		/* gauntlets of power */
-		if (uarmg &&
-		    (uarmg->otyp == GAUNTLETS_OF_POWER ||
-		     uarmg->oartifact == ART_FIST_OF_FURY)) {
-		    for ( i=0; i<=uarmg->spe; i++ ) {
-			if (tmp<18) tmp=18;
-			else if (tmp<(118-25)) tmp+=25;
-			else if (tmp<118) tmp=118;
-			else tmp++;
-		    }
-		} else  if (uarm && uarm->otyp == ROBE_OF_WEAKNESS) return(3);
 #ifdef WIN32_BUG
 		return(x=((tmp >= 125) ? 125 : (tmp <= 3) ? 3 : tmp));
 #else

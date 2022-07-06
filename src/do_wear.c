@@ -2295,7 +2295,7 @@ find_ac()
 	if(uarmc) uac -= (uarmc->otyp == CLOAK_OF_PROTECTION) ? ARM_BASE(uarmc) : ARM_BONUS(uarmc);
 	if(uarmh) uac -= ARM_BONUS(uarmh);
 	if(uarmf) uac -= ARM_BONUS(uarmf);
-	if(uarms) uac -= ARM_BONUS(uarms);
+//	if(uarms) uac -= ARM_BONUS(uarms);	// shield is handled separately now
 	if(uarmg) uac -= ARM_BONUS(uarmg);
 	if(uarmu) uac -= ARM_BONUS(uarmu);
 

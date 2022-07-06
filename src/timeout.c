@@ -375,7 +375,7 @@ nh_timeout()
 				killer_format = KILLED_BY;
 			    }
 #else
-			    Strcat(u.usick_cause, "にうつされた病気で死んだ");
+			    Strcat(u.usick_cause, "に\tうつされた病気で死んだ");
 			    killer_format = NO_KILLER_PREFIX;
 #endif /*JP*/
 			}
