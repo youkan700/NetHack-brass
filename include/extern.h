@@ -1179,6 +1179,7 @@ E void FDECL(unbless, (struct obj *));
 E void FDECL(curse, (struct obj *));
 E void FDECL(uncurse, (struct obj *));
 E void FDECL(blessorcurse, (struct obj *,int));
+E void FDECL(set_otyp, (struct obj *,int));
 E boolean FDECL(is_material_variable, (struct obj *));
 E int FDECL(get_material, (struct obj *));
 E uchar FDECL(get_material_color, (struct obj *));

@@ -1086,7 +1086,7 @@ int thrown;
 				pline("—‘‚Í‚à‚¤¶‚«‚Ä‚¢‚È‚¢‚æ‚¤‚¾cB");
 #endif /*JP*/
 				if (obj->timed) obj_stop_timers(obj);
-				obj->otyp = ROCK;
+				set_otyp(obj, ROCK);
 				obj->oclass = GEM_CLASS;
 				obj->oartifact = 0;
 				obj->spe = 0;

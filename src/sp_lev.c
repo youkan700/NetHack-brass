@@ -995,7 +995,7 @@ struct mkroom	*croom;
 	    otmp->sokoprize = 1;
 	    /* Wizards already have CoMR... give pointy hat instead */
 	    if (otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE &&
-		Role_if(PM_WIZARD)) otmp->otyp = CORNUTHAUM;
+		Role_if(PM_WIZARD)) set_otyp(otmp, CORNUTHAUM);
 	}
 
 	if (o->spe != -127)	/* That means NOT RANDOM! */

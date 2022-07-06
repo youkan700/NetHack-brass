@@ -99,12 +99,12 @@ boolean restore;
 				otmp->corpsenm = NON_PM;
 			} else if (otmp->otyp == AMULET_OF_YENDOR) {
 			    /* no longer the real Amulet */
-			    otmp->otyp = FAKE_AMULET_OF_YENDOR;
+			    set_otyp(otmp, FAKE_AMULET_OF_YENDOR);
 			    curse(otmp);
 			} else if (otmp->otyp == CANDELABRUM_OF_INVOCATION) {
 			    if (otmp->lamplit)
 				end_burn(otmp, TRUE);
-			    otmp->otyp = WAX_CANDLE;
+			    set_otyp(otmp, WAX_CANDLE);
 			    otmp->age = 50L;  /* assume used */
 			    if (otmp->spe > 0)
 				otmp->quan = (long)otmp->spe;
@@ -112,10 +112,10 @@ boolean restore;
 			    otmp->owt = weight(otmp);
 			    curse(otmp);
 			} else if (otmp->otyp == BELL_OF_OPENING) {
-			    otmp->otyp = BELL;
+			    set_otyp(otmp, BELL);
 			    curse(otmp);
 			} else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
-			    otmp->otyp = SPE_BLANK_PAPER;
+			    set_otyp(otmp, SPE_BLANK_PAPER);
 			    curse(otmp);
 			}
 		}

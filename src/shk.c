@@ -4878,7 +4878,7 @@ shk_weapon_works(slang, shkp)
 		/* No vibrating and no evaporating */
 
 		if(obj->otyp == WORM_TOOTH) {
-			obj->otyp = CRYSKNIFE;
+			set_otyp(obj, CRYSKNIFE);
 			Your(E_J("weapon seems sharper now.","•Ší‚Í‰s‚³‚ğ‘‚µ‚½‚æ‚¤‚¾B"));
 			obj->cursed = 0;
 			break;
@@ -5033,7 +5033,7 @@ shk_armor_works(slang, shkp)
 			Your("‹â‚Ì‚‚Ì•\–Ê‚ª‹¾‚Ì‚æ‚¤‚É–‚«ã‚°‚ç‚ê‚½I");
 #endif /*JP*/
 			if (isworn) Shield_off();
-			obj->otyp = SHIELD_OF_REFLECTION;
+			set_otyp(obj, SHIELD_OF_REFLECTION);
 			change_material(obj, 0); /* naturally silver */
 			obj->odamaged = 0;
 			obj->cursed = 0;

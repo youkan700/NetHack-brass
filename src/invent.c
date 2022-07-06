@@ -389,7 +389,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
 	    }
 	    obj_extract_self(obj);
 	    if (crysknife) {
-		obj->otyp = CRYSKNIFE;
+		set_otyp(obj, CRYSKNIFE);
 		obj->oerodeproof = oerode;
 	    }
 	}
@@ -3014,7 +3014,8 @@ char *title;
 		 * gold in their inventory, so it won't merge.
 		 */
 		m_gold = zeroobj;
-		m_gold.otyp = GOLD_PIECE;  m_gold.oclass = COIN_CLASS;
+		set_otyp(&m_gold, GOLD_PIECE);
+		m_gold.oclass = COIN_CLASS;
 		m_gold.quan = mon->mgold;  m_gold.dknown = 1;
 		m_gold.where = OBJ_FREE;
 		/* we had better not merge and free this object... */
