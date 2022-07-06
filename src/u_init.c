@@ -158,7 +158,7 @@ static struct trobj Tourist[] = {
 	{ 0, 0, 0, 0, 0 }
 };
 static struct trobj Valkyrie[] = {
-	{ LONG_SWORD,		0, WEAPON_CLASS,	1, 0 },
+	{ SHORT_SWORD,		0, WEAPON_CLASS,	1, 0 },
 	{ DAGGER,		0, WEAPON_CLASS,	1, 0 },
 	{ SMALL_SHIELD,		3, ARMOR_CLASS,		1, 0 },
 	{ FOOD_RATION,		0, FOOD_CLASS,		1, 0 },
@@ -437,7 +437,7 @@ static const struct def_skill Skill_S[] = {
     { P_TWO_WEAPON_COMBAT, P_EXPERT },
     { P_MARTIAL_ARTS, P_MASTER },
     { P_ARMORED_COMBAT, P_EXPERT },
-    { P_SHIELD, P_SKILLED },
+    { P_SHIELD, P_BASIC },
     { P_NONE, 0 }
 };
 
@@ -468,7 +468,7 @@ static const struct def_skill Skill_T[] = {
 
 static const struct def_skill Skill_V[] = {
     { P_DAGGER_GROUP, P_EXPERT },	{ P_AXE_GROUP, P_EXPERT },
-    { P_PICKAXE_GROUP, P_SKILLED },	{ P_SHORT_BLADE_GROUP, P_SKILLED },
+    { P_PICKAXE_GROUP, P_SKILLED },	{ P_SHORT_BLADE_GROUP, P_EXPERT },
   /*{ P_BROAD_BLADE_GROUP, P_SKILLED },*/{ P_LONG_BLADE_GROUP, P_EXPERT },
   /*{ P_TWO_HANDED_SWORD, P_EXPERT },*/	/*{ P_SCIMITAR, P_BASIC },*/
     { P_SABER_GROUP, P_BASIC },		{ P_CRUSHING_GROUP, P_EXPERT },

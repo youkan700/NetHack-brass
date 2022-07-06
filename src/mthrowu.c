@@ -202,24 +202,26 @@ struct obj *missile;
 {
 	struct obj *shield;
 	char nbuf[BUFSZ];
-	int siz;
+	int tmp, siz;
 	boolean seemissile;
 
 	if (mon == &youmonst) {
 	    shield = uarms;
 	    seemissile = !Blind;
+	    tmp = P_SKILL(P_SHIELD) / 2;
 	} else {
 	    struct obj *otmp;
 	    if (!(mon->misc_worn_check & W_ARMS))
 		return (0);
 	    shield = which_armor(mon, W_ARMS);
 	    seemissile = cansee(mon->mx, mon->my);
+	    tmp = mon->m_lev * 3;
 	}
 	if (!shield) return 0;
 	/* Use weight as size of the shield */
 	siz = (int)(objects[shield->otyp].oc_weight) + ((int)(shield->spe) * 10);
 	strcpy(nbuf, mshot_xname(missile));
-	if (rn2(120) < siz && weight(missile) < siz) {
+	if ((rn2(150) < siz + tmp) && weight(missile) < siz) {
 	    /* hit sounds */
 	    if (missile->oclass == VENOM_CLASS)
 		pline(E_J("Splash!","ビシャッ！"));

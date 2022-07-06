@@ -2456,6 +2456,7 @@ boolean lit, finishwall;
 	    for (j=1; j<COLNO-1; j++) {
 		if (levl[j][i].typ == ROOM) levl[j][i].typ = flr1;
 		else if (levl[j][i].typ == flr1) levl[j][i].typ = flr2;
+		if (levl[j][i].typ == ICE) levl[j][i].icedpool = ICED_POOL;
 	    }
 	}
 
@@ -2511,6 +2512,19 @@ mkasmolev()
 			    break;
 		    }
 		    break;
+		}
+	    }
+	}
+	/* traps */
+	for (i=rn1(5,5); i; i--) {
+	    coord pos;
+	    for (j=100; j; j--) {
+		x = rnd(COLNO-1);
+		y = rn2(ROWNO);
+		if (levl[x][y].typ == ROOM && !t_at(x,y)) {
+			pos.x = x; pos.y = y;
+			mktrap(0, 0, (struct mkroom *) 0, &pos);
+			break;
 		}
 	    }
 	}

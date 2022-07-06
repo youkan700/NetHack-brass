@@ -585,6 +585,8 @@ uchar hflg;
 	    int oldhp = mon->mhp,
 		x = u.ux + u.dx, y = u.uy + u.dy;
 
+	    if (parry_with_shield(&youmonst, mon, uattk)) return (malive);
+
 	    /* KMH, conduct */
 	    if (wep && (wep->oclass == WEAPON_CLASS || is_weptool(wep)))
 		u.uconduct.weaphit++;
@@ -2569,6 +2571,7 @@ use_weapon:
 				    You("Gè‚Å%s‚É‹z‚¢•t‚¢‚½B", mon_nam(mon));
 #endif /*JP*/
 			    else You(E_J("hit %s.","%s‚ğUŒ‚‚µ‚½B"), mon_nam(mon));
+			    if (parry_with_shield(&youmonst, mon, mattk)) break;
 			    sum[i] = damageum(mon, mattk);
 			} else {
 			    missum(mon, mattk, die - tmp);

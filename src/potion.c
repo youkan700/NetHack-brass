@@ -1730,6 +1730,7 @@ register struct obj *obj;
 			obj->blessed = obj->cursed = FALSE;
 #endif
 			obj->otyp = POT_WATER;
+			obj->color = objects[POT_WATER].oc_color;
 		} else obj->odiluted++;
 		update_inventory();
 		return 1;
