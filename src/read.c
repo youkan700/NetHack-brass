@@ -927,7 +927,7 @@ register struct obj	*sobj;
 			Your("銀の盾の表面が鏡のように磨き上げられた！");
 #endif /*JP*/
 			Shield_off();
-			otmp->otyp = SHIELD_OF_REFLECTION;
+			set_otyp(otmp, SHIELD_OF_REFLECTION);
 			change_material(otmp, 0); /* naturally silver */
 			otmp->cursed = 0;
 			otmp->odamaged = 0;
@@ -1635,8 +1635,8 @@ struct obj *otmp;
 		 "%sは結合し、強固な鎧となった！"), xname(otmp));
 	if (isworn) Armor_off();
 	/* assumes same order */
-	otmp->otyp = GRAY_DRAGON_SCALE_MAIL +
-				otmp->otyp - GRAY_DRAGON_SCALES;
+	set_otyp(otmp, GRAY_DRAGON_SCALE_MAIL +
+				otmp->otyp - GRAY_DRAGON_SCALES);
 	otmp->cursed = 0;
 	otmp->known = 1;
 	if (isworn) quickdowear(otmp);

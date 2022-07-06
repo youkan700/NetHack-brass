@@ -1729,8 +1729,7 @@ register struct obj *obj;
 #else
 			obj->blessed = obj->cursed = FALSE;
 #endif
-			obj->otyp = POT_WATER;
-			obj->color = objects[POT_WATER].oc_color;
+			set_otyp(obj, POT_WATER);
 		} else obj->odiluted++;
 		update_inventory();
 		return 1;
@@ -1754,7 +1753,7 @@ register struct obj *obj;
 				    "巻物を白紙にしたので、弁償しなければならない。"));
 			    bill_dummy_object(obj);
 			}
-			obj->otyp = SCR_BLANK_PAPER;
+			set_otyp(obj, SCR_BLANK_PAPER);
 			obj->spe = 0;
 			update_inventory();
 			return 1;
@@ -1785,7 +1784,7 @@ register struct obj *obj;
 					"本を白紙にしたので、弁償しなければならない。"));
 			        bill_dummy_object(obj);
 			    }
-			    obj->otyp = SPE_BLANK_PAPER;
+			    set_otyp(obj, SPE_BLANK_PAPER);
 			    update_inventory();
 			}
 			return 1;
@@ -2032,21 +2031,21 @@ dodip()
 		}
 		if (q1 >= rnd(q2) &&
 		    (mixture = mixtype(obj, potion)) != 0) {
-			obj->otyp = mixture;
+			set_otyp(obj, mixture);
 		} else {
 		    switch ((obj->odiluted || potion->odiluted) ? 1 : rnd(8)) {
 			case 1:
-				obj->otyp = POT_WATER;
+				set_otyp(obj, POT_WATER);
 				break;
 			case 2:
 			case 3:
-				obj->otyp = POT_SICKNESS;
+				set_otyp(obj, POT_SICKNESS);
 				break;
 			case 4:
 				{
 				  struct obj *otmp;
 				  otmp = mkobj(POTION_CLASS,FALSE);
-				  obj->otyp = otmp->otyp;
+				  set_otyp(obj, otmp->otyp);
 				  obfree(otmp, (struct obj *)0);
 				}
 				break;
@@ -2216,7 +2215,7 @@ dodip()
 	    }
 	    /* Adding oil to an empty magic lamp renders it into an oil lamp */
 	    if ((obj->otyp == MAGIC_LAMP) && obj->spe == 0) {
-		obj->otyp = OIL_LAMP;
+		set_otyp(obj, OIL_LAMP);
 		obj->age = 0;
 	    }
 	    if (obj->age > 1000L) {
@@ -2269,7 +2268,7 @@ dodip()
 			    "薬を使ってしまったので、弁償せねばらなない。"));
 		    bill_dummy_object(singlepotion);
 		}
-		singlepotion->otyp = mixture;
+		set_otyp(singlepotion, mixture);
 		singlepotion->blessed = 0;
 		if (mixture == POT_WATER)
 		    singlepotion->cursed = singlepotion->odiluted = 0;

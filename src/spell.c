@@ -365,7 +365,8 @@ learn()
 			if (book->spestudied > MAX_SPELL_STUDY) {
 			    pline(E_J("This spellbook is too faint to be read any more.",
 				      "この魔法書は文字がかすれすぎて、もう読めない。"));
-			    book->otyp = booktype = SPE_BLANK_PAPER;
+			    booktype = SPE_BLANK_PAPER;
+			    set_otyp(book, SPE_BLANK_PAPER);
 			} else if (spellknow(i) <= 1000) {
 			    Your(E_J("knowledge of %s is keener.",
 				     "%sに関する知識は研ぎ澄まされた。"), splname);

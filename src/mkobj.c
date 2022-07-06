@@ -208,17 +208,17 @@ struct obj *box;
 		    otmp->quan = (long)(rnd(level_difficulty()+2) * rnd(75));
 		    otmp->owt = weight(otmp);
 		} else while (otmp->otyp == ROCK) {
-		    otmp->otyp = rnd_class(DILITHIUM_CRYSTAL, LOADSTONE);
+		    set_otyp(otmp, rnd_class(DILITHIUM_CRYSTAL, LOADSTONE));
 		    if (otmp->quan > 2L) otmp->quan = 1L;
 		    otmp->owt = weight(otmp);
 		}
 		if (box->otyp == BAG_OF_HOLDING) {
 		    if (Is_mbag(otmp)) {
-			otmp->otyp = SACK;
+			set_otyp(otmp, SACK);
 			otmp->spe = 0;
 			otmp->owt = weight(otmp);
 		    } else while (otmp->otyp == WAN_CANCELLATION)
-			    otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+			    set_otyp(otmp, rnd_class(WAN_LIGHT, WAN_LIGHTNING));
 		}
 	    }
 	    (void) add_to_container(box, otmp);
@@ -925,6 +925,17 @@ register int chance;
 	    }
 	}
 	return;
+}
+
+void
+set_otyp(otmp, otyp)
+struct obj *otmp;
+int otyp;
+{
+	if(otmp) {
+	    otmp->otyp = otyp;
+	    otmp->color = objects[otyp].oc_color;
+	}
 }
 
 #endif /* OVL1 */

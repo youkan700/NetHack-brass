@@ -245,7 +245,7 @@ outgoldmap:
 	if (mtmp->mgold || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
 	    struct obj gold;
 
-	    gold.otyp = GOLD_PIECE;
+	    set_otyp(&gold, GOLD_PIECE);
 	    gold.ox = mtmp->mx;
 	    gold.oy = mtmp->my;
 	    gold.madeof = 0;
@@ -541,7 +541,7 @@ int		class;		/* an object class, 0 for all */
 		(!class || class == objects[mtmp->mappearance].oc_class)) {
 	    struct obj temp;
 
-	    temp.otyp = mtmp->mappearance;	/* needed for obj_to_glyph() */
+	    set_otyp(&temp, mtmp->mappearance);	/* needed for obj_to_glyph() */
 	    temp.ox = mtmp->mx;
 	    temp.oy = mtmp->my;
 	    temp.corpsenm = PM_TENGU;		/* if mimicing a corpse */
@@ -549,7 +549,7 @@ int		class;		/* an object class, 0 for all */
 	} else if (mtmp->mgold && (!class || class == COIN_CLASS)) {
 	    struct obj gold;
 
-	    gold.otyp = GOLD_PIECE;
+	    set_otyp(&gold, GOLD_PIECE);
 	    gold.ox = mtmp->mx;
 	    gold.oy = mtmp->my;
 	    map_object(&gold, 1);
@@ -659,7 +659,7 @@ int src_cursed;
 	    obj.ox = x;
 	    obj.oy = y;
 	}
-	obj.otyp = (src_cursed) ? GOLD_PIECE : random_object();
+	set_otyp(&obj, (src_cursed) ? GOLD_PIECE : random_object());
 	obj.corpsenm = random_monster();	/* if otyp == CORPSE */
 	obj.madeof = 0;
 	map_object(&obj,1);

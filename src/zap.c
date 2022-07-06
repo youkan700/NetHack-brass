@@ -1011,14 +1011,14 @@ register struct obj *obj;
 	    switch (obj->oclass) {
 	      case SCROLL_CLASS:
 		costly_cancel(obj);
-		obj->otyp = SCR_BLANK_PAPER;
+		set_otyp(obj, SCR_BLANK_PAPER);
 		obj->spe = 0;
 		break;
 	      case SPBOOK_CLASS:
 		if (obj->otyp != SPE_CANCELLATION &&
 			obj->otyp != SPE_BOOK_OF_THE_DEAD) {
 		    costly_cancel(obj);
-		    obj->otyp = SPE_BLANK_PAPER;
+		    set_otyp(obj, SPE_BLANK_PAPER);
 		}
 		break;
 	      case POTION_CLASS:
@@ -1029,9 +1029,9 @@ register struct obj *obj;
 	     * and it just becomes fruit juice... whereas see invisible
 	     * tastes like "enchanted" fruit juice, it similarly cancels.
 	     */
-		    obj->otyp = POT_FRUIT_JUICE;
+		    set_otyp(obj, POT_FRUIT_JUICE);
 		} else {
-	            obj->otyp = POT_WATER;
+	            set_otyp(obj, POT_WATER);
 		    obj->odiluted = 0; /* same as any other water */
 		}
 		break;
@@ -1374,7 +1374,7 @@ poly_obj(obj, id)
 	/* since sokoprize and boxlock shares the same flag,
 	   so avoid boxes for the new object */
 	if (Is_sokoprize(obj) && Is_box(otmp)) {
-	    otmp->otyp = SACK;
+	    set_otyp(otmp, SACK);
 	    otmp->otrapped = FALSE;
 	}
 	otmp->sokoprize = obj->sokoprize;
@@ -1391,7 +1391,7 @@ poly_obj(obj, id)
 	 * polymorph them into useful scrolls
 	 */
 	if (obj->otyp == SCR_MAIL) {
-		otmp->otyp = SCR_MAIL;
+		set_otyp(otmp, SCR_MAIL);
 		otmp->spe = 1;
 	}
 #endif
@@ -1404,7 +1404,7 @@ poly_obj(obj, id)
 		if (otmp->otyp == EGG)
 		    kill_egg(otmp);
 		else {
-		    otmp->otyp = EGG;
+		    set_otyp(otmp, EGG);
 		    otmp->owt = weight(otmp);
 		}
 		otmp->corpsenm = NON_PM;
@@ -1444,7 +1444,7 @@ poly_obj(obj, id)
 	if (id == STRANGE_OBJECT && obj->otyp == CORPSE) {
 	/* turn crocodile corpses into shoes */
 	    if (obj->corpsenm == PM_CROCODILE) {
-		otmp->otyp = LOW_BOOTS;
+		set_otyp(otmp, LOW_BOOTS);
 		otmp->oclass = ARMOR_CLASS;
 		otmp->spe = 0;
 		otmp->oeroded = 0;
@@ -1466,7 +1466,7 @@ poly_obj(obj, id)
 
 	case TOOL_CLASS:
 	    if (otmp->otyp == MAGIC_LAMP) {
-		otmp->otyp = OIL_LAMP;
+		set_otyp(otmp, OIL_LAMP);
 		otmp->age = 1500L;	/* "best" oil lamp possible */
 	    } else if (otmp->otyp == MAGIC_MARKER) {
 		otmp->recharged = 1;	/* degraded quality */
@@ -1476,7 +1476,7 @@ poly_obj(obj, id)
 
 	case WAND_CLASS:
 	    while (otmp->otyp == WAN_WISHING || otmp->otyp == WAN_POLYMORPH)
-		otmp->otyp = rnd_class(WAN_LIGHT, WAN_LIGHTNING);
+		set_otyp(otmp, rnd_class(WAN_LIGHT, WAN_LIGHTNING));
 	    /* altering the object tends to degrade its quality
 	       (analogous to spellbook `read count' handling) */
 	    if ((int)otmp->recharged < rn2(7))	/* recharge_limit */
@@ -1485,12 +1485,12 @@ poly_obj(obj, id)
 
 	case POTION_CLASS:
 	    while (otmp->otyp == POT_POLYMORPH)
-		otmp->otyp = rnd_class(POT_GAIN_ABILITY, POT_WATER);
+		set_otyp(otmp, rnd_class(POT_GAIN_ABILITY, POT_WATER));
 	    break;
 
 	case SPBOOK_CLASS:
 	    while (otmp->otyp == SPE_POLYMORPH)
-		otmp->otyp = rnd_class(SPE_DIG, SPE_BLANK_PAPER);
+		set_otyp(otmp, rnd_class(SPE_DIG, SPE_BLANK_PAPER));
 	    /* reduce spellbook abuse */
 	    otmp->spestudied = obj->spestudied + 1;
 	    break;
@@ -1499,7 +1499,7 @@ poly_obj(obj, id)
 	    if (otmp->quan > (long) rnd(4) &&
 		    get_material(obj) == MINERAL &&
 		    get_material(otmp) != MINERAL) {
-		otmp->otyp = ROCK;	/* transmutation backfired */
+		set_otyp(otmp, ROCK);	/* transmutation backfired */
 		otmp->quan /= 2L;	/* some material has been lost */
 	    }
 	    break;
@@ -5302,7 +5302,7 @@ int damval;
 							  "Ž©•ª‚Ì‚‚ª‚È‚ñ‚Æ‚È‚­—Š‚è‚È‚­‚È‚Á‚½‚Ì‚ðŠ´‚¶‚½B"));
 					otmp = uarms;
 					Shield_off();
-					otmp->otyp = SHIELD;
+					set_otyp(otmp, SHIELD);
 					otmp->odamaged = 0;
 					change_material(otmp, SILVER);	/* mere silver shield */
 					setworn(otmp, W_ARMS);
@@ -5339,7 +5339,7 @@ int damval;
 						 "%s‚Í—Í‚ðŽ¸‚Á‚½‚æ‚¤‚¾B"), buf);
 					otmp = uarm;
 					Armor_off();
-					otmp->otyp = PLAIN_DRAGON_SCALE_MAIL;	/* mere scale mail */
+					set_otyp(otmp, PLAIN_DRAGON_SCALE_MAIL);	/* mere scale mail */
 					otmp->odamaged = 0;
 					setworn(otmp, W_ARM);
 				    } else {

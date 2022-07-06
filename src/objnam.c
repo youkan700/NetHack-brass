@@ -3490,10 +3490,10 @@ typfnd:
 			/*		 & dragons.			 */
 			if (mntmp >= PM_GRAY_DRAGON &&
 						mntmp <= PM_YELLOW_DRAGON)
-			    otmp->otyp = GRAY_DRAGON_SCALE_MAIL +
-						    mntmp - PM_GRAY_DRAGON;
+			    set_otyp(otmp, GRAY_DRAGON_SCALE_MAIL +
+						mntmp - PM_GRAY_DRAGON);
 			else if (mntmp == PM_CHROMATIC_DRAGON)
-			    otmp->otyp = CHROMATIC_DRAGON_SCALE_MAIL;
+			    set_otyp(otmp, CHROMATIC_DRAGON_SCALE_MAIL);
 			break;
 		}
 	}

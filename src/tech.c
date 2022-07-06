@@ -918,7 +918,7 @@ int tech_no;
 				surface(u.ux, u.uy));
 			    if (obj->otyp == CRYSKNIFE &&
 				    (!obj->oerodeproof || !rn2(10))) {
-				obj->otyp = WORM_TOOTH;
+				set_otyp(obj, WORM_TOOTH);
 				obj->oerodeproof = 0;
 			    }
 			    place_object(obj, u.ux, u.uy);
@@ -967,7 +967,7 @@ int tech_no;
 				    s_suffix(mon_nam(mtmp)));
 			    if (obj->otyp == CRYSKNIFE &&
 				    (!obj->oerodeproof || !rn2(10))) {
-				obj->otyp = WORM_TOOTH;
+				set_otyp(obj, WORM_TOOTH);
 				obj->oerodeproof = 0;
 			    }
 			    place_object(obj, mtmp->mx, mtmp->my);

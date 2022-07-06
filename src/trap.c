@@ -3273,7 +3273,7 @@ register boolean force, here;
 		    if (obj->otyp != SCR_MAIL)
 #endif
 		    {
-			obj->otyp = SCR_BLANK_PAPER;
+			set_otyp(obj, SCR_BLANK_PAPER);
 			obj->spe = 0;
 		    }
 		} else if (obj->oclass == SPBOOK_CLASS) {
@@ -3283,7 +3283,7 @@ register boolean force, here;
 #else
 				pline("%s‚©‚çö‹C‚ª—§‚¿‚Ì‚Ú‚Á‚½B", xname(obj));
 #endif /*JP*/
-			else obj->otyp = SPE_BLANK_PAPER;
+			else set_otyp(obj, SPE_BLANK_PAPER);
 		} else if (obj->oclass == POTION_CLASS) {
 			if (obj->otyp == POT_ACID) {
 				/* damage player/monster? */
@@ -3292,7 +3292,7 @@ register boolean force, here;
 				retval++;
 				continue;
 			} else if (obj->odiluted) {
-				obj->otyp = POT_WATER;
+				set_otyp(obj, POT_WATER);
 				obj->blessed = obj->cursed = 0;
 				obj->odiluted = 0;
 			} else if (obj->otyp != POT_WATER)

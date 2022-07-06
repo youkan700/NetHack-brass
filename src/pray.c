@@ -1290,7 +1290,7 @@ pleased(g_align)
 		    if (!objects[SPE_BLANK_PAPER].oc_name_known ||
 			    carrying(MAGIC_MARKER)) break;
 		}
-		otmp->otyp = rnd_class(bases[SPBOOK_CLASS], SPE_BLANK_PAPER);
+		set_otyp(otmp, rnd_class(bases[SPBOOK_CLASS], SPE_BLANK_PAPER));
 	    }
 	    bless(otmp);
 	    place_object(otmp, u.ux, u.uy);

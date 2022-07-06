@@ -1505,7 +1505,7 @@ dorub()
 	    if (uwep->spe > 0 && !rn2(3)) {
 		check_unpaid_usage(uwep, TRUE);		/* unusual item use */
 		makeknown(MAGIC_LAMP);
-		uwep->otyp = OIL_LAMP;
+		set_otyp(uwep, OIL_LAMP);
 		uwep->spe = 0; /* for safety */
 		uwep->age = rn1(500,1000);
 		djinni_from_bottle(uwep);
@@ -4221,13 +4221,13 @@ doapply()
 		    if (!rn2(13)) {
 			otmp = mkobj(POTION_CLASS, FALSE);
 			if (objects[otmp->otyp].oc_magic) do {
-			    otmp->otyp = rnd_class(POT_BOOZE, POT_WATER);
+			    set_otyp(otmp, rnd_class(POT_BOOZE, POT_WATER));
 			} while (otmp->otyp == POT_SICKNESS);
 			what = E_J("A potion","ñÚ");
 		    } else {
 			otmp = mkobj(FOOD_CLASS, FALSE);
 			if (otmp->otyp == FOOD_RATION && !rn2(7))
-			    otmp->otyp = LUMP_OF_ROYAL_JELLY;
+			    set_otyp(otmp, LUMP_OF_ROYAL_JELLY);
 			what = E_J("Some food","êHÇ◊ï®");
 		    }
 		    pline(E_J("%s spills out.",

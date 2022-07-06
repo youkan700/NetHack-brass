@@ -898,7 +898,7 @@ boolean fade_scrolls;
 			pline("%s‚Ì•¶š‚Í‚É‚¶‚ñ‚ÅÁ‚¦‚½B", xname(target));
 #endif /*JP*/
 		}
-		target->otyp = SCR_BLANK_PAPER;
+		set_otyp(target, SCR_BLANK_PAPER);
 		target->spe = 0;
 	    }
 	} else rust_dmg(target, xname(target), (acid_dmg ? 3/*corrode*/ : 1/*rust*/), TRUE, victim);
@@ -931,7 +931,7 @@ register int amount;
 	if (otmp && otmp->oclass == SCROLL_CLASS) otyp = otmp->otyp;
 
 	if(uwep->otyp == WORM_TOOTH && amount >= 0) {
-		uwep->otyp = CRYSKNIFE;
+		set_otyp(uwep, CRYSKNIFE);
 		uwep->oerodeproof = 0;
 		Your(E_J("weapon seems sharper now.",
 			 "•Ší‚Í‚æ‚è‰s‚­‚È‚Á‚½‚æ‚¤‚¾B"));
@@ -941,7 +941,7 @@ register int amount;
 	}
 
 	if(uwep->otyp == CRYSKNIFE && amount < 0) {
-		uwep->otyp = WORM_TOOTH;
+		set_otyp(uwep, WORM_TOOTH);
 		uwep->oerodeproof = 0;
 		Your(E_J("weapon seems duller now.",
 			 "•Ší‚Í‚æ‚è“İ‚­‚È‚Á‚½‚æ‚¤‚¾B"));
