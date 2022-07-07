@@ -1565,9 +1565,43 @@ arti_invoke(obj)
 	    enlightenment(0);
 	    break;
 	case CREATE_AMMO: {
-	    int ammotype[4] = { ARROW, CROSSBOW_BOLT, FLINT, BULLET };
-	    struct obj *otmp = mksobj(ammotype[objects[obj->otyp].oc_wprop & WP_SUBTYPE], TRUE, FALSE);
+	    const int ammotype[4] = { ARROW, CROSSBOW_BOLT, FLINT, BULLET };
+	    struct obj *otmp;
 
+	    if (obj->oartifact == ART_WEREBANE) {
+		int cnt;
+		struct obj *oblt, *lblt;
+		/* create bullets and fill the cylinder */
+		cnt = 6;
+		lblt = 0;
+		for (oblt = obj->cobj; oblt; oblt = oblt->nobj) {
+		    cnt -= oblt->quan;
+		    lblt = oblt;
+		}
+		if (cnt <= 0) goto nothing_special;
+		otmp = mksobj(BULLET, TRUE, FALSE);
+		change_material(otmp, SILVER);
+		otmp->quan = cnt;
+#ifndef JP
+		pline("%s in the cylinder of %s.",
+		      aobjnam(otmp, "magically appear"), the(xname(obj)));
+#else
+		pline("%s‚ª%s‚Ì’e‘q‚É‘•“U‚³‚ê‚½B",
+		      doname(otmp), xname(obj));
+#endif /*JP*/
+		/* merge if possible */
+		if (!obj->cobj || !merged(&lblt, &otmp)) {
+		    otmp->nobj = (struct obj *)0;
+		    otmp->where = OBJ_CONTAINED;
+		    otmp->ocontainer = obj;
+		    if (lblt) lblt->nobj = otmp;
+		    else obj->cobj = otmp;
+		}
+		obj->age += (long) rn1(100,50) * cnt / 6;
+		break;
+	    }
+
+	    otmp = mksobj(ammotype[objects[obj->otyp].oc_wprop & WP_SUBTYPE], TRUE, FALSE);
 	    if (!otmp) goto nothing_special;
 	    otmp->blessed = obj->blessed;
 	    otmp->cursed = obj->cursed;
@@ -1579,11 +1613,6 @@ arti_invoke(obj)
 		if (otmp->spe > 0) otmp->spe = 0;
 	    } else
 		otmp->quan += rnd(5);
-	    if (obj->oartifact == ART_WEREBANE) {
-		change_material(otmp, SILVER);
-		otmp->quan = 6;
-		obj->age += (long) rn1(100,50);
-	    }
 	    otmp->owt = weight(otmp);
 #ifndef JP
 	    otmp = hold_another_object(otmp, "Suddenly %s out.",
