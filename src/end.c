@@ -1162,6 +1162,9 @@ die:
 
 	/* "So when I die, the first thing I will see in Heaven is a
 	 * score list?" */
+#ifdef JP
+	remove_killer_sep(killer_buf_with_separator);
+#endif /*JP*/
 	if (flags.toptenwin) {
 	    topten(how);
 	    if (have_windows)

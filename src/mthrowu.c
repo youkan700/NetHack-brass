@@ -277,12 +277,9 @@ const char *nam;
 	}
 	if (shield) {
 	    switch (shield->otyp) {
-		case SHIELD_OF_FIREBREAK:
-		    styp = AD_FIRE;
-		    break;
-		case SHIELD_OF_ISOLATION:
-		    styp = AD_ELEC;
-		    break;
+		case ELEMENTAL_SHIELD:
+		    if (dtyp >= AD_FIRE && dtyp <= AD_ACID && dtyp != AD_SLEE)
+			styp = AD_ANY;
 		default:
 		    break;
 	    }

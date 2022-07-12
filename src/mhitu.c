@@ -762,7 +762,8 @@ mattacku(mtmp)
 				    if (!is_animobj(mtmp->data))
 					mswings(mtmp, otmp);
 				}
-				if (parry_with_shield(mtmp, &youmonst, mattk)) break;
+				if ((!otmp || objects[otmp->otyp].oc_skill != P_FLAIL_GROUP) &&
+				    parry_with_shield(mtmp, &youmonst, mattk)) break;
 				if(tmp > (j = dieroll = rnd(20+i)))
 				    sum[i] = hitmu(mtmp, mattk);
 				else
@@ -3339,6 +3340,10 @@ struct attack *mattk;
 	int tmp;
 	int parried;
 
+	if (mattk->adtyp == AD_SITM ||
+	    mattk->adtyp == AD_SEDU ||
+	    mattk->adtyp == AD_SSEX) return 0;
+
 	tmp = 0;
 	parried = 0;
 	/* huge monsters are hard to parry */
@@ -3347,12 +3352,23 @@ struct attack *mattk;
 	tmp -= magr->m_lev;
 
 	if (mdef == &youmonst) {
+	    if(multi < 0) return 0;
+	    if (Confusion || Stunned) return 0;
+	    if (!Detect_monsters && (Blind || !mon_visible(magr)))
+		return 0;
 	    shield = uarms;
 	    tmp += P_SKILL(P_SHIELD) * (30 + u.ulevel) / 300;
 	    tmp += abon();
 	} else {
+	    if (mdef->mconf || mdef->mstun || mdef->msleeping ||
+		!mdef->mcanmove || !mdef->mcansee) return 0;
 	    if (!(mdef->misc_worn_check & W_ARMS))
 		return (0);
+	    if (magr == &youmonst) {
+		if (Invis && !perceives(mdef->data)) return 0;
+	    } else {
+		if (magr->minvis && !perceives(mdef->data)) return 0;
+	    }
 	    shield = which_armor(mdef, W_ARMS);
 	    tmp += mdef->m_lev;
 	}

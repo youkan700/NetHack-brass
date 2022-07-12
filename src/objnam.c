@@ -3752,8 +3752,6 @@ struct obj *otmp;
 		return E_J("shield","‚");
 	if(otmp->otyp == SHIELD_OF_REFLECTION)
 		return E_J("smooth shield","‚·‚×‚·‚×‚µ‚½‚");
-	if(otmp->otyp == SHIELD_OF_ISOLATION || otmp->otyp == SHIELD_OF_FIREBREAK)
-		return E_J("shield","•¶—l‚Ì“ü‚Á‚½‚");
 
 	/* robe (blue, red, black, green) */
 	if (is_robe(otmp)) return E_J("unidentified robe","–¢¯•Ê‚Ìƒ[ƒu");
