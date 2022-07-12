@@ -1244,6 +1244,7 @@ register struct obj *otmp;
 	    if (see_invis_on(oldprop))
 		makeknown(GLASSES_OF_TRUE_SIGHT);
 	    EProtection_from_shape_changers |= W_TOOL;
+	    ESearching                      |= W_TOOL;
 	    if (rescham())
 		makeknown(GLASSES_OF_TRUE_SIGHT);
 	    return;
@@ -1303,6 +1304,7 @@ register struct obj *otmp;
 		if (see_invis_off())
 		    makeknown(GLASSES_OF_TRUE_SIGHT);
 		EProtection_from_shape_changers &= ~W_TOOL;
+		ESearching                      &= ~W_TOOL;
 		if (restartcham())
 		    makeknown(GLASSES_OF_TRUE_SIGHT);
 		return;

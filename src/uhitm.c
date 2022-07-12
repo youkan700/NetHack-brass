@@ -585,7 +585,8 @@ uchar hflg;
 	    int oldhp = mon->mhp,
 		x = u.ux + u.dx, y = u.uy + u.dy;
 
-	    if (parry_with_shield(&youmonst, mon, uattk)) return (malive);
+	    if ((!wep || objects[wep->otyp].oc_skill != P_FLAIL_GROUP) &&
+		parry_with_shield(&youmonst, mon, uattk)) return (malive);
 
 	    /* KMH, conduct */
 	    if (wep && (wep->oclass == WEAPON_CLASS || is_weptool(wep)))
