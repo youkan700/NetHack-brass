@@ -635,10 +635,10 @@ register int after;	/* this is extra fast monster movement */
 		    mtmp2 = target_rider_or_steed(mtmp, mtmp2);
 #endif
 		    if ((int)mtmp2->m_lev >= (int)mtmp->m_lev+2 ||
-			(mtmp2->data == &mons[PM_FLOATING_EYE] && rn2(10) &&
+			(mtmp2->mnum == PM_FLOATING_EYE && rn2(10) &&
 			 mtmp->mcansee && haseyes(mtmp->data) && mtmp2->mcansee
 			 && (perceives(mtmp->data) || !mtmp2->minvis)) ||
-			(mtmp2->data==&mons[PM_GELATINOUS_CUBE] && rn2(10)) ||
+			(mtmp2->mnum == PM_GELATINOUS_CUBE && rn2(10)) ||
 			(max_passive_dmg(mtmp2, mtmp) >= mtmp->mhp) ||
 			((mtmp->mhp*4 < mtmp->mhpmax
 			  || mtmp2->data->msound == MS_GUARDIAN

@@ -863,8 +863,8 @@ struct obj *obj;
 			pline (E_J("%s confuses itself!",
 				   "%s‚Í©•ª‚ÌŠáŒõ‚Å¬—‚µ‚½I"), Monnam(mtmp));
 		mtmp->mconf = 1;
-	} else if(!mtmp->mcan && !mtmp->minvis && (mlet == S_NYMPH
-				     || mtmp->data==&mons[PM_SUCCUBUS])) {
+	} else if(!mtmp->mcan && !mtmp->minvis &&
+		  (mlet == S_NYMPH || mtmp->mnum == PM_SUCCUBUS)) {
 		if (vis) {
 		    pline (E_J("%s admires herself in your mirror.",
 			       "%s‚Í‹¾‚É‰f‚Á‚½©•ª‚Ìp‚É‚¤‚Á‚Æ‚è‚ÆŒ©‚Æ‚ê‚½B"), Monnam(mtmp));

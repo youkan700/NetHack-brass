@@ -922,7 +922,7 @@ boolean hitsroof;
 	    dmg = (int) obj->owt / 100;
 	    if (dmg < 1) dmg = 1;
 	    else if (dmg > 6) dmg = 6;
-	    if (youmonst.data == &mons[PM_SHADE] &&
+	    if (u.umonnum == PM_SHADE &&
 		    get_material(obj) != SILVER)
 		dmg = 0;
 	}

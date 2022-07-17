@@ -1187,18 +1187,18 @@ boolean called;
 	} else if (is_mplayer(mdat)) {
 	    char pbuf[BUFSZ];
 	    if (mtmp->cham == CHAM_DOPPELGANGER &&
-		mdat == &mons[u.umonster]) {
+		mtmp->mnum == u.umonster) {
 		Strcat(buf, plname);
 		name_at_start = TRUE;
 	    } else if (!In_endgame(&u.uz)) {
 #ifndef JP
 		Strcpy(pbuf, rank_of((int)mtmp->m_lev,
-				 monsndx(mdat),
+				 mtmp->mnum,
 				 (boolean)mtmp->female));
 		Strcat(buf, lcase(pbuf));
 #else
 		Strcpy(buf, rank_of((int)mtmp->m_lev,
-				monsndx(mdat),
+				mtmp->mnum,
 				(boolean)mtmp->female));
 #endif /*JP*/
 		name_at_start = FALSE;

@@ -2285,7 +2285,7 @@ register struct attack *mattk;
 			end_engulf();
 			return(2);
 		    case AD_PHYS:
-			if (youmonst.data == &mons[PM_FOG_CLOUD]) {
+			if (u.umonnum == PM_FOG_CLOUD) {
 			    pline(E_J("%s is laden with your moisture.",
 				      "%s‚Í‚ ‚È‚½‚Ì¼‹C‚É‹ê‚µ‚ñ‚Å‚¢‚éB"),
 				  Monnam(mdef));

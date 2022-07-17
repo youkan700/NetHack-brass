@@ -2339,7 +2339,7 @@ register struct monst *mtmp;
 
 	/* attacking your own quest leader will anger his or her guardians */
 	if (!flags.mon_moving &&	/* should always be the case here */
-		mtmp->data == &mons[quest_info(MS_LEADER)]) {
+		mtmp->mnum == quest_info(MS_LEADER)) {
 	    struct monst *mon;
 	    struct permonst *q_guardian = &mons[quest_info(MS_GUARDIAN)];
 	    int got_mad = 0;

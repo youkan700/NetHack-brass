@@ -137,8 +137,8 @@ struct monst *mtmp;
 {
 	if (mtmp->isshk || mtmp->isgd || mtmp->iswiz || !mtmp->mcansee ||
 	    mtmp->mpeaceful || mtmp->data->mlet == S_HUMAN ||
-	    is_lminion(mtmp) || mtmp->data == &mons[PM_ANGEL] ||
-	    is_rider(mtmp->data) || mtmp->data == &mons[PM_MINOTAUR])
+	    is_lminion(mtmp) || mtmp->mnum == PM_ANGEL ||
+	    is_rider(mtmp->data) || mtmp->mnum == PM_MINOTAUR)
 		return(FALSE);
 
 	return (boolean)(sobj_at(SCR_SCARE_MONSTER, x, y)
@@ -188,11 +188,11 @@ disturb(mtmp)
 	 */
 	if(couldsee(mtmp->mx,mtmp->my) &&
 		distu(mtmp->mx,mtmp->my) <= 100 &&
-		(!Stealth || (mtmp->data == &mons[PM_ETTIN] && rn2(10))) &&
+		(!Stealth || (mtmp->mnum == PM_ETTIN && rn2(10))) &&
 		(!(mtmp->data->mlet == S_NYMPH
-			|| mtmp->data == &mons[PM_JABBERWOCK]
+			|| mtmp->mnum == PM_JABBERWOCK
 #if 0	/* DEFERRED */
-			|| mtmp->data == &mons[PM_VORPAL_JABBERWOCK]
+			|| mtmp->mnum == PM_VORPAL_JABBERWOCK
 #endif
 			|| mtmp->data->mlet == S_LEPRECHAUN) || !rn2(50)) &&
 		(Aggravate_monster
@@ -388,7 +388,7 @@ register struct monst *mtmp;
 	}
 	if (mdat->msound == MS_SHRIEK && !um_dist(mtmp->mx, mtmp->my, 1))
 	    m_respond(mtmp);
-	if (mdat == &mons[PM_MEDUSA] && couldsee(mtmp->mx, mtmp->my))
+	if (mtmp->mnum == PM_MEDUSA && couldsee(mtmp->mx, mtmp->my))
 	    m_respond(mtmp);
 	if (mtmp->mhp <= 0) return(1); /* m_respond gaze can kill medusa */
 
@@ -439,7 +439,7 @@ register struct monst *mtmp;
 	}
 
 	/* the watch will look around and see if you are up to no good :-) */
-	if (mdat == &mons[PM_WATCHMAN] || mdat == &mons[PM_WATCH_CAPTAIN])
+	if (mtmp->mnum == PM_WATCHMAN || mtmp->mnum == PM_WATCH_CAPTAIN)
 		watch_on_duty(mtmp);
 
 	else if (is_mind_flayer(mdat) && !rn2(20)) {
@@ -779,7 +779,7 @@ register int after;
 	}
 
 #ifdef MAIL
-	if(ptr == &mons[PM_MAIL_DAEMON]) {
+	if(mtmp->mnum == PM_MAIL_DAEMON) {
 	    if(flags.soundok && canseemon(mtmp))
 		verbalize(E_J("I'm late!","’x‚ê‚½I"));
 	    mongone(mtmp);
@@ -788,7 +788,7 @@ register int after;
 #endif
 
 	/* teleport if that lies in our nature */
-	if(ptr == &mons[PM_TENGU] && !rn2(5) && !mtmp->mcan &&
+	if(mtmp->mnum == PM_TENGU && !rn2(5) && !mtmp->mcan &&
 	   !tele_restrict(mtmp)) {
 	    if(mtmp->mhp < 7 || mtmp->mpeaceful || rn2(2))
 		(void) rloc(mtmp, FALSE);
@@ -945,7 +945,7 @@ goal_is_set:
 		       (likegems && otmp->oclass == GEM_CLASS &&
 			get_material(otmp) != MINERAL) ||
 		       (conceals && !cansee(otmp->ox,otmp->oy)) ||
-		       (ptr == &mons[PM_GELATINOUS_CUBE] &&
+		       (mtmp->mnum == PM_GELATINOUS_CUBE &&
 			!index(indigestion, otmp->oclass) &&
 			!(otmp->otyp == CORPSE &&
 			  touch_petrifies(&mons[otmp->corpsenm])))
@@ -1006,7 +1006,7 @@ goal_is_set:
 	if (passes_walls(ptr)) flag |= (ALLOW_WALL | ALLOW_ROCK);
 	if (passes_bars(ptr)) flag |= ALLOW_BARS;
 	if (can_tunnel) flag |= ALLOW_DIG;
-	if (is_human(ptr) || ptr == &mons[PM_MINOTAUR]) flag |= ALLOW_SSM;
+	if (is_human(ptr) || mtmp->mnum == PM_MINOTAUR) flag |= ALLOW_SSM;
 	if (is_undead(ptr) && ptr->mlet != S_GHOST) flag |= NOGARLIC;
 	if (throws_rocks(ptr)) flag |= ALLOW_ROCK;
 	if (can_open) flag |= OPENDOOR;
@@ -1178,8 +1178,8 @@ postmov:
 			if (flags.verbose && canseemon(mtmp))
 			    pline(E_J("%s %s under the door.",
 				      "%s‚ª”à‚Ì‰º‚©‚ç%so‚Ä‚«‚½B"), Monnam(mtmp),
-				  (ptr == &mons[PM_FOG_CLOUD] ||
-				   ptr == &mons[PM_YELLOW_LIGHT])
+				  (mtmp->mnum == PM_FOG_CLOUD ||
+				   mtmp->mnum == PM_YELLOW_LIGHT)
 				  ? E_J("flows","‚ ‚Ó‚ê") : E_J("oozes","‚É‚¶‚Ý"));
 		    } else if(here->doormask & D_LOCKED && can_unlock) {
 			if(btrapped) {
@@ -1298,7 +1298,7 @@ postmov:
 		if(g_at(mtmp->mx,mtmp->my) && likegold) mpickgold(mtmp);
 
 		/* Maybe a cube ate just about anything */
-		if (ptr == &mons[PM_GELATINOUS_CUBE]) {
+		if (mtmp->mnum == PM_GELATINOUS_CUBE) {
 		    if (meatobj(mtmp) == 2) return 2;	/* it died */
 		}
 
@@ -1319,7 +1319,7 @@ postmov:
 		}
 	    }
 	    /* Maybe a cube ate just about anything */
-	    if (ptr == &mons[PM_GELATINOUS_CUBE]) {
+	    if (mtmp->mnum == PM_GELATINOUS_CUBE) {
 		/* eat floor surface */
 		if (levl[mtmp->mx][mtmp->my].typ == GRASS) levl[mtmp->mx][mtmp->my].typ = GROUND;
 		if (levl[mtmp->mx][mtmp->my].typ == CARPET) levl[mtmp->mx][mtmp->my].typ = ROOM;
@@ -1388,7 +1388,7 @@ register struct monst *mtmp;
 	/* add cases as required.  eg. Displacement ... */
 	if (notseen || Underwater) {
 	    /* Xorns can smell valuable metal like gold, treat as seen */
-	    if ((mtmp->data == &mons[PM_XORN]) &&
+	    if ((mtmp->mnum == PM_XORN) &&
 			u.ugold
 			&& !Underwater)
 		disp = 0;

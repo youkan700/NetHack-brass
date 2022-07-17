@@ -164,7 +164,7 @@ register struct obj *sobj;
     /* look for gold carried by monsters (might be in a container) */
     for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
     	if (DEADMONSTER(mtmp)) continue;	/* probably not needed in this case but... */
-	if (mtmp->mgold || monsndx(mtmp->data) == PM_GOLD_GOLEM) {
+	if (mtmp->mgold || mtmp->mnum == PM_GOLD_GOLEM) {
 	    known = TRUE;
 	    goto outgoldmap;	/* skip further searching */
 	} else for (obj = mtmp->minvent; obj; obj = obj->nobj)
@@ -193,7 +193,7 @@ register struct obj *sobj;
 	   adjust message if you have gold in your inventory */
 	if (sobj) {
 		char buf[BUFSZ];
-		if (youmonst.data == &mons[PM_GOLD_GOLEM]) {
+		if (u.umonnum == PM_GOLD_GOLEM) {
 #ifndef JP
 			Sprintf(buf, "You feel like a million %s!",
 				currency(2L));

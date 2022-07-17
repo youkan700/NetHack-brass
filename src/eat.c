@@ -117,7 +117,7 @@ register struct obj *obj;
 	   allow fake amulets to be eaten either [which is already the case] */
 
 	if (metallivorous(youmonst.data) && is_metallic(obj) &&
-	    (youmonst.data != &mons[PM_RUST_MONSTER] || is_rustprone(obj)))
+	    (u.umonnum != PM_RUST_MONSTER || is_rustprone(obj)))
 		return TRUE;
 	if (u.umonnum == PM_GELATINOUS_CUBE && is_organic(obj) &&
 		/* [g.cubes can eat containers and retain all contents
@@ -558,7 +558,7 @@ register int pm;
 		}
 	    case PM_GREEN_SLIME:
 		if (!Slimed && !Unchanging && !flaming(youmonst.data) &&
-			youmonst.data != &mons[PM_GREEN_SLIME]) {
+			u.umonnum != PM_GREEN_SLIME) {
 		    You(E_J("don't feel very well.","‚Æ‚Ä‚à‹C•ª‚ªˆ«‚¢B"));
 		    Slimed = 10L;
 		    flags.botl = 1;
@@ -2086,7 +2086,7 @@ int mnum;
 		 !Stone_resistance && !poly_when_stoned(youmonst.data)) ||
 		(mnum == PM_GREEN_SLIME && !Unchanging &&
 			!flaming(youmonst.data) &&
-			youmonst.data != &mons[PM_GREEN_SLIME]));
+			u.umonnum != PM_GREEN_SLIME));
 }
 
 /*
@@ -2897,7 +2897,7 @@ floorfood(verb,corpsecheck)	/* get food from floor or pack */
 		}
 	    }
 
-	    if (youmonst.data != &mons[PM_RUST_MONSTER] &&
+	    if (u.umonnum != PM_RUST_MONSTER &&
 		(gold = g_at(u.ux, u.uy)) != 0) {
 #ifndef JP
 		if (gold->quan == 1L)

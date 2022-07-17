@@ -1180,9 +1180,9 @@ hitmu(mtmp, mattk)
 		hitmsg(mtmp, mattk);
 //		if (uncancelled) {
 		    pline(E_J("You're %s!","あなた%s！"), on_fire(youmonst.data, mattk));
-		    if (youmonst.data == &mons[PM_STRAW_GOLEM] ||
-		        youmonst.data == &mons[PM_PAPER_GOLEM]) {
-			    You("roast!");
+		    if (u.umonnum == PM_STRAW_GOLEM ||
+		        u.umonnum == PM_PAPER_GOLEM) {
+			    You(E_J("roast!","燃え尽きた！"));
 			    /* KMH -- this is okay with unchanging */
 			    rehumanize();
 			    break;
@@ -1834,8 +1834,7 @@ dopois:
 		if (flaming(youmonst.data)) {
 		    pline_The(E_J("slime burns away!","スライムは焼け落ちた！"));
 		    dmg = 0;
-		} else if (Unchanging ||
-				youmonst.data == &mons[PM_GREEN_SLIME]) {
+		} else if (Unchanging || u.umonnum == PM_GREEN_SLIME) {
 		    You(E_J("are unaffected.","影響を受けなかった。"));
 		    dmg = 0;
 		} else if (!Slimed) {
