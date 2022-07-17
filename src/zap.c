@@ -4160,10 +4160,13 @@ boolean dodelay;
 			case AD_ELEC:
 			case AD_ACID:
 				objdmg = d(2,4);
+				break;
 			case AD_DETH:
 				objdmg = d(3,4);
+				break;
 			case AD_DISN:
 				objdmg = rn1(10, 10);
+				break;
 			default:
 				break;
 		    }
