@@ -2111,6 +2111,41 @@ dodip()
 	    }
 	}
 
+	if (potion->otyp == POT_GAIN_ENERGY &&
+	    does_obj_worn_out(obj)) {
+	    int change_otyp = 0;
+	    boolean isworn = FALSE;
+	    /* recover the magical power */
+	    if ((obj->otyp == SHIELD && get_material(obj) == SILVER) ||
+		obj->otyp == PLAIN_DRAGON_SCALE_MAIL) {
+		obj->odamaged = 1;
+		change_otyp = obj->prevotyp;
+		if (obj->otyp == SHIELD && obj == uarms) {
+		    Shield_off();
+		    isworn = TRUE;
+		}
+		if (obj->otyp == PLAIN_DRAGON_SCALE_MAIL && obj == uarm) {
+		    Armor_off();
+		    isworn = TRUE;
+		}
+	    }
+	    if (obj->odamaged > 0) {
+#ifndef JP
+		You_feel("%s regains its magical power!", yname(obj))
+#else
+		You("%s���Ăі��@�̗͂���߂��̂�������I", xname(obj));
+#endif /*JP*/
+		obj->odamaged = 0;
+		if (change_otyp) {
+		    change_material(obj, 0);
+		    set_otyp(obj, obj->prevotyp);
+		    if (isworn) quickdowear(obj);
+		    prinv((char *)0, obj, 0L);
+		}
+		goto poof;
+	    }
+	}
+
 	if (potion->otyp == POT_OIL) {
 	    boolean wisx = FALSE;
 	    if (potion->lamplit) {	/* burning */
