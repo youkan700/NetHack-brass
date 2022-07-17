@@ -570,12 +570,12 @@ register struct monst *mtmp;
 			if (kindred)
 			    verbl_msg = E_J("This is my hunting ground that you dare to prowl!",
 					    "お前がうろつきまわっているこの一帯は、私の狩場だ！");
-			else if (youmonst.data == &mons[PM_SILVER_DRAGON] ||
-				 youmonst.data == &mons[PM_BABY_SILVER_DRAGON]) {
+			else if (u.umonnum == PM_SILVER_DRAGON ||
+				 u.umonnum == PM_BABY_SILVER_DRAGON) {
 			    /* Silver dragons are silver in color, not made of silver */
 			    Sprintf(verbuf, E_J("%s! Your silver sheen does not frighten me!",
 						"愚か%sめ！　お前の銀色の皮で私を威すことなどできぬぞ！"),
-					youmonst.data == &mons[PM_SILVER_DRAGON] ?
+					u.umonnum == PM_SILVER_DRAGON ?
 					E_J("Fool","者") : E_J("Young Fool","な若造"));
 			    verbl_msg = verbuf; 
 			} else {

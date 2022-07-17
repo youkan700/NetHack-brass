@@ -373,9 +373,9 @@ mplayer_talk(mtmp)
 register struct monst *mtmp;
 {
 	static const char *same_class_msg[3] = {
-		E_J("I can't win, and neither will you!",  "私は勝利できぬ、だがお前もだ！"),
+		E_J("I can't win, and neither will you!",  "私は勝利を逃した、だがお前もだ！"),
 		E_J("You don't deserve to win!",	   "お前は勝利するに値しない！"),
-		E_J("Mine should be the honor, not yours!","名誉は我にあり！ お前ではない！"),
+		E_J("Mine should be the honor, not yours!","名誉は我にあり！ お前にではない！"),
 	},		  *other_class_msg[3] = {
 		E_J("The low-life wants to talk, eh?",	   "下等な生命体がお話したいってか、え？"),
 		E_J("Fight, scum!",			   "戦え、クズ野郎！"),
@@ -385,8 +385,8 @@ register struct monst *mtmp;
 	if(mtmp->mpeaceful) return; /* will drop to humanoid talk */
 
 	pline(E_J("Talk? -- %s","話す？ ─ %s"),
-		(mtmp->data == &mons[urole.malenum] ||
-		mtmp->data == &mons[urole.femalenum]) ?
+		(mtmp->mnum == urole.malenum ||
+		 mtmp->mnum == urole.femalenum) ?
 		same_class_msg[rn2(3)] : other_class_msg[rn2(3)]);
 }
 

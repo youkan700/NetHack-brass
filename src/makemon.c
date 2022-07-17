@@ -661,7 +661,7 @@ xchar x, y;	/* clone's preferred location or 0 (near mon) */
 	struct monst *m2;
 
 	/* may be too weak or have been extinguished for population control */
-	if (mon->mhp <= 1 || (mvitals[monsndx(mon->data)].mvflags & G_EXTINCT))
+	if (mon->mhp <= 1 || (mvitals[mon->mnum].mvflags & G_EXTINCT))
 	    return (struct monst *)0;
 
 	if (x == 0) {
@@ -1518,7 +1518,7 @@ struct monst *mtmp, *victim;
 
 	/* note:  none of the monsters with special hit point calculations
 	   have both little and big forms */
-	oldtype = monsndx(ptr);
+	oldtype = mtmp->mnum;
 	newtype = little_to_big(oldtype);
 	if (newtype == PM_PRIEST && mtmp->female) newtype = PM_PRIESTESS;
 

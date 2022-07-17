@@ -779,7 +779,7 @@ int (*isproperitem)(struct obj *);
 	/* Equivalent of an "ugly check" for gold */
 	if (usegold && E_J(!strcmp(word, "eat"),!strcmp(suru, "êHÇ◊ÇÈ")) &&
 	    (!metallivorous(youmonst.data)
-	     || youmonst.data == &mons[PM_RUST_MONSTER]))
+	     || u.umonnum == PM_RUST_MONSTER))
 		usegold = allowgold = FALSE;
 
 	if (let) {
