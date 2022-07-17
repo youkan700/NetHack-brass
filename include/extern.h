@@ -2630,6 +2630,7 @@ E int FDECL(bresenham_step, (struct bresenham *));
 E void FDECL(bresenham_back, (struct bresenham *));
 E void FDECL(setup_zapinfo, (struct zapinfo *, uchar, uchar, uchar, uchar, const char *, const char *, BOOLEAN_P));
 E void FDECL(setup_zapobj, (struct zapinfo *, struct obj *, boolean));
+E boolean FDECL(does_obj_worn_out, (struct obj *));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 

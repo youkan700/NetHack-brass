@@ -5228,7 +5228,6 @@ int damval;
 			if ((*(tbl->objp))->oartifact) return;
 			oc1 = tbl->objclass;
 			oc2 = tbl->objsubc;
-			break;
 		}
 	}
 	if ( !oc1 ) return;	/* there is no object to get damaged */
@@ -5302,6 +5301,7 @@ int damval;
 							  "Ž©•ª‚Ì‚‚ª‚È‚ñ‚Æ‚È‚­—Š‚è‚È‚­‚È‚Á‚½‚Ì‚ðŠ´‚¶‚½B"));
 					otmp = uarms;
 					Shield_off();
+					otmp->prevotyp = otmp->otyp;
 					set_otyp(otmp, SHIELD);
 					otmp->odamaged = 0;
 					change_material(otmp, SILVER);	/* mere silver shield */
@@ -5339,6 +5339,7 @@ int damval;
 						 "%s‚Í—Í‚ðŽ¸‚Á‚½‚æ‚¤‚¾B"), buf);
 					otmp = uarm;
 					Armor_off();
+					otmp->prevotyp = otmp->otyp;
 					set_otyp(otmp, PLAIN_DRAGON_SCALE_MAIL);	/* mere scale mail */
 					otmp->odamaged = 0;
 					setworn(otmp, W_ARM);
@@ -5376,5 +5377,24 @@ int damval;
 	return;
 }
 
+boolean 
+does_obj_worn_out(otmp)
+struct obj *otmp;
+{
+	if (otmp->oartifact) return FALSE;
+	if (otmp->otyp == AMULET_OF_REFLECTION ||
+	    otmp->otyp == SHIELD_OF_REFLECTION ||
+	    otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE ||
+	    otmp->otyp == FRILLED_APRON ||
+	    otmp->otyp == SILVER_DRAGON_SCALE_MAIL ||
+	    otmp->otyp == SILVER_DRAGON_SCALES ||
+	    otmp->otyp == GRAY_DRAGON_SCALE_MAIL ||
+	    otmp->otyp == GRAY_DRAGON_SCALES ||
+	    otmp->otyp == PLAIN_DRAGON_SCALE_MAIL)
+		return TRUE;
+	if (otmp->otyp == SHIELD && get_material(otmp) == SILVER)
+		return TRUE;
+	return FALSE;
+}
 
 /*zap.c*/
