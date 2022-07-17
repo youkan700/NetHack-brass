@@ -1,0 +1,5 @@
+*.c diff=sjis
+*.h diff=sjis
+*.dat diff=sjis
+*.des diff=sjis
+*.txt diff=sjis
