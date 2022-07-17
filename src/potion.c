@@ -2133,7 +2133,7 @@ dodip()
 #ifndef JP
 		You_feel("%s regains its magical power!", yname(obj))
 #else
-		Your("%sï¿½ÍÄ‚Ñ–ï¿½ï¿½@ï¿½Ì—Í‚ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½ï¿½I", xname(obj));
+		Your("%s‚ÍÄ‚Ñ–‚–@‚Ì—Í‚ðŽæ‚è–ß‚µ‚½I", xname(obj));
 #endif /*JP*/
 		obj->odamaged = 0;
 		if (change_otyp) {
