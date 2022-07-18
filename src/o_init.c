@@ -366,7 +366,9 @@ dodiscovered()				/* free after Robert Viduya */
     int	ct = 0;
     char *s, oclass, prev_class, classes[MAXOCLASSES];
     winid tmpwin;
-	char buf[BUFSZ];
+    char buf[BUFSZ];
+    int eggcnt;
+    struct obj tmpegg;
 
     tmpwin = create_nhwindow(NHW_MENU);
     putstr(tmpwin, 0, E_J("Discoveries","î≠å©ï®àÍóó"));
@@ -400,24 +402,6 @@ dodiscovered()				/* free after Robert Viduya */
     for (s = classes; *s; s++) {
 	oclass = *s;
 	prev_class = oclass + 1;	/* forced different from oclass */
-	if (oclass == FOOD_CLASS) {
-	    int eggcnt = 0;
-	    struct obj tmpegg = zeroobj;
-	    tmpegg.oclass = FOOD_CLASS;
-	    tmpegg.otyp = EGG;
-	    tmpegg.quan = 1;
-	    /* nothing is displayed for FOOD_CLASS except for eggs */
-	    for (i=LOW_PM; i<NUMMONS; i++) {
-		if (mvitals[i].mvflags & MV_KNOWS_EGG) {
-		    if (eggcnt++ == 0)
-			putstr(tmpwin, iflags.menu_headings, let_to_name(oclass, FALSE));
-		    tmpegg.corpsenm = i;
-		    Sprintf(buf, "  %s", doname(&tmpegg));
-		    putstr(tmpwin, 0, buf);
-		}
-	    }
-	    continue;
-	}
 	for (i = bases[(int)oclass];
 	     i < NUM_OBJECTS && objects[i].oc_class == oclass; i++) {
 	    if ((dis = disco[i]) && interesting_to_discover(dis)) {
@@ -432,6 +416,24 @@ dodiscovered()				/* free after Robert Viduya */
 	    }
 	}
     }
+
+    /* discovered eggs */
+    tmpegg = zeroobj;
+    tmpegg.oclass = FOOD_CLASS;
+    tmpegg.otyp = EGG;
+    tmpegg.quan = 1;
+    eggcnt = 0;
+    for (i=LOW_PM; i<NUMMONS; i++) {
+	if (mvitals[i].mvflags & MV_KNOWS_EGG) {
+	    if (eggcnt++ == 0)
+		putstr(tmpwin, iflags.menu_headings, E_J("Eggs","óë"));
+	    tmpegg.corpsenm = i;
+	    Sprintf(buf, "  %s", doname(&tmpegg));
+	    putstr(tmpwin, 0, buf);
+	}
+    }
+    if (eggcnt > 0) ct++;
+
     if (ct == 0) {
 	You(E_J("haven't discovered anything yet...",
 		"Ç‹ÇæâΩÇ‡î≠å©ÇµÇƒÇ¢Ç»Ç¢ÅcÅB"));
