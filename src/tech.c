@@ -669,7 +669,7 @@ int tech_no;
 		} else {
 		    You(E_J("study and practice with your weapon.",
 			    "自分の武器を試し振りし、見極めはじめた。"));
-		    if (rnd(15) <= ACURR(A_INT)) {
+		    if (rnd(15) <= (ACURR(A_INT) + P_SKILL(weapon_type(uwep)) / 10)) {
 			You(E_J("were able to descern it's general quality.",
 				"武器の一般的な品質を見極めることができた。"));
 			makeknown(uwep->otyp);
@@ -695,7 +695,7 @@ int tech_no;
 //		    t_timeout = 3000;
 		} else if (Sick) {
 		    You(E_J("lay your hands on the foul sickness...",
-			    "穢らわしい病魔の上に手をかざした…。"));
+			    "穢らわしい病巣の上に手をかざした…。"));
 		    make_sick(0L, (char*)0, TRUE, SICK_ALL);
 //		    t_timeout = 3000;
 		} else if (Upolyd ? u.mh < u.mhmax : u.uhp < u.uhpmax) {
@@ -1209,15 +1209,25 @@ int oldlevel, newlevel;
 	    for(; tech->tech_id; tech++)
 		if(oldlevel < tech->ulevel && newlevel >= tech->ulevel) {
 		    if (tech->ulevel != 1 && !tech_known(tech->tech_id))
+#ifndef JP
 			You("learn how to perform %s!",
 			  tech_props[tech->tech_id].name);
+#else
+			You("「%s」の技を習得した！",
+			  jtech_names[tech->tech_id]);
+#endif /*JP*/
 		    learntech(tech->tech_id, mask, tech->tech_lev);
 		} else if (oldlevel >= tech->ulevel && newlevel < tech->ulevel
 		    && tech->ulevel != 1) {
 		    learntech(tech->tech_id, mask, -1);
 		    if (!tech_known(tech->tech_id))
+#ifndef JP
 			You("lose the ability to perform %s!",
 			  tech_props[tech->tech_id].name);
+#else
+			You("「%s」の技を忘れてしまった！",
+			  jtech_names[tech->tech_id]);
+#endif /*JP*/
 		}
 	}
 }

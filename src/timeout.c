@@ -702,7 +702,7 @@ long timeout;
 			    egg->spe ? "" : "？");
 #endif /*JP*/
 		    } else if (mon->data->mlet == S_DRAGON) {
-			verbalize("E_J(Gleep!","ピギャア！"));		/* Mything eggs :-) */
+			verbalize(E_J("Gleep!","ピギャア！"));		/* Mything eggs :-) */
 		    }
 		    break;
 

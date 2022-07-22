@@ -337,7 +337,8 @@ chat_with_nemesis()
 void
 nemesis_speaks()
 {
-	if(!Qstat(in_battle)) {
+	if(!Qstat(met_nemesis) ||
+	   (monstermoves - Qstat(nemesis_last_speech) > 50)) {
 	  if(u.uhave.questart) qt_pager(QT_NEMWANTSIT);
 	  else if(Qstat(made_goal) == 1 || !Qstat(met_nemesis))
 	      qt_pager(QT_FIRSTNEMESIS);
@@ -348,6 +349,7 @@ nemesis_speaks()
 	  Qstat(met_nemesis) = TRUE;
 	} else /* he will spit out random maledictions */
 	  if(!rn2(5))	qt_pager(rn1(10, QT_DISCOURAGE));
+	Qstat(nemesis_last_speech) = monstermoves;
 }
 
 STATIC_OVL void

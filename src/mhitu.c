@@ -3375,7 +3375,7 @@ struct attack *mattk;
 	tmp += (int)(shield->spe);
 	if (is_elf(mdef->data) && is_elven_armor(shield)) tmp++;
 	else if (is_dwarf(mdef->data) && is_dwarvish_armor(shield)) tmp++;
-pline("(parry:%d)", tmp);
+//pline("(parry:%d)", tmp);
 	if (rn2(20) < tmp) {
 	    if (mdef == &youmonst) {
 		switch (mattk->aatyp) {

@@ -30,6 +30,7 @@ struct q_score {			/* Quest "scorecard" */
 	   polymorphed, raised from dead, etc */
 	Bitfield(leader_is_dead,1);
 	unsigned leader_m_id;
+	long     nemesis_last_speech;
 };
 
 #define MAX_QUEST_TRIES  7	/* exceed this and you "fail" */
