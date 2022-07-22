@@ -27,3 +27,4 @@ dat/oracles
 dat/rumors
 src/jtrnstbl.c
 src/nhdat
+src/clean.bat
