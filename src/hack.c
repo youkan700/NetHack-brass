@@ -2752,4 +2752,6 @@ int tmp;
 }
 #endif /*SHOWDMG*/
 
+/*DUMMY*/
+
 /*hack.c*/

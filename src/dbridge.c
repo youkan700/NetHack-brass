@@ -986,4 +986,6 @@ int x,y;
 
 #endif /* OVLB */
 
+/*DUMMY*/
+
 /*dbridge.c*/
