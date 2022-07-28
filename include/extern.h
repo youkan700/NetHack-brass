@@ -2637,4 +2637,6 @@ E boolean FDECL(does_obj_worn_out, (struct obj *));
 
 #undef E
 
+/*DUMMY*/
+
 #endif /* EXTERN_H */

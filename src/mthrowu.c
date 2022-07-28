@@ -1205,4 +1205,6 @@ int whodidit;	/* 1==hero, 0=other, -1==just check whether it'll pass thru */
 
 #endif /* OVL0 */
 
+/*DUMMY*/
+
 /*mthrowu.c*/

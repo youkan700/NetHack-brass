@@ -2390,4 +2390,6 @@ create_particular()
 
 #endif /* OVLB */
 
+/*DUMMY*/
+
 /*read.c*/

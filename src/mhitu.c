@@ -3449,4 +3449,6 @@ struct attack *mattk;
 	return (parried);
 }
 
+/*DUMMY*/
+
 /*mhitu.c*/
