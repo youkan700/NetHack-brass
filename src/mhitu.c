@@ -3348,7 +3348,8 @@ struct attack *mattk;
 	/* huge monsters are hard to parry */
 	if (magr->data->msize > MZ_MEDIUM)
 	    tmp = MZ_MEDIUM - (int)magr->data->msize;
-	tmp -= magr->m_lev;
+	if (magr != &youmonst)
+	    tmp -= magr->m_lev;
 
 	if (mdef == &youmonst) {
 	    if(multi < 0) return 0;
@@ -3370,11 +3371,13 @@ struct attack *mattk;
 	    }
 	    shield = which_armor(mdef, W_ARMS);
 	    tmp += mdef->m_lev;
+	    if (tmp < 5) tmp = 5; /* balance... */
 	}
 	if (!shield) return 0;
 	tmp += (int)(shield->spe);
 	if (is_elf(mdef->data) && is_elven_armor(shield)) tmp++;
 	else if (is_dwarf(mdef->data) && is_dwarvish_armor(shield)) tmp++;
+	if (tmp < 1) tmp = 1;
 //pline("(parry:%d)", tmp);
 	if (rn2(20) < tmp) {
 	    if (mdef == &youmonst) {

@@ -289,6 +289,7 @@ const char *nam;
 	    if (mon == &youmonst) {
 		/* you blocked the attack with your shield */
 		You(E_J("block the %s with your shield.","%s‚ğ‚‚Å–h‚¢‚¾B"), nam);
+		makeknown(shield->otyp);
 	    } else {
 		/* monster blocked the attack with its shield */
 		if (!Blind) {
@@ -298,6 +299,7 @@ const char *nam;
 #else
 		    pline("%s‚Í%s‚ğ‚‚Å–h‚¢‚¾B", mon_nam(mon), nam);
 #endif /*JP*/
+		    makeknown(shield->otyp);
 		} else {
 		    pline(E_J("%s seems unaffected.","%s‚Í‰e‹¿‚ğó‚¯‚È‚¢‚æ‚¤‚¾B"), Monnam(mon));
 		}

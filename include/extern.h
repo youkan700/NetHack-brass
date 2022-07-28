@@ -199,6 +199,7 @@ E int NDECL(getpos2test);
 
 E boolean FDECL(is_pool, (int,int));
 E boolean FDECL(is_lava, (int,int));
+E boolean FDECL (is_pool_or_lava, (int,int));
 E boolean FDECL(is_ice, (int,int));
 E boolean FDECL(is_swamp, (int,int));
 E int FDECL(is_drawbridge_wall, (int,int));

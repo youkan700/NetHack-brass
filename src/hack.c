@@ -652,8 +652,10 @@ int mode;
 {
     int x = ux+dx;
     int y = uy+dy;
-    register struct rm *tmpr = &levl[x][y];
-    register struct rm *ust;
+    struct rm *tmpr = &levl[x][y];
+    struct rm *ust;
+    char waterbuf[BUFSZ];
+    int wwalksafe = 0;
 
     flags.door_opened = FALSE;
     /*
@@ -807,9 +809,24 @@ collision:
     }
     /* Pick travel path that does not require crossing a trap.
      * Avoid water and lava using the usual running rules.
-     * (but not u.ux/u.uy because findtravelpath walks toward u.ux/u.uy) */
+     * (but not u.ux/u.uy because findtravelpath walks toward u.ux/u.uy) 
+     *  D.S. add water walking if safe */
     if (flags.run == 8 && mode != DO_MOVE && (x != u.ux || y != u.uy)) {
 	struct trap* t = t_at(x, y);
+
+        if (Wwalking && !Is_waterlevel(&u.uz) && uarmf
+                && uarmf->dknown && objects[uarmf->otyp].oc_name_known) {
+            if (is_lava(x, y)) {
+                /* Walking over lava safely requires all of fire
+                * resistance, fireproof water walking boots, and to
+                * know the boots are such. */
+                wwalksafe = uarmf->oerodeproof && uarmf->rknown
+                    && Fire_resistance;
+            }
+            else {
+                wwalksafe = 1;
+            }
+        }
 
 	if ((t && t->tseen) ||
 	    (!Levitation && !Flying &&
@@ -856,6 +873,38 @@ collision:
 	    }
 	}
 	/* assume you'll be able to push it when you get there... */
+    }
+
+    /* D.S. prompt if moving into lava or water and not absolutely safe.
+     * WWalking only works if boots are known (and known fireproof for lava)
+     *   is_clinger(steed) appears to be a 3.6.0 change from 3.4.3 behavior
+     * Never ask if already on water, which should only mean unbreathing*/
+    if (mode == DO_MOVE && is_pool_or_lava(x, y) && !is_pool_or_lava(ux, uy)){
+        if (Wwalking && uarmf && uarmf->dknown 
+                && objects[uarmf->otyp].oc_name_known) {
+            if (is_lava(x, y)) {
+                /* Walking over lava safely requires all of fire
+                * resistance, fireproof water walking boots, and to
+                * know the boots are such. */
+                wwalksafe = uarmf->oerodeproof && uarmf->rknown
+                    && Fire_resistance;
+            }
+            else {
+                wwalksafe = 1;
+            }
+        }
+
+        if (Is_waterlevel(&u.uz) || (!Levitation && !Flying && !wwalksafe
+            && (u.usteed == NULL || (is_flyer(u.usteed->data)
+            || is_floater(u.usteed->data) || is_clinger(u.usteed->data)) ))) {
+                sprintf(waterbuf,
+			E_J("Really step into the %s?",
+			    "本当に%sに踏み込みますか？"),
+			surface(x, y));
+                if (yn(waterbuf) != 'y') {
+                    return FALSE;
+                }
+        }
     }
 
     /* OK, it is a legal place to move. */
@@ -1753,10 +1802,12 @@ boolean pick;
 		else if (Flying)
 			You(E_J("fly out of the water.",
 				"水から飛び出した。"));
-		else if (Wwalking)
+		else if (Wwalking) {
+			/* D.S. The effect is unambiguous, identify the boots. */
+			if (uarmf) makeknown(uarmf->otyp);
 			You(E_J("slowly rise above the surface.",
 				"ゆっくりと水面まで上がってきた。"));
-		else if (Swimming && !Amphibious && !Breathless)
+		} else if (Swimming && !Amphibious && !Breathless)
 			You(E_J("hurriedly swim to the surface!",
 				"息ができなくなり、あわてて水面まで泳ぎ上がった！"));
 		else
@@ -2290,10 +2341,10 @@ dopickup()
 void
 lookaround()
 {
-    register int x, y, i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
-    register int corrct = 0, noturn = 0;
-    register struct monst *mtmp;
-    register struct trap *trap;
+    int x, y, i, x0 = 0, y0 = 0, m0 = 1, i0 = 9;
+    int corrct = 0, noturn = 0, wwalksafe = 0;
+    struct monst *mtmp;
+    struct trap *trap;
 
     /* Grid bugs stop if trying to move diagonal, even if blind.  Maybe */
     /* they polymorphed while in the middle of a long move. */
@@ -2358,11 +2409,25 @@ bcorr:
 	    /* water and lava only stop you if directly in front, and stop
 	     * you even if you are running
 	     */
+	    if (uarmf && uarmf->dknown &&
+		    objects[uarmf->otyp].oc_name_known) {
+		if (is_lava(x, y)) {
+		    /* Walking over lava safely requires all of fire
+		     * resistance, fireproof water walking boots, and to
+		     * know the boots are such. */
+		    wwalksafe = uarmf->oerodeproof && uarmf->rknown
+			&& Fire_resistance;
+		}
+		else {
+		    wwalksafe = 1;
+		}
+	    }
 	    if(!Levitation && !Flying && !is_clinger(youmonst.data) &&
-				x == u.ux+u.dx && y == u.uy+u.dy)
+               !wwalksafe && x == u.ux + u.dx && y == u.uy + u.dy)
 			/* No Wwalking check; otherwise they'd be able
 			 * to test boots by trying to SHIFT-direction
 			 * into a pool and seeing if the game allowed it
+			 * D.S. - changed to allow if _known_ wwalking boots
 			 */
 			goto stop;
 	    continue;
