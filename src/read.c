@@ -1309,10 +1309,14 @@ register struct obj	*sobj;
 				"‚±‚ÌŠª•¨‚ªŽ¯•Ê‚ÌŠª•¨‚Å‚ ‚é‚ÆŽ¯•Ê‚µ‚½B"));
 		else
 			pline(E_J("This is an identify scroll.","‚±‚ê‚ÍŽ¯•Ê‚ÌŠª•¨‚¾B"));
-		if (sobj->blessed || (!sobj->cursed && !rn2(5))) {
-			cval = rn2(5);
-			/* Note: if rn2(5)==0, identify all items */
-			if (cval == 1 && sobj->blessed && Luck > 0) ++cval;
+		if (sobj->blessed) {
+		    cval = 0;
+		} else if (sobj->cursed) {
+		    cval = 1;
+		} else if (!rn2(3)) {
+		    cval = rn2(5);
+		    /* Note: if rn2(5)==0, identify all items */
+		    if (cval == 1 && Luck > 0) ++cval;
 		} else	cval = 1;
 		if(!objects[sobj->otyp].oc_name_known) more_experienced(0,10);
 		useup(sobj);
