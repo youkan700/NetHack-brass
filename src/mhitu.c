@@ -1001,7 +1001,6 @@ hitmu(mtmp, mattk)
 	struct permonst *olduasmon = youmonst.data;
 	int res;
 	int artihit = 0;
-	int hitpart = DAMCAN_RANDOM;
 	boolean shield = TRUE;
 
 	if (!canspotmons(mtmp))
@@ -1305,7 +1304,6 @@ dopois:
 		}
 		if (u_slip_free(mtmp,mattk)) break;
 
-		hitpart = DAMCAN_HEAD;	/* known where to be hit */
 		if (uarmh && rn2(8)) {
 		    /* not body_part(HEAD) */
 		    Your(E_J("%s blocks the attack to your head.",
@@ -1389,7 +1387,6 @@ dopois:
 		 * still _can_ attack you when you're flying or mounted.
 		 * [FIXME: why can't a flying attacker overcome this?]
 		 */
-		  hitpart = DAMCAN_FEET;	/* known where to be hit */
 		  if (
 #ifdef STEED
 			u.usteed ||
@@ -1883,7 +1880,7 @@ dopois:
 
 	if(dmg) {
 	    /* reduce damage by armor */
-	    dmg = reduce_damage(dmg, hitpart);
+	    dmg = reduce_damage(dmg);
 
 	    if (Half_physical_damage
 		/* Mitre of Holiness */
@@ -3266,9 +3263,8 @@ struct obj *otmp;
 }
 
 int
-reduce_damage(dmg, hitpart)
+reduce_damage(dmg)
 int dmg;
-int hitpart;
 {
 	int tmp;	/* damage is reduced by rnd(tmp) */
 
@@ -3280,47 +3276,40 @@ int hitpart;
 	dmg -= u.ublessed;
 	if (dmg < 1) return 1;
 
-//	/* shield */
-//	if (uarms)
-//		tmp += reduce_dmg_amount(uarms);
-
-	switch ( (hitpart > 0) ? hitpart : rn2(DAMCAN_MAX) ) {
-	    case DAMCAN_HEAD:	/* head */
-		if (uarmh) {
-			tmp += reduce_dmg_amount(uarmh);
-			/* maid dress' special power */
-			if(flags.female && uarm && uarm->otyp == MAID_DRESS &&
-			   uarmh->otyp == KATYUSHA) tmp += 2;
-		}
-		break;
-	    case DAMCAN_FEET:	/* feet */
-		if (uarmf)
-			tmp += reduce_dmg_amount(uarmf);
-		break;
-	    case DAMCAN_HAND:	/* hand(s) */
-		if (uarmg)
-			tmp += reduce_dmg_amount(uarmg);
-		break;
-	    default:
-		if (uarm) {
-			int tmp2;
-			tmp2 = reduce_dmg_amount(uarm);
-			tmp += tmp2;
-			if (ARM_BASE(uarm) >= 2 && rn2(20) < ARM_BASE(uarm)) use_skill(P_ARMORED_COMBAT, 1);
-		}
-		if (uarmc) {
-			tmp += reduce_dmg_amount(uarmc);
-			/* maid dress' special power */
-			if(flags.female && uarm && uarm->otyp == MAID_DRESS) {
-				if (uarmc->otyp == KITCHEN_APRON) tmp += 3;
-				if (uarmc->otyp == FRILLED_APRON) tmp += 4;
-			}
-		}
-/* Because Hawaiian shirt do not improve AC, it do not reduce damage */
-//		if (uarmu)
-//			tmp += reduce_dmg_amount(uarmu);
-		break;
+	if (uarmh) {
+	    tmp += reduce_dmg_amount(uarmh);
+	    /* maid dress' special power */
+	    if(flags.female && uarm && uarm->otyp == MAID_DRESS &&
+	       uarmh->otyp == KATYUSHA) tmp += 2;
 	}
+
+	if (uarmf)
+	    tmp += reduce_dmg_amount(uarmf);
+
+	if (uarmg)
+	    tmp += reduce_dmg_amount(uarmg);
+
+	if (uarm) {
+	    int tmp2;
+	    tmp2 = reduce_dmg_amount(uarm);
+	    tmp2 += tmp2 * P_SKILL(P_ARMORED_COMBAT) / 200;
+	    tmp += tmp2;
+	    if (ARM_BASE(uarm) >= 2 && rn2(20) < ARM_BASE(uarm)) use_skill(P_ARMORED_COMBAT, 1);
+	}
+
+	if (uarmc) {
+	    tmp += reduce_dmg_amount(uarmc);
+	    /* maid dress' special power */
+	    if(flags.female && uarm && uarm->otyp == MAID_DRESS) {
+		if (uarmc->otyp == KITCHEN_APRON) tmp += 3;
+		if (uarmc->otyp == FRILLED_APRON) tmp += 4;
+	    }
+	}
+
+/* Because Hawaiian shirt do not improve AC, it do not reduce damage */
+//	if (uarmu)
+//	    tmp += reduce_dmg_amount(uarmu);
+
 	/* reduce damage by armor rating at the part being hit */
 	if (tmp > 0) dmg -= rnd(tmp);
 	/* at least 1 damage remains */

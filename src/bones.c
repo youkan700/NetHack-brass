@@ -58,24 +58,33 @@ resetobjs(ochain,restore)
 struct obj *ochain;
 boolean restore;
 {
-	struct obj *otmp;
+	struct obj *otmp, *nobj;
 
-	for (otmp = ochain; otmp; otmp = otmp->nobj) {
+	for (otmp = ochain; otmp; otmp = nobj) {
+		nobj = otmp->nobj;
 		if (otmp->cobj)
 		    resetobjs(otmp->cobj,restore);
-
-		if (((otmp->otyp != CORPSE || otmp->corpsenm < SPECIAL_PM)
-			&& otmp->otyp != STATUE)
-			&& (!otmp->oartifact ||
-			   (restore && (exist_artifact(otmp->oartifact)
-					|| is_quest_artifact(otmp))))) {
-			otmp->oartifact = 0;
-			del_xdat_obj(otmp, XDAT_NAME);
-		} else if (otmp->oartifact && restore) {
-			/* just turn on the 'exist' flag */
-			create_artifact(otmp, otmp->oartifact);
+		if (otmp->in_use) {
+		    obj_extract_self(otmp);
+		    dealloc_obj(otmp);
+		    continue;
 		}
-		if (!restore) {
+
+		if (restore) {
+		    if (otmp->oartifact) {
+			if (exist_artifact(otmp->oartifact)
+			    || is_quest_artifact(otmp)) {
+			    otmp->oartifact = 0;
+			    del_xdat_obj(otmp, XDAT_NAME);
+			} else {
+			    /* just turn on the 'exist' flag */
+			    create_artifact(otmp, otmp->oartifact);
+			}
+		    } else if (otmp->otyp != CORPSE && otmp->otyp != STATUE) {
+			del_xdat_obj(otmp, XDAT_NAME);
+		    }
+
+		} else { /* saving */
 			/* do not zero out o_ids for ghost levels anymore */
 
 			if(objects[otmp->otyp].oc_uses_known) otmp->known = 0;
@@ -129,6 +138,10 @@ struct obj *cont;
 {
 	struct obj *otmp;
 	int ch;
+	boolean bury;
+
+	bury = (IS_GRAVE(levl[u.ux][u.uy].typ) &&
+		(levl[u.ux][u.uy].gravemask & GRV_BONES));
 
 	uswapwep = 0; /* ensure curse() won't cause swapwep to drop twice */
 	while ((otmp = invent) != 0) {
@@ -141,7 +154,7 @@ struct obj *cont;
 		    end_burn(otmp, TRUE);	/* smother in statue */
 
 		/* many items disappear */
-		ch = (objects[otmp->otyp].oc_magic) ? 7 : 3;
+		ch = (objects[otmp->otyp].oc_magic) ? 5 : 2;
 		if (rn2(ch) || Is_container(otmp)) {
 		    if (obj_is_burning(otmp)) end_burn(otmp, TRUE);
 		    obfree(otmp, (struct obj *) 0);
@@ -170,7 +183,11 @@ struct obj *cont;
 			(void) add_to_minv(mtmp, otmp);
 		else if (cont)
 			(void) add_to_container(cont, otmp);
-		else
+		else if (bury) {
+			otmp->ox = u.ux;
+			otmp->oy = u.uy;
+			(void) bury_an_obj(otmp);
+		} else
 			place_object(otmp, u.ux, u.uy);
 	}
 
@@ -178,7 +195,12 @@ struct obj *cont;
 		long ugold = u.ugold;
 		if (mtmp) mtmp->mgold = ugold;
 		else if (cont) (void) add_to_container(cont, mkgoldobj(ugold));
-		else (void)mkgold(ugold, u.ux, u.uy);
+		else if (bury) {
+		    otmp = mkgoldobj(ugold);
+		    otmp->ox = u.ux;
+		    otmp->oy = u.uy;
+		    (void) bury_an_obj(otmp);
+		} else (void)mkgold(ugold, u.ux, u.uy);
 		u.ugold = ugold;	/* undo mkgoldobj()'s removal */
 	}
 
@@ -296,8 +318,14 @@ struct obj *corpse;
 		in_mklev = FALSE;
 		if (!mtmp) return;
 		mtmp = christen_monst(mtmp, plname);
-		if (corpse)
-			(void) obj_attach_mid(corpse, mtmp->m_id); 
+		if (corpse) {
+		    (void) obj_attach_mid(corpse, mtmp->m_id); 
+		    if (IS_GRAVE(levl[u.ux][u.uy].typ) &&
+			(levl[u.ux][u.uy].gravemask & GRV_BONES)) {
+			obj_extract_self(corpse);
+			(void) bury_an_obj(corpse);
+		    }
+		}
 	} else {
 		/* give your possessions to the monster you become */
 		in_mklev = TRUE;

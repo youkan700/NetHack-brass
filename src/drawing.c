@@ -312,8 +312,8 @@ const struct symdef defsyms[MAXPCHARS] = {
 /*50*/	{'^', EJ2("sleeping gas trap",	"睡眠ガスの罠"),   C(HI_ZAP)},		/* trap */
 	{'^', EJ2("rust trap",		"腐食の罠"),	   C(CLR_BLUE)},	/* trap */
 	{'^', EJ2("fire trap",		"炎の罠"),	   C(CLR_ORANGE)},	/* trap */
-	{'^', EJ2("pit",		"落し穴"),	   C(CLR_BLACK)},	/* trap */
-	{'^', EJ2("spiked pit",	"棘の仕掛けられた落し穴"), C(CLR_BLACK)},	/* trap */
+	{'^', EJ2("pit",		"落とし穴"),	   C(CLR_BLACK)},	/* trap */
+	{'^', EJ2("spiked pit",	"棘の仕掛けられた落とし穴"), C(CLR_BLACK)},	/* trap */
 	{'^', EJ2("hole",		"穴"),		   C(CLR_BROWN)},	/* trap */
 	{'^', EJ2("trap door",		"落とし扉"),	   C(CLR_BROWN)},	/* trap */
 	{'^', EJ2("teleportation trap",	"テレポートの罠"), C(CLR_MAGENTA)},	/* trap */

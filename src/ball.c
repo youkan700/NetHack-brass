@@ -669,7 +669,7 @@ xchar x, y;
 	if (u.utrap && u.utraptype != TT_INFLOOR) {
 	    switch(u.utraptype) {
 	    case TT_PIT:
-		pline(pullmsg, E_J("pit","—‚µŒŠ"));
+		pline(pullmsg, E_J("pit","—‚Æ‚µŒŠ"));
 		break;
 	    case TT_WEB:
 		pline(pullmsg, E_J("web","’wå‚Ì‘ƒ"));

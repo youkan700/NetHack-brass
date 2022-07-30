@@ -42,7 +42,7 @@ float_up()
 		if(u.utraptype == TT_PIT) {
 			u.utrap = 0;
 			You(E_J("float up, out of the pit!",
-				"浮き上がり、落し穴から抜け出た！"));
+				"浮き上がり、落とし穴から抜け出た！"));
 			vision_full_recalc = 1;	/* vision limits change */
 			fill_pit(u.ux, u.uy);
 		} else if (u.utraptype == TT_INFLOOR) {

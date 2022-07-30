@@ -439,7 +439,7 @@ pick_lock(pick) /* pick a lock with a given object */
 
 	    if (u.utrap && u.utraptype == TT_PIT) {
 		You_cant(E_J("reach over the edge of the pit.",
-			     "落し穴の中からは届かない。"));
+			     "落とし穴の中からは届かない。"));
 		return(0);
 	    }
 
@@ -637,7 +637,7 @@ doopen()		/* try to open a door */
 
 	if (u.utrap && u.utraptype == TT_PIT) {
 	    You_cant(E_J("reach over the edge of the pit.",
-			 "落し穴の中からは届かない。"));
+			 "落とし穴の中からは届かない。"));
 	    return 0;
 	}
 
@@ -776,7 +776,7 @@ doclose()		/* try to close a door */
 
 	if (u.utrap && u.utraptype == TT_PIT) {
 	    You_cant(E_J("reach over the edge of the pit.",
-			 "落し穴の中からは届かない。"));
+			 "落とし穴の中からは届かない。"));
 	    return 0;
 	}
 

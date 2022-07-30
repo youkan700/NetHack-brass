@@ -536,13 +536,12 @@ register int x, y, typ;
 		    add_damage(x, y,		/* schedule repair */
 			       ((IS_DOOR(lev->typ) || IS_WALL(lev->typ))
 				&& !flags.mon_moving) ? 200L : 0L);
-		lev->doormask = 0;	/* subsumes altarmask, icedpool... */
-		if (IS_FLOOR(lev->typ))
-		    /* nothing */;
-		else
-		if (IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
-		    lev->typ = ROOM;
-
+		if (IS_GRAVE(lev->typ))
+			dispose_grave(x, y);
+		else if (IS_FLOOR(lev->typ))
+			/* nothing */;
+		else if (IS_ROOM(lev->typ)) /* && !IS_AIR(lev->typ) */
+			lev->typ = ROOM;
 		/*
 		 * some cases which can happen when digging
 		 * down while phazing thru solid areas
@@ -553,6 +552,7 @@ register int x, y, typ;
 		    lev->typ = level.flags.is_maze_lev ? ROOM :
 			       level.flags.is_cavernous_lev ? CORR : DOOR;
 
+		lev->doormask = 0;	/* subsumes altarmask, icedpool... */
 		unearth_objs(x, y);
 		break;
 	    case RUST_TRAP:
@@ -1337,13 +1337,13 @@ pitfall:
 #endif
 		if (ttype == SPIKED_PIT) {
 		    losehp(rnd(10),E_J("fell into a pit of iron spikes",
-				       "鉄の棘の仕掛けられた落し穴に落ちて"),
+				       "鉄の棘の仕掛けられた落とし穴に落ちて"),
 			E_J(NO_KILLER_PREFIX,KILLED_BY));
 		    if (!rn2(6))
 			poisoned(E_J("spikes","棘"), A_STR,
 				 E_J("fall onto poison spikes","毒を塗られた棘の上に落ちて死んだ"), 8);
 		} else
-		    losehp(rnd(6),E_J("fell into a pit","落し穴に落ちて"), E_J(NO_KILLER_PREFIX,KILLED_BY));
+		    losehp(rnd(6),E_J("fell into a pit","落とし穴に落ちて"), E_J(NO_KILLER_PREFIX,KILLED_BY));
 		if (Punished && !carried(uball)) {
 		    unplacebc();
 		    ballfall();
@@ -2550,7 +2550,7 @@ glovecheck:		    target = which_armor(mtmp, W_ARMG);
 				  Monnam(mtmp), fallverb,
 				  a_your[trap->madeby_u]);
 #else
-			    pline("%sは%s落し穴に%s！",
+			    pline("%sは%s落とし穴に%s！",
 				  Monnam(mtmp),
 				  trap->madeby_u ? "あなたが掘った" : "",
 				  fallverb);
@@ -4011,7 +4011,7 @@ struct trap *ttmp;
 			Sprintf(kbuf, "trying to help %s out of a pit",
 					an(mtmp->data->mname));
 #else
-			Sprintf(kbuf, "%sを落し穴から助けようとして",
+			Sprintf(kbuf, "%sを落とし穴から助けようとして",
 					JMONNAM(monsndx(mtmp->data)));
 #endif /*JP*/
 			instapetrify(kbuf);
@@ -4066,7 +4066,7 @@ struct trap *ttmp;
 	if (!try_lift(mtmp, ttmp, wt, TRUE)) return 1;
 
 	You(E_J("pull %s out of the pit.",
-		"%sを落し穴から引っぱり出した。"), mon_nam(mtmp));
+		"%sを落とし穴から引っぱり出した。"), mon_nam(mtmp));
 	mtmp->mtrapped = 0;
 	fill_pit(mtmp->mx, mtmp->my);
 	reward_untrap(ttmp, mtmp);
@@ -4116,8 +4116,8 @@ boolean force;
 #else
 			    You("%s何もできることはない。",
 				u.utrap ?
-				"自分のはまっている落し穴に対して" :
-				"落し穴の縁に立っている間は");
+				"自分のはまっている落とし穴に対して" :
+				"落とし穴の縁に立っている間は");
 #endif /*JP*/
 			    trap_skipped = TRUE;
 			    deal_with_floor_trap = FALSE;
@@ -4169,12 +4169,12 @@ boolean force;
 			case SPIKED_PIT:
 				if (!u.dx && !u.dy) {
 				    You(E_J("are already on the edge of the pit.",
-					    "すでに落し穴の縁にいる。"));
+					    "すでに落とし穴の縁にいる。"));
 				    return 0;
 				}
 				if (!(mtmp = m_at(x,y))) {
 				    pline(E_J("Try filling the pit instead.",
-					      "代わりに、落し穴を埋めてみたら。"));
+					      "代わりに、落とし穴を埋めてみたら。"));
 				    return 0;
 				}
 				return help_monster_out(mtmp, ttmp);

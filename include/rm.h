@@ -380,6 +380,16 @@ extern const struct symdef def_warnsyms[WARNCOUNT];
 #define ICED_MOAT	16
 
 /*
+ * Where is a grave standing on
+ */
+#define GRV_ROOM	0x00
+#define GRV_CORR	0x01
+#define GRV_ICE		0x02
+#define GRV_GROUND	0x03
+#define GRV_MASK	0x03	/* mask for base */
+#define GRV_BONES	0x04
+
+/*
  * The structure describing a coordinate position.
  * Before adding fields, remember that this will significantly affect
  * the size of temporary files and save files.
@@ -488,6 +498,7 @@ struct rm {
 #define drawbridgemask	flags
 #define looted		flags
 #define icedpool	flags
+#define gravemask	flags
 
 #define blessedftn	horizontal  /* a fountain that grants attribs */
 #define disturbed	horizontal  /* a grave that has been disturbed */
