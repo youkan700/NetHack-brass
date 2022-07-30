@@ -1682,7 +1682,7 @@ int magic; /* 0=Physical, otherwise skill level */
 		    break;
 		  }
 		case TT_PIT:
-		    You(E_J("leap from the pit!","落し穴から跳びあがった！"));
+		    You(E_J("leap from the pit!","落とし穴から跳びあがった！"));
 		    break;
 		case TT_WEB:
 		    You(E_J("tear the web apart as you pull yourself free!",
@@ -2957,7 +2957,7 @@ struct obj *obj;
 	    if (proficient && rn2(proficient + 2)) {
 		if (!mtmp || enexto(&cc, rx, ry, youmonst.data)) {
 		    You(E_J("yank yourself out of the pit!",
-			    "自分を落し穴から引き上げた！"));
+			    "自分を落とし穴から引き上げた！"));
 		    teleds(cc.x, cc.y, TRUE);
 		    u.utrap = 0;
 		    vision_full_recalc = 1;

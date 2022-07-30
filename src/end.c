@@ -878,6 +878,7 @@ die:
 		}
 #endif /*JP*/
 		make_grave(u.ux, u.uy, pbuf);
+		levl[u.ux][u.uy].gravemask |= GRV_BONES;
 	    }
 	}
 

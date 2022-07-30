@@ -194,7 +194,7 @@ const char *verb;
 				vtense((const char *)0, verb),
 				(mtmp) ? "" : " with you");
 #else
-			pline("‘åŠâ‚Í%s—Ž‚µŒŠ‚É%sB",
+			pline("‘åŠâ‚Í%s—Ž‚Æ‚µŒŠ‚É%sB",
 				(mtmp) ? "" : "‚ ‚È‚½‚Æ‚Æ‚à‚É", verb);
 #endif /*JP*/
 		    if (mtmp) {
@@ -229,7 +229,7 @@ const char *verb;
 				    t->tseen ? "" : "‰B‚³‚ê‚½ã©‚É“Ë‚Áž‚ÝA",
 				    t->ttyp == TRAPDOOR ? "—Ž‚Æ‚µ”à‚ð‚Ó‚³‚¢‚¾" :
 				    t->ttyp == HOLE ? "ŒŠ‚ð‚Ó‚³‚¢‚¾" :
-				    "—Ž‚µŒŠ‚ð–„‚ß‚½");
+				    "—Ž‚Æ‚µŒŠ‚ð–„‚ß‚½");
 #endif /*JP*/
 			} else
 				You_hear(E_J("the boulder %s.","‘åŠâ‚ª%s‰¹‚ð"), verb);
@@ -277,7 +277,7 @@ const char *verb;
 //				The(xname(obj)), otense(obj, "tumble"),
 //				the_your[t->madeby_u]);
 //#else
-//			pline("%s‚Í%s—Ž‚µŒŠ‚É“]‚ª‚è—Ž‚¿‚½B",
+//			pline("%s‚Í%s—Ž‚Æ‚µŒŠ‚É“]‚ª‚è—Ž‚¿‚½B",
 //				xname(obj), the_your[t->madeby_u]);
 //#endif /*JP*/
 	}
@@ -943,13 +943,20 @@ dodown()
 
 	if (trap) {
 	    if (trap->ttyp == PIT || trap->ttyp == SPIKED_PIT) {
-		You(E_J("carefully slide down into the %s",
-			"’ˆÓ[‚­%s‚Ì’†‚ÉŠŠ‚èž‚ñ‚¾B"),
-			defsyms[trap_to_defsym(trap->ttyp)].explanation );
-		u.utraptype = TT_PIT;
-		u.utrap = rn1(6,2);
-		vision_full_recalc = 1;	/* vision limits change */	/*[Sakusha]*/
-		return(0);
+		if (u.utrap == 0) {
+		    You(E_J("carefully slide down into the %s",
+			    "’ˆÓ[‚­%s‚Ì’†‚ÉŠŠ‚èž‚ñ‚¾B"),
+			    defsyms[trap_to_defsym(trap->ttyp)].explanation );
+		    u.utraptype = TT_PIT;
+		    u.utrap = rn1(6,2);
+		    vision_full_recalc = 1;	/* vision limits change */	/*[Sakusha]*/
+		    return(1);
+		} else {
+		    You(E_J("are already in the bottom of the %s",
+			    "‚·‚Å‚É%s‚Ì’ê‚É‚¢‚éB"),
+			    defsyms[trap_to_defsym(trap->ttyp)].explanation );
+		    return(0);
+		}
 	    } /*else*/
 #ifndef JP
 	    You("%s %s.", locomotion(youmonst.data, "jump"),

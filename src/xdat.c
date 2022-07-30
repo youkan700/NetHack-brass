@@ -386,8 +386,9 @@ wiz_xdat()
 	anything any;
 	struct monst *mtmp;
 	struct obj *otmp;
+	boolean inv;
 
-	switch (yn_function("Check extra data of MONST, or OBJ?", "mo", '\0')) {
+	switch (yn_function("Check extra data of MONST, OBJ or FLOOROBJ?", "mof", '\0')) {
 	    case 'm':
 		w = create_nhwindow(NHW_MENU);
 		start_menu(w);
@@ -414,10 +415,17 @@ wiz_xdat()
 		}
 		break;
 	    case 'o':
+		otmp = invent;
+		inv = TRUE;
+		goto show_objs;
+	    case 'f':
+		otmp = fobj;
+		inv = FALSE;
+show_objs:
 		w = create_nhwindow(NHW_MENU);
 		start_menu(w);
 		cnt = 0;
-		for (otmp = invent; otmp; otmp = otmp->nobj) {
+		for (; otmp; otmp = otmp->nobj) {
 		    if (otmp->oextra) {
 			any.a_obj = otmp;
 			Sprintf(buf, "%s", xname(otmp));
@@ -427,7 +435,8 @@ wiz_xdat()
 		    }
 		}
 		end_menu(w, cnt ? "Pick a object to check:" :
-				  "No object in your inventory has oextra data.");
+			    inv ? "No object in your inventory has oextra data." :
+				  "No object on floor has oextra data.");
 		n = select_menu(w, PICK_ONE, &selected);
 		destroy_nhwindow(w);
 		if (n > 0) {

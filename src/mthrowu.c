@@ -186,7 +186,7 @@ const char *name;	/* if null, then format `obj' */
 				  "‚ ‚È‚½‚Í‚Â‚©‚È‚¢‚æ‚¤‚¾B"));
 		else {
 			if (is_acid) pline(E_J("It burns!","g‘Ì‚ªÜ‚¯‚éI"));
-			if (dam) dam = reduce_damage(dam, DAMCAN_RANDOM);
+			if (dam) dam = reduce_damage(dam);
 			if (Half_physical_damage) dam = (dam+1) / 2;
 			losehp(dam, knm, kprefix);
 			exercise(A_STR, FALSE);

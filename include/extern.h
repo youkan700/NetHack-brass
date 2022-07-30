@@ -625,6 +625,7 @@ E void FDECL(rest_engravings, (int));
 E void FDECL(del_engr, (struct engr *));
 E void FDECL(rloc_engr, (struct engr *));
 E void FDECL(make_grave, (int,int,const char *));
+E void FDECL(dispose_grave, (int,int));
 E void FDECL(read_wallsign_at, (int,int));
 E void FDECL(make_wallsign_at, (int,int,int,int,const char *,XCHAR_P));
 E void NDECL(remember_wallsign_on);
@@ -1070,7 +1071,7 @@ E int FDECL(doseduce, (struct monst *));
 #endif
 E boolean FDECL(is_full_resist, (uchar));
 E int FDECL(reduce_dmg_amount, (struct obj *));
-E int FDECL(reduce_damage, (int, int));
+E int FDECL(reduce_damage, (int));
 E void FDECL(hurtarmor,(int));
 E int FDECL(parry_with_shield, (struct monst *,struct monst *,struct attack *));
 

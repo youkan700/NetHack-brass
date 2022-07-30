@@ -1477,17 +1477,68 @@ make_grave(x, y, str)
 int x, y;
 const char *str;
 {
+	int base;
+
 	/* Can we put a grave here? */
-	if ((levl[x][y].typ != ROOM && levl[x][y].typ != GRAVE) || t_at(x,y)) return;
+	if (t_at(x,y)) return;
+	switch (levl[x][y].typ) {
+	    case ROOM:
+	    case CARPET:
+		base = GRV_ROOM;
+		break;
+	    case CORR:
+		base = GRV_CORR;
+		break;
+	    case ICE:
+		base = GRV_ICE;
+		break;
+	    case GRASS:
+	    case GROUND:
+		base = GRV_GROUND;
+		break;
+	    default:
+		/* we can't */
+		return;
+	}
 
 	/* Make the grave */
 	levl[x][y].typ = GRAVE;
+	levl[x][y].gravemask = base;
+	levl[x][y].disturbed = 0;
 
 	/* Engrave the headstone */
 	if (!str) str = epitaphs[rn2(SIZE(epitaphs))];
 	del_engr_at(x, y);
 	make_engr_at(x, y, str, 0L, HEADSTONE);
 	return;
+}
+
+void
+dispose_grave(x, y)
+int x, y;
+{
+	if (levl[x][y].typ != GRAVE) return;
+
+	switch(levl[x][y].gravemask & GRV_MASK) {
+	    case GRV_ROOM:
+		levl[x][y].typ = ROOM;
+		break;
+	    case GRV_CORR:
+		levl[x][y].typ = CORR;
+		break;
+	    case GRV_ICE:
+		levl[x][y].typ = ICE;
+		break;
+	    case GRV_GROUND:
+		levl[x][y].typ = GROUND;
+		break;
+	    default:
+		levl[x][y].typ = ROOM;
+		break;
+	}
+	levl[x][y].gravemask = 0;
+	levl[x][y].disturbed = 0;
+	del_engr_at(x, y);
 }
 
 /* wall sign */

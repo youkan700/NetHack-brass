@@ -4448,7 +4448,7 @@ boolean *shopdamage;
 		    if (lev->typ == BOG) {
 			lev->typ = GROUND;
 			filltyp = fillholetyp(x,y);
-			if (filltyp == ROOM) {
+			if (ACCESSIBLE(filltyp)) {
 			    dried = 1;
 			} else {
 			    lev->typ = BOG;
@@ -4456,7 +4456,7 @@ boolean *shopdamage;
 		    } else {
 			lev->typ = ROOM;
 			filltyp = fillholetyp(x,y);
-			if (filltyp == ROOM) {
+			if (ACCESSIBLE(filltyp)) {
 			    ttmp = maketrap(x, y, PIT);
 			    if (ttmp) ttmp->tseen = 1;
 			    dried = 1;

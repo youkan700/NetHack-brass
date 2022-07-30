@@ -2314,7 +2314,7 @@ dopickup()
 		if ((traphere->ttyp == PIT || traphere->ttyp == SPIKED_PIT) &&
 		     (!u.utrap || (u.utrap && u.utraptype != TT_PIT))) {
 			if (yn(E_J("You cannot pick up the object in the pit. Do you want to go down?",
-				   "ここからでは届かない。落し穴の底に降りますか？")) == 'y') {
+				   "ここからでは届かない。落とし穴の底に降りますか？")) == 'y') {
 			    You(E_J("carefully slide down into the %s",
 				    "注意深く%sの中に滑り込んだ。"),
 				    defsyms[trap_to_defsym(traphere->ttyp)].explanation);
@@ -2323,7 +2323,7 @@ dopickup()
 			    vision_full_recalc = 1;	/* vision limits change */	/*[Sakusha]*/
 			} else {
 			    You(E_J("cannot reach the bottom of the pit.",
-				    "落し穴の底まで届かない。"));
+				    "落とし穴の底まで届かない。"));
 			    return(0);
 			}
 		}

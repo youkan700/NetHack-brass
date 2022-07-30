@@ -15,7 +15,7 @@ STATIC_DCL void FDECL(mkcavepos, (XCHAR_P,XCHAR_P,int,BOOLEAN_P,BOOLEAN_P));
 STATIC_DCL void FDECL(mkcavearea, (BOOLEAN_P));
 STATIC_DCL int FDECL(dig_typ, (struct obj *,XCHAR_P,XCHAR_P));
 STATIC_DCL int NDECL(dig);
-STATIC_DCL void NDECL(dig_up_grave);
+STATIC_DCL void FDECL(dig_up_grave, (BOOLEAN_P));
 
 /* Indices returned by dig_typ() */
 #define DIGTYP_UNDIGGABLE 0
@@ -491,23 +491,26 @@ int x, y;
     int lo_x = max(1,x-1), hi_x = min(x+1,COLNO-1),
 	lo_y = max(0,y-1), hi_y = min(y+1,ROWNO-1);
     int pool_cnt = 0, moat_cnt = 0, lava_cnt = 0, swamp_cnt = 0;
+    schar typ;
 
     for (x1 = lo_x; x1 <= hi_x; x1++)
-	for (y1 = lo_y; y1 <= hi_y; y1++)
-	    if (levl[x1][y1].typ == POOL)
+	for (y1 = lo_y; y1 <= hi_y; y1++) {
+	    typ = levl[x1][y1].typ;
+	    if (typ == POOL)
 		pool_cnt++;
-	    else if (levl[x1][y1].typ == MOAT ||
-		    (levl[x1][y1].typ == DRAWBRIDGE_UP &&
+	    else if (typ == MOAT ||
+		    (typ == DRAWBRIDGE_UP &&
 			(levl[x1][y1].drawbridgemask & DB_UNDER) == DB_MOAT))
 		moat_cnt++;
-	    else if (levl[x1][y1].typ == LAVAPOOL ||
-		    (levl[x1][y1].typ == DRAWBRIDGE_UP &&
+	    else if (typ == LAVAPOOL ||
+		    (typ == DRAWBRIDGE_UP &&
 			(levl[x1][y1].drawbridgemask & DB_UNDER) == DB_LAVA))
 		lava_cnt++;
-	    else if (levl[x1][y1].typ == BOG ||
-		    (levl[x1][y1].typ == DRAWBRIDGE_UP &&
+	    else if (typ == BOG ||
+		    (typ == DRAWBRIDGE_UP &&
 			(levl[x1][y1].drawbridgemask & DB_UNDER) == DB_BOG))
 		swamp_cnt++;
+	}
     pool_cnt /= 3;		/* not as much liquid as the others */
 
     if (lava_cnt > moat_cnt + pool_cnt && rn2(lava_cnt + 1))
@@ -754,16 +757,17 @@ boolean pit_only;
 		delobj(boulder_here);
 		return TRUE;
 
-	} else if (IS_GRAVE(lev->typ)) {        
+	} else if (IS_GRAVE(lev->typ)) {
+	    boolean bones = !!(levl[u.ux][u.uy].gravemask & GRV_BONES);
 	    digactualhole(u.ux, u.uy, BY_YOU, PIT);
-	    dig_up_grave();
+	    dig_up_grave(bones);
 	    return TRUE;
 	} else if (lev->typ == DRAWBRIDGE_UP) {
 		/* must be floor or ice, other cases handled above */
 		/* dig "pit" and let fluid flow in (if possible) */
 		typ = fillholetyp(u.ux,u.uy);
 
-		if (typ == ROOM) {
+		if (ACCESSIBLE(typ)) {
 			/*
 			 * We can't dig a hole here since that will destroy
 			 * the drawbridge.  The following is a cop-out. --dlc
@@ -810,7 +814,7 @@ boolean pit_only;
 	} else {
 		typ = fillholetyp(u.ux,u.uy);
 
-		if (typ != ROOM) {
+		if (!ACCESSIBLE(typ)) {
 			lev->typ = typ;
 			goto liquid_flow;
 		}
@@ -828,7 +832,8 @@ boolean pit_only;
 }
 
 STATIC_OVL void
-dig_up_grave()
+dig_up_grave(bones)
+boolean bones;
 {
 	struct obj *otmp;
 
@@ -848,6 +853,20 @@ dig_up_grave()
 	    adjalign(-sgn(u.ualign.type));
 	    You(E_J("have violated the sanctity of this grave!",
 		    "墓の安息を破った！"));
+	}
+
+	if (bones) {
+	    for (otmp = level.buriedobjlist; otmp; otmp = otmp->nobj) {
+ 		if (otmp->ox == u.ux && otmp->oy == u.uy &&
+		    otmp->otyp == CORPSE) break;
+	    }
+	    if (otmp)
+		You(E_J("unearth a corpse.","死体を掘り出した。"));
+	    else
+		pline(E_J("The owner of the grave seems to rot away.",
+			  "墓の主は腐り果ててしまったようだ。"));
+	    newsym(u.ux,u.uy);
+	    return;
 	}
 
 	switch (rn2(5)) {
@@ -873,8 +892,6 @@ dig_up_grave()
 			  "この墓は使われていないようだ。おかしい…。"));
 	    break;
 	}
-	levl[u.ux][u.uy].typ = ROOM;
-	del_engr_at(u.ux, u.uy);
 	newsym(u.ux,u.uy);
 	return;
 }
