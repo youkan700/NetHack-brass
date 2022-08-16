@@ -32,7 +32,6 @@ static void FDECL(p_glow2,(struct obj *,const char *));
 static void FDECL(randomize,(int *, int));
 static void FDECL(forget_single_object, (int));
 static void FDECL(forget, (int));
-static void FDECL(maybe_tame, (struct monst *,struct obj *));
 static int FDECL(getobj_filter_read, (struct obj *));
 static int FDECL(getobj_filter_charge, (struct obj *));
 
@@ -765,7 +764,7 @@ int howmuch;
 }
 
 /* monster is hit by scroll of taming's effect */
-static void
+void
 maybe_tame(mtmp, sobj)
 struct monst *mtmp;
 struct obj *sobj;
@@ -1131,72 +1130,26 @@ register struct obj	*sobj;
 	    break;
 	case SCR_REMOVE_CURSE:
 	case SPE_REMOVE_CURSE:
-	    {	register struct obj *obj;
-		if(confused)
-		    if (Hallucination)
-			You_feel(E_J("the power of the Force against you!",
-				     "フォースの力が向けられているのを感じた！"));
-		    else
-			You_feel(E_J("like you need some help.",
-				     "助けが欲しいような気がした。"));
+	    if(confused)
+		if (Hallucination)
+		    You_feel(E_J("the power of the Force against you!",
+				 "フォースの力が向けられているのを感じた！"));
 		else
-		    if (Hallucination)
-			You_feel(E_J("in touch with the Universal Oneness.",
-				     "大宇宙の調和に触れたような気がした。"));
-		    else
-			You_feel(E_J("like someone is helping you.",
-				     "誰かに助けられているような気がした。"));
+		    You_feel(E_J("like you need some help.",
+				 "助けが欲しいような気がした。"));
+	    else
+		if (Hallucination)
+		    You_feel(E_J("in touch with the Universal Oneness.",
+				 "大宇宙の調和に触れたような気がした。"));
+		else
+		    You_feel(E_J("like someone is helping you.",
+				 "誰かに助けられているような気がした。"));
 
-		if (sobj->cursed) {
-		    pline_The(E_J("scroll disintegrates.","巻物は崩れ落ちた。"));
-		} else {
-		    for (obj = invent; obj; obj = obj->nobj) {
-			long wornmask;
-			wornmask = (obj->owornmask & ~(W_BALL|W_ART|W_ARTI));
-			if (wornmask && !sobj->blessed) {
-			    /* handle a couple of special cases; we don't
-			       allow auxiliary weapon slots to be used to
-			       artificially increase number of worn items */
-			    if (obj == uswapwep) {
-				if (!u.twoweap) wornmask = 0L;
-			    } else if (obj == uquiver) {
-				if (obj->oclass == WEAPON_CLASS) {
-				    /* mergeable weapon test covers ammo,
-				       missiles, spears, daggers & knives */
-				    if (!objects[obj->otyp].oc_merge) 
-					wornmask = 0L;
-				} else if (obj->oclass == GEM_CLASS) {
-				    /* possibly ought to check whether
-				       alternate weapon is a sling... */
-				    if (!uslinging()) wornmask = 0L;
-				} else {
-				    /* weptools don't merge and aren't
-				       reasonable quivered weapons */
-				    wornmask = 0L;
-				}
-			    }
-			}
-			if (sobj->blessed || wornmask ||
-			     obj->otyp == LOADSTONE ||
-			     (obj->otyp == LEASH && obj->leashmon)) {
-			    if(confused) blessorcurse(obj, 2);
-			    else uncurse(obj);
-			}
-		    }
-		}
-		if(Punished && !confused) unpunish();
-#ifdef STEED
-		if (u.usteed) {
-		    obj = which_armor(u.usteed, W_SADDLE);
-		    if (obj) {
-			if(confused) blessorcurse(obj, 2);
-			else uncurse(obj);
-		    }
-		}
-#endif
-		update_inventory();
-		break;
-	    }
+	    if (sobj->cursed)
+		pline_The(E_J("scroll disintegrates.","巻物は崩れ落ちた。"));
+	    else
+		remove_curse(sobj, confused);
+	    break;
 	case SCR_CREATE_MONSTER:
 	case SPE_CREATE_MONSTER:
 	    if (create_critters(1 + ((confused || sobj->cursed) ? 12 : 0) +
@@ -1457,6 +1410,7 @@ register struct obj	*sobj;
 #endif
 	    	 (!In_endgame(&u.uz) || Is_earthlevel(&u.uz))) {
 	    	register int x, y;
+		int nboulders = 0;
 
 	    	/* Identify the scroll */
 #ifndef JP
@@ -1471,120 +1425,25 @@ register struct obj	*sobj;
 	    	    change_luck(-1);	/* Sokoban guilt */
 
 	    	/* Loop through the surrounding squares */
-	    	if (!sobj->cursed) for (x = u.ux-1; x <= u.ux+1; x++) {
-	    	    for (y = u.uy-1; y <= u.uy+1; y++) {
-
-	    	    	/* Is this a suitable spot? */
-	    	    	if (isok(x, y) && !closed_door(x, y) &&
-	    	    			!IS_ROCK(levl[x][y].typ) &&
-	    	    			!IS_AIR(levl[x][y].typ) &&
-					(x != u.ux || y != u.uy)) {
-			    register struct obj *otmp2;
-			    register struct monst *mtmp;
-
-	    	    	    /* Make the object(s) */
-	    	    	    otmp2 = mksobj(confused ? ROCK : BOULDER,
-	    	    	    		FALSE, FALSE);
-	    	    	    if (!otmp2) continue;  /* Shouldn't happen */
-	    	    	    otmp2->quan = confused ? rn1(5,2) : 1;
-	    	    	    otmp2->owt = weight(otmp2);
-
-	    	    	    /* Find the monster here (won't be player) */
-	    	    	    mtmp = m_at(x, y);
-	    	    	    if (mtmp && !amorphous(mtmp->data) &&
-	    	    	    		!passes_walls(mtmp->data) &&
-	    	    	    		!noncorporeal(mtmp->data) &&
-	    	    	    		!unsolid(mtmp->data)) {
-				struct obj *helmet = which_armor(mtmp, W_ARMH);
-				int mdmg;
-
-				if (cansee(mtmp->mx, mtmp->my)) {
-				    pline(E_J("%s is hit by %s!",
-					      "%sに%sが命中した！"), Monnam(mtmp),
-	    	    	    			doname(otmp2));
-				    if (mtmp->minvis && !canspotmons(mtmp))
-					map_invisible(mtmp->mx, mtmp->my);
-				}
-	    	    	    	mdmg = dmgval(otmp2, mtmp) * otmp2->quan;
-				if (helmet) {
-				    if(is_metallic(helmet)) {
-					if (canspotmon(mtmp))
-					    pline(E_J("Fortunately, %s is wearing a hard helmet.",
-						      "幸い、%sは硬い兜をかぶっていた。"), mon_nam(mtmp));
-					else if (flags.soundok)
-					    You_hear(E_J("a clanging sound.","金属の衝突する音を"));
-					if (mdmg > 2) mdmg = 2;
-				    } else {
-					if (canspotmon(mtmp))
-#ifndef JP
-					    pline("%s's %s does not protect %s.",
-						Monnam(mtmp), xname(helmet),
-						mhim(mtmp));
-#else
-					    pline("%sの%sは%sを防げなかった。",
-						Monnam(mtmp), xname(helmet), xname(otmp2));
-#endif /*JP*/
-				    }
-				}
-	    	    	    	mlosehp(mtmp, mdmg);
-	    	    	    	if (mtmp->mhp <= 0)
-	    	    	    	    xkilled(mtmp, 1);
-	    	    	    }
-	    	    	    /* Drop the rock/boulder to the floor */
-	    	    	    if (!flooreffects(otmp2, x, y, E_J("fall","落ちた"))) {
-	    	    	    	place_object(otmp2, x, y);
-	    	    	    	stackobj(otmp2);
-	    	    	    	newsym(x, y);  /* map the rock */
-	    	    	    }
-	    	    	}
-		    }
-		}
-		/* Attack the player */
-		if (!sobj->blessed) {
-		    int dmg;
-		    struct obj *otmp2;
-
-		    /* Okay, _you_ write this without repeating the code */
-		    otmp2 = mksobj(confused ? ROCK : BOULDER,
-				FALSE, FALSE);
-		    if (!otmp2) break;
-		    otmp2->quan = confused ? rn1(5,2) : 1;
-		    otmp2->owt = weight(otmp2);
-		    if (!amorphous(youmonst.data) &&
-				!Passes_walls &&
-				!noncorporeal(youmonst.data) &&
-				!unsolid(youmonst.data)) {
-#ifndef JP
-			You("are hit by %s!", doname(otmp2));
-#else
-			pline("%sがあなたに命中した！", doname(otmp2));
-#endif /*JP*/
-			dmg = dmgval(otmp2, &youmonst) * otmp2->quan;
-			if (uarmh && !sobj->cursed) {
-			    if(is_metallic(uarmh)) {
-				pline(E_J("Fortunately, you are wearing a hard helmet.",
-					  "幸い、あなたは硬い兜をかぶっていた。"));
-				if (dmg > 2) dmg = 2;
-			    } else if (flags.verbose) {
-#ifndef JP
-				Your("%s does not protect you.",
-						xname(uarmh));
-#else
-				Your("%sは%sを防げなかった。",
-					xname(uarmh), xname(otmp2));
-#endif /*JP*/
+		if (!sobj->cursed)
+		    for (x = u.ux - 1; x <= u.ux + 1; x++) {
+			for (y = u.uy - 1; y <= u.uy + 1; y++) {
+			    /* Is this a suitable spot? */
+			    if (isok(x, y) && !closed_door(x, y)
+				&& !IS_ROCK(levl[x][y].typ)
+				&& !IS_AIR(levl[x][y].typ)
+				&& (x != u.ux || y != u.uy)) {
+				nboulders +=
+				    drop_boulder_on_monster(x, y, confused, TRUE);
 			    }
 			}
-		    } else
-			dmg = 0;
-		    /* Must be before the losehp(), for bones files */
-		    if (!flooreffects(otmp2, u.ux, u.uy, E_J("fall","落ちた"))) {
-			place_object(otmp2, u.ux, u.uy);
-			stackobj(otmp2);
-			newsym(u.ux, u.uy);
 		    }
-		    if (dmg) losehp(dmg, E_J("scroll of earth","大地の巻物で"), KILLED_BY_AN);
-		}
+		/* Attack the player */
+		if (!sobj->blessed) {
+		    drop_boulder_on_player(confused, !sobj->cursed, TRUE, FALSE);
+		} else if (!nboulders)
+		    pline(E_J("But nothing else happens.",
+			      "しかし、それだけだった。"));
 	    }
 	    break;
 	case SCR_PUNISHMENT:
@@ -1644,6 +1503,143 @@ struct obj *otmp;
 	otmp->cursed = 0;
 	otmp->known = 1;
 	if (isworn) quickdowear(otmp);
+}
+
+void
+drop_boulder_on_player(confused, helmet_protects, byu, skip_uswallow)
+boolean confused, helmet_protects, byu, skip_uswallow;
+{
+    int dmg;
+    struct obj *otmp2;
+
+    /* hit monster if swallowed */
+    if (u.uswallow && !skip_uswallow) {
+        drop_boulder_on_monster(u.ux, u.uy, confused, byu);
+        return;
+    }
+
+    otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE);
+    if (!otmp2)
+        return;
+    otmp2->quan = confused ? rn1(5, 2) : 1;
+    otmp2->owt = weight(otmp2);
+    if (!amorphous(youmonst.data) && !Passes_walls
+        && !noncorporeal(youmonst.data) && !unsolid(youmonst.data)) {
+#ifndef JP
+	You("are hit by %s!", doname(otmp2));
+#else
+	pline("%sがあなたに命中した！", doname(otmp2));
+#endif /*JP*/
+        dmg = dmgval(otmp2, &youmonst) * otmp2->quan;
+        if (uarmh && helmet_protects) {
+            if (is_metallic(uarmh)) {
+		pline(E_J("Fortunately, you are wearing a hard helmet.",
+			  "幸い、あなたは硬い兜をかぶっていた。"));
+                if (dmg > 2)
+                    dmg = 2;
+            } else if (flags.verbose) {
+#ifndef JP
+		Your("%s does not protect you.", xname(uarmh));
+#else
+		Your("%sは%sを防げなかった。", xname(uarmh), xname(otmp2));
+#endif /*JP*/
+            }
+        }
+    } else
+        dmg = 0;
+    wake_nearto(u.ux, u.uy, 4 * 4);
+    /* Must be before the losehp(), for bones files */
+    if (!flooreffects(otmp2, u.ux, u.uy, E_J("fall","落ちた"))) {
+        place_object(otmp2, u.ux, u.uy);
+        stackobj(otmp2);
+        newsym(u.ux, u.uy);
+    }
+    if (dmg) losehp(dmg, E_J("scroll of earth","大地の巻物で"), KILLED_BY_AN);
+}
+
+boolean
+drop_boulder_on_monster(x, y, confused, byu)
+int x, y;
+boolean confused, byu;
+{
+    register struct obj *otmp2;
+    register struct monst *mtmp;
+
+    /* Make the object(s) */
+    otmp2 = mksobj(confused ? ROCK : BOULDER, FALSE, FALSE);
+    if (!otmp2)
+        return FALSE; /* Shouldn't happen */
+    otmp2->quan = confused ? rn1(5, 2) : 1;
+    otmp2->owt = weight(otmp2);
+
+    /* Find the monster here (won't be player) */
+    mtmp = m_at(x, y);
+    if (mtmp && !amorphous(mtmp->data) && !passes_walls(mtmp->data)
+        && !noncorporeal(mtmp->data) && !unsolid(mtmp->data)) {
+        struct obj *helmet = which_armor(mtmp, W_ARMH);
+        int mdmg;
+
+        if (cansee(mtmp->mx, mtmp->my)) {
+	    pline(E_J("%s is hit by %s!", "%sに%sが命中した！"),
+		  Monnam(mtmp), doname(otmp2));
+            if (mtmp->minvis && !canspotmon(mtmp))
+                map_invisible(mtmp->mx, mtmp->my);
+        } else if (u.uswallow && mtmp == u.ustuck)
+#ifndef JP
+            You_hear("something hit %s %s over your %s!",
+                     s_suffix(mon_nam(mtmp)), mbodypart(mtmp, STOMACH),
+                     body_part(HEAD));
+#else
+            Your("%s上の%s壁越しに、何かが激突する音がした！",
+                     body_part(HEAD), mbodypart(mtmp, STOMACH));
+#endif
+
+        mdmg = dmgval(otmp2, mtmp) * otmp2->quan;
+        if (helmet) {
+            if (is_metallic(helmet)) {
+                if (canspotmon(mtmp))
+		    pline(E_J("Fortunately, %s is wearing a hard helmet.",
+			      "幸い、%sは硬い兜をかぶっていた。"), mon_nam(mtmp));
+                else if (flags.soundok)
+		    You_hear(E_J("a clanging sound.","金属の衝突する音を"));
+                if (mdmg > 2)
+                    mdmg = 2;
+            } else {
+                if (canspotmon(mtmp))
+#ifndef JP
+		    pline("%s's %s does not protect %s.",
+			  Monnam(mtmp), xname(helmet), mhim(mtmp));
+#else
+		    pline("%sの%sは%sを防げなかった。",
+			  Monnam(mtmp), xname(helmet), xname(otmp2));
+#endif /*JP*/
+            }
+        }
+        mtmp->mhp -= mdmg;
+        if (DEADMONSTER(mtmp)) {
+            if (byu) {
+		killed_showdmg(mtmp, mdmg);
+            } else {
+		pline(E_J("%s is killed.","%sは殺された。"), Monnam(mtmp));
+                mondied(mtmp);
+            }
+        } else {
+            if (byu) wakeup(mtmp);
+        }
+        wake_nearto(x, y, 4 * 4);
+    } else if (u.uswallow && mtmp == u.ustuck) {
+        obfree(otmp2, (struct obj *) 0);
+        /* fall through to player */
+        drop_boulder_on_player(confused, TRUE, FALSE, TRUE);
+        return 1;
+    }
+    /* Drop the rock/boulder to the floor */
+    if (!flooreffects(otmp2, x, y, E_J("fall","落ちた"))) {
+        place_object(otmp2, x, y);
+        stackobj(otmp2);
+        newsym(x, y); /* map the rock */
+    }
+    return TRUE;
 }
 
 static void
@@ -2308,6 +2304,60 @@ boolean revival;
 		return TRUE;
 	}
 	return FALSE;
+}
+
+void
+remove_curse(sobj, confused)
+struct obj *sobj;
+boolean confused;
+{
+	struct obj *obj;
+
+	for (obj = invent; obj; obj = obj->nobj) {
+	    long wornmask;
+	    wornmask = (obj->owornmask & ~(W_BALL|W_ART|W_ARTI));
+	    if (wornmask && !sobj->blessed) {
+		/* handle a couple of special cases; we don't
+		   allow auxiliary weapon slots to be used to
+		   artificially increase number of worn items */
+		if (obj == uswapwep) {
+		    if (!u.twoweap) wornmask = 0L;
+		} else if (obj == uquiver) {
+		    if (obj->oclass == WEAPON_CLASS) {
+			/* mergeable weapon test covers ammo,
+			   missiles, spears, daggers & knives */
+			if (!objects[obj->otyp].oc_merge) 
+			    wornmask = 0L;
+		    } else if (obj->oclass == GEM_CLASS) {
+			/* possibly ought to check whether
+			   alternate weapon is a sling... */
+			if (!uslinging()) wornmask = 0L;
+		    } else {
+			/* weptools don't merge and aren't
+			   reasonable quivered weapons */
+			wornmask = 0L;
+		    }
+		}
+	    }
+	    if (sobj->blessed || wornmask ||
+		 obj->otyp == LOADSTONE ||
+		 (obj->otyp == LEASH && obj->leashmon)) {
+		if(confused) blessorcurse(obj, 2);
+		else uncurse(obj);
+	    }
+	}
+
+	if(Punished && !confused) unpunish();
+#ifdef STEED
+	if (u.usteed) {
+	    obj = which_armor(u.usteed, W_SADDLE);
+	    if (obj) {
+		if(confused) blessorcurse(obj, 2);
+		else uncurse(obj);
+	    }
+	}
+#endif
+	update_inventory();
 }
 
 #ifdef WIZARD

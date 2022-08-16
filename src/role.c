@@ -216,6 +216,37 @@ const struct Role roles[] = {
 	{  2, 2,  0, 2,  0, 2 },10,	/* Energy */
 	10, 8,-2, 2, 20, A_WIS, SPE_RESTORE_ABILITY, -4
 },
+{	{E_J("Medium",		"巫女"		), 0}, {
+	{E_J("Pure Girl",	"無垢な少女"	), 0},
+	{E_J("Jinme Girl",	"御神馬の少女"	), 0},
+	{E_J("Mist Maiden",	"朝霧の巫女"	), 0},
+	{E_J("Moon Maiden",	"夕月の巫女"	), 0},
+	{E_J("Princess Maiden",	"姫巫女"	), 0},
+	{E_J("Hanuman Maiden",	"山神の巫女"	), 0},
+	{E_J("Ryujin Maiden",	"龍神の巫女"	), 0},
+	{E_J("Kamiko",		"神子"		), 0},
+	{E_J("Eternal Maiden",	"常乙女"	), 0} },
+#ifndef JP
+	"_Amaterasu Omikami", "Raijin", "Susanowo", /* Japanese */
+	"Med", "the Old Shrine", "the Cave of fox-spirits",
+#else
+	"_天照大神", "雷神", "須佐之男", /* Japanese */
+	"Med", "古き神社", "妖狐の洞窟",
+#endif /*JP*/
+	PM_MEDIUM, NON_PM, NON_PM,
+	PM_SHINTO_PRIEST, PM_MAIDEN, PM_NINE_TAILED_FOX,
+	PM_FOX_SPIRIT, PM_HUMAN_ZOMBIE, S_DOG, S_ZOMBIE,
+	ART_HOLY_DAGGER,
+	MH_HUMAN | ROLE_FEMALE | ROLE_LAWFUL,
+	/* Str Int Wis Dex Con Cha */
+	{   7,  7,  9, 10,  7, 16 },
+	{  15, 20, 10, 25, 20, 15 },
+	{  16, 18, 16, 20, 15, 20 },	/* Maximum ability */
+	/* Init   Lower  Higher */
+	{ 13, 0,  0, 8,  1, 0 },        /* Hit points */
+	{  4, 3,  0, 2,  0, 2 },10,     /* Energy */
+	10, 9, 2, 1, 10, A_DEX, SPE_REMOVE_CURSE,   -4
+},
 /*	ローマ・カトリック教会の階層組織
 	教皇 > 枢機卿 > 大司教 > 司教 > 司祭 > 助祭
  */

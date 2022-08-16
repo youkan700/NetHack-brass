@@ -325,7 +325,7 @@ register struct obj *gold;
 #endif /*JP*/
 				ep->robbed = robbed;
 				if(!robbed)
-					make_happy_shk(mtmp, FALSE);
+					make_happy_shk(mtmp, FALSE, FALSE);
 			} else {
 				if(mtmp->mpeaceful) {
 				    ep->credit += gold->quan;

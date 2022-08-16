@@ -22,8 +22,11 @@
 #define T_DISARM 	13
 #define T_MAINTENANCE 	14
 #define T_IDENTIFY 	15
+#define T_PURIFY 	16
+#define T_OFUDA 	17
+#define T_HAMAYA 	18
 
-#define MAXTECH 16
+#define MAXTECH 19
 
 #ifndef MAKEDEFS_C
 
@@ -86,6 +89,9 @@ static const char *tech_names[] = {
 	TECH("disarm",           -1,   20),
 	TECH("maintain arms",   250,  250),
 	TECH("identify",        500, 1500),
+	TECH("purify",          500, 1500),
+	TECH("throw an ofuda",   -1,    5),
+	TECH("hamaya",           -1,   20),
 };
 
 #endif /* TECH_H */

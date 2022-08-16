@@ -1302,173 +1302,12 @@ struct monst *mtmp;
 		m_using = FALSE;
 		return 2;
 	case MUSE_SCR_EARTH:
-	    {
 		/* TODO: handle steeds */
-	    	register int x, y;
-		/* don't use monster fields after killing it */
-		boolean confused = (mtmp->mconf ? TRUE : FALSE);
-		int mmx = mtmp->mx, mmy = mtmp->my;
-
 		mreadmsg(mtmp, otmp);
-	    	/* Identify the scroll */
-		if (canspotmons(mtmp)) {
-#ifndef JP
-		    pline_The("%s rumbles %s %s!", ceiling(mtmp->mx, mtmp->my),
-	    			otmp->blessed ? "around" : "above",
-#ifndef MONSTEED
-				mon_nam(mtmp)
-#else
-				mon_nam(mrider_or_msteed(mtmp, !canspotmon(mtmp)))
-#endif /*MONSTEED*/
-				);
-#else
-		    pline("%sの%sの%sから轟音が響いた！",
-#ifndef MONSTEED
-				mon_nam(mtmp),
-#else
-				mon_nam(mrider_or_msteed(mtmp, !canspotmon(mtmp))),
-#endif /*MONSTEED*/
-	    			otmp->blessed ? "周り" : "上",
-				ceiling(mtmp->mx, mtmp->my));
-#endif /*JP*/
-
-		    if (oseen) makeknown(otmp->otyp);
-		} else if (cansee(mtmp->mx, mtmp->my)) {
-		    pline_The(E_J("%s rumbles in the middle of nowhere!",
-				  "何もない空間の上から轟音が響いた！"),
-			ceiling(mtmp->mx, mtmp->my));
-		    if (mtmp->minvis)
-			map_invisible(mtmp->mx, mtmp->my);
-		    if (oseen) makeknown(otmp->otyp);
-		}
-
-	    	/* Loop through the surrounding squares */
-	    	for (x = mmx-1; x <= mmx+1; x++) {
-	    	    for (y = mmy-1; y <= mmy+1; y++) {
-	    	    	/* Is this a suitable spot? */
-	    	    	if (isok(x, y) && !closed_door(x, y) &&
-	    	    			!IS_ROCK(levl[x][y].typ) &&
-	    	    			!IS_AIR(levl[x][y].typ) &&
-	    	    			(((x == mmx) && (y == mmy)) ?
-	    	    			    !otmp->blessed : !otmp->cursed) &&
-					(x != u.ux || y != u.uy)) {
-			    register struct obj *otmp2;
-			    register struct monst *mtmp2;
-
-	    	    	    /* Make the object(s) */
-	    	    	    otmp2 = mksobj(confused ? ROCK : BOULDER,
-	    	    	    		FALSE, FALSE);
-	    	    	    if (!otmp2) continue;  /* Shouldn't happen */
-	    	    	    otmp2->quan = confused ? rn1(5,2) : 1;
-	    	    	    otmp2->owt = weight(otmp2);
-
-	    	    	    /* Find the monster here (might be same as mtmp) */
-	    	    	    mtmp2 = m_at(x, y);
-	    	    	    if (mtmp2 && !amorphous(mtmp2->data) &&
-	    	    	    		!passes_walls(mtmp2->data) &&
-	    	    	    		!noncorporeal(mtmp2->data) &&
-	    	    	    		!unsolid(mtmp2->data)) {
-				struct obj *helmet = which_armor(mtmp2, W_ARMH);
-				int mdmg;
-
-				if (cansee(mtmp2->mx, mtmp2->my)) {
-#ifndef JP
-				    pline("%s is hit by %s!", Monnam(mtmp2),
-	    	    	    			doname(otmp2));
-#else
-				    pline("%sが%sに命中した！",
-	    	    	    			doname(otmp2), mon_nam(mtmp2));
-#endif /*JP*/
-				    if (mtmp2->minvis && !canspotmons(mtmp2))
-					map_invisible(mtmp2->mx, mtmp2->my);
-				}
-	    	    	    	mdmg = dmgval(otmp2, mtmp2) * otmp2->quan;
-				if (helmet) {
-				    if(is_metallic(helmet)) {
-					if (canspotmon(mtmp2))
-					    pline(E_J("Fortunately, %s is wearing a hard helmet.",
-						      "幸い、%sは固い兜をかぶっていた。"), mon_nam(mtmp2));
-					else if (flags.soundok)
-					    You_hear(E_J("a clanging sound.",
-							 "固いものがぶつかる音を"));
-					if (mdmg > 2) mdmg = 2;
-				    } else {
-					if (canspotmon(mtmp2))
-#ifndef JP
-					    pline("%s's %s does not protect %s.",
-						Monnam(mtmp2), xname(helmet),
-						mhim(mtmp2));
-#else
-					    pline("%sは%sを守れなかった。",
-						xname(helmet), mon_nam(mtmp2));
-#endif /*JP*/
-				    }
-				}
-	    	    	    	mlosehp(mtmp2, mdmg);
-	    	    	    	if (mtmp2->mhp <= 0) {
-				    pline(E_J("%s is killed.","%sは殺された。"), Monnam(mtmp2));
-	    	    	    	    mondied(mtmp2);
-				}
-	    	    	    }
-	    	    	    /* Drop the rock/boulder to the floor */
-	    	    	    if (!flooreffects(otmp2, x, y, E_J("fall","落ちた"))) {
-	    	    	    	place_object(otmp2, x, y);
-	    	    	    	stackobj(otmp2);
-	    	    	    	newsym(x, y);  /* map the rock */
-	    	    	    }
-	    	    	}
-		    }
-		}
+		use_scr_earth(mtmp, otmp, mtmp->mx, mtmp->my,
+			      FALSE, (mtmp->mconf ? TRUE : FALSE));
 		m_useup(mtmp, otmp);
-		/* Attack the player */
-		if (distmin(mmx, mmy, u.ux, u.uy) == 1 && !otmp->cursed) {
-		    int dmg;
-		    struct obj *otmp2;
-
-		    /* Okay, _you_ write this without repeating the code */
-		    otmp2 = mksobj(confused ? ROCK : BOULDER,
-				FALSE, FALSE);
-		    if (!otmp2) goto xxx_noobj;  /* Shouldn't happen */
-		    otmp2->quan = confused ? rn1(5,2) : 1;
-		    otmp2->owt = weight(otmp2);
-		    if (!amorphous(youmonst.data) &&
-			    !Passes_walls &&
-			    !noncorporeal(youmonst.data) &&
-			    !unsolid(youmonst.data)) {
-#ifndef JP
-			You("are hit by %s!", doname(otmp2));
-#else
-			pline("%sがあなたに命中した！", doname(otmp2));
-#endif /*JP*/
-			dmg = dmgval(otmp2, &youmonst) * otmp2->quan;
-			if (uarmh) {
-			    if(is_metallic(uarmh)) {
-				pline(E_J("Fortunately, you are wearing a hard helmet.",
-					  "幸い、あなたは固い兜をかぶっていた。"));
-				if (dmg > 2) dmg = 2;
-			    } else if (flags.verbose) {
-				Your(E_J("%s does not protect you.",
-					 "%sはあなたを守れなかった。"),
-						xname(uarmh));
-			    }
-			}
-		    } else
-			dmg = 0;
-		    if (!flooreffects(otmp2, u.ux, u.uy, E_J("fall","落ちた"))) {
-			place_object(otmp2, u.ux, u.uy);
-			stackobj(otmp2);
-			newsym(u.ux, u.uy);
-		    }
-#ifndef JP
-		    if (dmg) losehp(dmg, "scroll of earth", KILLED_BY_AN);
-#else
-		    if (dmg) losehp(dmg, "大地の巻物で", KILLED_SUFFIX);
-#endif /*JP*/
-		}
-	    xxx_noobj:
-
 		return (mtmp->mhp <= 0) ? 1 : 2;
-	    }
 #if 0
 	case MUSE_SCR_FIRE:
 	      {
@@ -2265,6 +2104,114 @@ boolean stoning;
 	mon->mconf = 0;
     }
     mon->mlstmv = monstermoves; /* it takes a turn */
+}
+
+void
+use_scr_earth(mtmp, otmp, mmx, mmy, byyou, confused)
+struct monst *mtmp;	/* the monster in the center (maybe null) */
+struct obj *otmp;	/* scroll read */
+int mmx, mmy;		/* the center coord */
+boolean byyou;		/* invoked by you */
+boolean confused;	/* reader confused? */
+{
+	int x, y;
+	int cx, cy;
+	boolean oseen;
+	boolean oblessed, ocursed;
+	struct obj *otmp2;
+	struct monst *mtmp2;
+
+	if (!otmp) {
+	    impossible("use_scr_earth: no scroll?");
+	    return;
+	}
+	oseen = canseemon(mtmp);
+	oblessed = otmp->blessed;
+	ocursed  = otmp->cursed;
+
+	if (!mmx && !mmy) {
+	    if (mtmp) {
+		mmx = mtmp->mx;
+		mmy = mtmp->my;
+	    } else {
+		impossible("use_scr_earth: no target?");
+		return;
+	    }
+	} else if (byyou && mmx == u.ux && mmy == u.uy) {
+	    (void) seffects(otmp);
+	    return;
+	}
+
+	/* Identify the scroll */
+	if (mtmp && canspotmons(mtmp)) {
+#ifndef JP
+	    pline_The("%s rumbles %s %s!", ceiling(mtmp->mx, mtmp->my),
+			otmp->blessed ? "around" : "above",
+#ifndef MONSTEED
+			mon_nam(mtmp)
+#else
+			mon_nam(mrider_or_msteed(mtmp, !canspotmon(mtmp)))
+#endif /*MONSTEED*/
+			);
+#else
+	    pline("%sの%sの%sから轟音が響いた！",
+#ifndef MONSTEED
+			mon_nam(mtmp),
+#else
+			mon_nam(mrider_or_msteed(mtmp, !canspotmon(mtmp))),
+#endif /*MONSTEED*/
+    			otmp->blessed ? "周り" : "上",
+			ceiling(mtmp->mx, mtmp->my));
+#endif /*JP*/
+
+	} else if (cansee(mmx, mmy)) {
+	    pline_The(E_J("%s rumbles in the middle of nowhere!",
+			  "突然、%sから轟音が響いた！"),
+		ceiling(mmx, mmy));
+	    if (mtmp)
+		map_invisible(mtmp->mx, mtmp->my);
+	}
+	if (oseen) makeknown(otmp->otyp);
+
+	if (byyou) {
+	    if (distmin(u.ux, u.uy, mmx, mmy) == 1) {
+		cx = u.ux;
+		cy = u.uy;
+	    } else {
+		cx = mmx;
+		cy = mmy;
+		oblessed = 0;
+	    }
+	} else {
+	    cx = mmx;
+	    cy = mmy;
+	}
+
+    	/* Loop through the surrounding squares */
+    	for (x = mmx-1; x <= mmx+1; x++) {
+    	    for (y = mmy-1; y <= mmy+1; y++) {
+    	    	/* Is this a suitable spot? */
+		if (!isok(x, y) || closed_door(x,y) ||
+		    IS_ROCK(levl[x][y].typ) ||
+		    IS_AIR(levl[x][y].typ)) continue;
+		if (x == u.ux && y == u.uy) continue; /* handled later */
+		if (x == cx && y == cy) {
+		    /* center: skip if blessed */
+		    if (oblessed) continue;
+		} else {
+		    /* around: skip if cursed */
+		    if (ocursed) continue;
+		}
+
+		(void) drop_boulder_on_monster(x, y, confused, byyou);
+	    }
+	}
+	/* Attack the player */
+	if (distmin(mmx, mmy, u.ux, u.uy) == 1) {
+	    if ((!byyou && !otmp->cursed) ||
+		(byyou && !otmp->blessed))
+		drop_boulder_on_player(confused, !otmp->cursed, FALSE, TRUE);
+	}
 }
 
 /*muse.c*/

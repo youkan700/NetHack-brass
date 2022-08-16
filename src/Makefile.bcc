@@ -605,10 +605,10 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(DAT)\medusa.des  $(DAT)\oracle.des   $(DAT)\tower.des  \
 	$(DAT)\yendor.des  $(DAT)\arch.des     $(DAT)\barb.des   \
 	$(DAT)\caveman.des $(DAT)\healer.des   $(DAT)\knight.des \
-	$(DAT)\monk.des    $(DAT)\priest.des   $(DAT)\ranger.des \
-	$(DAT)\rogue.des   $(DAT)\samurai.des  $(DAT)\sokoban.des \
-	$(DAT)\tourist.des $(DAT)\valkyrie.des $(DAT)\vault.des \
-	$(DAT)\wizard.des
+	$(DAT)\monk.des    $(DAT)\medium.des   $(DAT)\priest.des \
+	$(DAT)\ranger.des  $(DAT)\rogue.des    $(DAT)\samurai.des \
+	$(DAT)\sokoban.des $(DAT)\tourist.des  $(DAT)\valkyrie.des \
+	$(DAT)\vault.des   $(DAT)\wizard.des
 	cd $(DAT)
 	$(U)lev_comp bigroom.des
 	$(U)lev_comp castle.des
@@ -627,6 +627,7 @@ $(O)sp_lev.tag: $(O)utility.tag $(DAT)\bigroom.des  $(DAT)\castle.des \
 	$(U)lev_comp healer.des
 	$(U)lev_comp knight.des
 	$(U)lev_comp monk.des
+	$(U)lev_comp medium.des
 	$(U)lev_comp priest.des
 	$(U)lev_comp ranger.des
 	$(U)lev_comp rogue.des

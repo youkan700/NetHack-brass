@@ -1391,14 +1391,20 @@ struct obj *ormv;
 		    case FRILLED_APRON:
 			uwtyp = MAID_DRESS;
 			ladies_wear_prop[lpnum++] = -ANTIMAGIC;
+			ladies_wear_prop[lpnum++] = -PROTECTION;
+			lpspe = 4;
 			break;
 		    case KITCHEN_APRON:
 			uwtyp = MAID_DRESS;
 			mensprop = 0;	/* no penalty is conveyed for men by kitchen apron */
+			ladies_wear_prop[lpnum++] = -PROTECTION;
+			lpspe = 3;
 			break;
 		    case KATYUSHA:
 			uwtyp = MAID_DRESS;
 			ladies_wear_prop[lpnum++] = ADORNED;
+			ladies_wear_prop[lpnum++] = -PROTECTION;
+			lpspe = 2;
 			break;
 		    case NURSE_CAP:
 			uwtyp = NURSE_UNIFORM;
@@ -2306,14 +2312,6 @@ find_ac()
 	   (!uarm || (uarm && is_clothes(uarm))))
 		uac -= (u.ulevel / 3) + 2;
 
-	/* maid dress brings out a special power of apron and katyusha */
-	if(flags.female && uarm && uarm->otyp == MAID_DRESS) {
-		if (uarmh && uarmh->otyp == KATYUSHA) uac -= 2;
-		if (uarmc && uarmc->otyp == KITCHEN_APRON) uac -= 3;
-		if (uarmc && uarmc->otyp == FRILLED_APRON) uac -= 4;
-	}
-//	if(uleft && uleft->otyp == RIN_PROTECTION) uac -= uleft->spe;
-//	if(uright && uright->otyp == RIN_PROTECTION) uac -= uright->spe;
 	uac -= u.uprotection;				/* rings, robe, cloak */
 	if (HProtection & INTRINSIC) uac -= u.ublessed;	/* god's blessing */
 	uac -= u.uspellprot;				/* spell */

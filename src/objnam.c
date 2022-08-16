@@ -67,6 +67,7 @@ STATIC_OVL struct Jitem JJapanese_items[] = {
 	{ PLATE_MAIL, "’Zb" },
 	{ LEATHER_GLOVES, "‹|Œœ" },
 	{ FOOD_RATION, "•º—ÆŠÛ" },
+	{ CANDY_BAR, "ˆ¹" },
 	{ POT_BOOZE, "Žð" },
 	{ ROBE, "’…•¨" },
 	{0, "" }
@@ -127,7 +128,7 @@ register int otyp;
 	register const char *un = ocl->oc_uname;
 	register int nn = ocl->oc_name_known;
 
-	if (Role_if(PM_SAMURAI) && Japanese_item_name(otyp))
+	if (use_japanese_name() && Japanese_item_name(otyp))
 		actualn = Japanese_item_name(otyp);
 #ifndef JP
 	switch(ocl->oc_class) {
@@ -205,7 +206,7 @@ register int otyp;
 		if (nn &&
 		    (otyp == POT_WATER ||
 		     otyp == POT_OIL || otyp == POT_FRUIT_JUICE ||
-		     (otyp == POT_BOOZE && Role_if(PM_SAMURAI)))) {
+		     (otyp == POT_BOOZE && use_japanese_name()))) {
 		    typn = FALSE;
 		}
 		break;
@@ -359,7 +360,7 @@ boolean ignore_oquan;
 	register const char *un = ocl->oc_uname;
 
 	buf = nextobuf() + PREFIX;	/* leave room for "17 -3 " */
-	if (Role_if(PM_SAMURAI) && Japanese_item_name(typ))
+	if (use_japanese_name() && Japanese_item_name(typ))
 		actualn = Japanese_item_name(typ);
 
 	buf[0] = '\0';
@@ -616,7 +617,7 @@ boolean ignore_oquan;
 			    Strcat(buf, actualn);
 			    if (typ == POT_WATER ||
 				typ == POT_OIL || typ == POT_FRUIT_JUICE ||
-				(typ == POT_BOOZE && nn && Role_if(PM_SAMURAI))) break;
+				(typ == POT_BOOZE && nn && use_japanese_name())) break;
 			}
 		    }
 		    Strcat(buf, "–ò");

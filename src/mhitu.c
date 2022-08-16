@@ -3276,13 +3276,6 @@ int dmg;
 	dmg -= u.ublessed;
 	if (dmg < 1) return 1;
 
-	if (uarmh) {
-	    tmp += reduce_dmg_amount(uarmh);
-	    /* maid dress' special power */
-	    if(flags.female && uarm && uarm->otyp == MAID_DRESS &&
-	       uarmh->otyp == KATYUSHA) tmp += 2;
-	}
-
 	if (uarmf)
 	    tmp += reduce_dmg_amount(uarmf);
 
@@ -3295,15 +3288,6 @@ int dmg;
 	    tmp2 += tmp2 * P_SKILL(P_ARMORED_COMBAT) / 200;
 	    tmp += tmp2;
 	    if (ARM_BASE(uarm) >= 2 && rn2(20) < ARM_BASE(uarm)) use_skill(P_ARMORED_COMBAT, 1);
-	}
-
-	if (uarmc) {
-	    tmp += reduce_dmg_amount(uarmc);
-	    /* maid dress' special power */
-	    if(flags.female && uarm && uarm->otyp == MAID_DRESS) {
-		if (uarmc->otyp == KITCHEN_APRON) tmp += 3;
-		if (uarmc->otyp == FRILLED_APRON) tmp += 4;
-	    }
 	}
 
 /* Because Hawaiian shirt do not improve AC, it do not reduce damage */

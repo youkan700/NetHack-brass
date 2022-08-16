@@ -49,6 +49,7 @@ winter wolf:		冬狼
 winter wolf cub:	冬狼の子
 hell hound pup:		ヘルハウンドの仔
 hell hound:		ヘルハウンド
+fox spirit:             妖狐
 Cerberus:		ケルベロス
 #
 #	eyes
@@ -532,6 +533,7 @@ Cavewoman:		洞窟人
 Healer:			薬師
 Knight:			騎士
 Monk:			武闘家
+Medium:			巫女
 Priest:			僧侶
 Priestess:		尼僧
 Ranger:			レンジャー
@@ -547,6 +549,7 @@ cavewoman:		洞窟人
 healer:			薬師
 knight:			騎士
 monk:			武闘家
+medium:			巫女
 priest:			僧侶
 priestess:		尼僧
 ranger:			レンジャー
@@ -564,6 +567,7 @@ Shaman Karnov:		呪術師カルノフ
 Hippocrates:		ヒポクラテス
 King Arthur:		アーサー王
 Grand Master:		総師範
+Shinto Priest:		神主
 Arch Priest:		主席司祭
 Orion:			勇者オリオン
 Master of Thieves:	盗賊の頭領
@@ -580,6 +584,7 @@ Chromatic Dragon:	クロマティック・ドラゴン
 Cyclops:		サイクロプス
 Ixoth:			イクソス
 Master Kaen:		カエン
+Nine Tailed Fox:	九尾の狐
 Nalzok:			ナルゾク
 Scorpius:		大蠍
 Master Assassin:	暗殺者の頭領
@@ -596,6 +601,7 @@ neanderthal:		ネアンデルタール人
 attendant:		看護人
 page:			小姓
 abbot:			師範
+maiden:			乙女
 acolyte:		侍者
 hunter:			狩人
 thug:			ちんぴら

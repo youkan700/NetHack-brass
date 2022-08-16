@@ -241,6 +241,9 @@ register boolean special;
 		    cloak = STRANGE_OBJECT;
 		    if (rn2(2)) shield = STRANGE_OBJECT;
 		    break;
+		case PM_MEDIUM:
+		    weapon = DAGGER;
+		    break;
 		case PM_PRIEST:
 		case PM_PRIESTESS:
 		    if (rn2(2)) weapon = MACE;

@@ -2964,6 +2964,15 @@ struct monst *mtmp;
 	return FALSE;
 }
 
+/* query_objlist callback: return things that could possibly be worn/wielded */
+boolean
+isgoldobj(obj)
+struct obj *obj;
+{
+    return (obj->oclass == COIN_CLASS ||
+	    get_material(obj) == GOLD);
+}
+
 /*
  * Display a monster's inventory.
  * Returns a pointer to the object from the monster's inventory selected
@@ -2988,6 +2997,14 @@ char *title;
 	menu_item *selected = 0;
 	int do_all = (dflags & MINV_ALL) != 0,
 	    do_gold = (do_all && mon->mgold);
+	boolean FDECL((*filterfunc), (OBJ_P));
+
+	filterfunc = worn_wield_only;
+	if (do_all) filterfunc = allow_all;
+	if ((dflags & MINV_FOODOBJ) != 0)
+	    filterfunc = is_edible;
+	if ((dflags & MINV_GOLDOBJ) != 0)
+	    filterfunc = isgoldobj;
 
 #ifndef JP
 	Sprintf(tmp,"%s %s:", s_suffix(noit_Monnam(mon)),
@@ -3025,7 +3042,7 @@ char *title;
 
 	    n = query_objlist(title ? title : tmp, mon->minvent, INVORDER_SORT, &selected,
 			(dflags & MINV_NOLET) ? PICK_NONE : PICK_ONE,
-			do_all ? allow_all : worn_wield_only);
+			filterfunc);
 
 	    if (do_gold) obj_extract_self(&m_gold);
 

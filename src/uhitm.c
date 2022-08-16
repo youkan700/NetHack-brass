@@ -923,6 +923,10 @@ int thrown;
 			    if (tech_inuse(T_FLURRY) && obj->oclass == WEAPON_CLASS &&
 				(objects[obj->otyp].oc_wprop & WP_SUBTYPE) == WP_ARROW)
 				tmp++;
+			    if (tech_inuse(T_HAMAYA) && obj->oclass == WEAPON_CLASS &&
+				(objects[obj->otyp].oc_wprop & WP_SUBTYPE) == WP_ARROW &&
+				(is_undead(mdat) || is_demon(mdat)))
+				tmp += d(5,4);
 			}
 		    }
 		}
@@ -1379,7 +1383,7 @@ int thrown;
 	if (!hittxt &&			/*( thrown => obj exists )*/
 	  (!destroyed || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
 		if (thrown) hit(mshot_xname(obj), mon, exclam(tmp));
-		else if (!flags.verbose) E_J(You("hit it."),pline("çUåÇÇµÇΩ"));
+		else if (!flags.verbose) E_J(You("hit it."),pline("çUåÇÇµÇΩÅB"));
 #ifndef JP
 		else You("%s %s%s", Role_if(PM_BARBARIAN) ? "smite" : "hit",
 			 mon_nam(mon), canseemon(mon) ? exclam(tmp) : ".");
@@ -3210,10 +3214,6 @@ pline("<%d>",dmg);
 	    case DAMCAN_HEAD:	/* head */
 		if (marm[ARM_HELM]) {
 		    tmp += reduce_dmg_amount(marm[ARM_HELM]);
-		    /* maid dress' special power */
-		    if(mtmp->female &&
-		       marm[ARM_SUIT] && marm[ARM_SUIT]->otyp == MAID_DRESS &&
-		       marm[ARM_HELM]->otyp == KATYUSHA) tmp += 2;
 		    if (tmp) dmg -= rnd(tmp);
 pline("<%d>",dmg);
 		    if (dmg <= 0) {
@@ -3265,12 +3265,6 @@ pline("<%d>",dmg);
 		    tmp += reduce_dmg_amount(marm[ARM_SUIT]);
 		if (marm[ARM_CLOAK]) {
 		    tmp += reduce_dmg_amount(marm[ARM_CLOAK]);
-		    /* maid dress' special power */
-		    if(mtmp->female &&
-		       marm[ARM_SUIT] && marm[ARM_SUIT]->otyp == MAID_DRESS) {
-			if (marm[ARM_CLOAK]->otyp == KITCHEN_APRON) tmp += 3;
-			if (marm[ARM_CLOAK]->otyp == FRILLED_APRON) tmp += 4;
-		    }
 		}
 		if (tmp) {
 		    dmg -= rnd(tmp);

@@ -983,9 +983,10 @@ boolean verbosely;
 }
 
 void
-make_happy_shk(shkp, silentkops)
-register struct monst *shkp;
-register boolean silentkops;
+make_happy_shk(shkp, silentkops, puzzled)
+struct monst *shkp;
+boolean silentkops;
+boolean puzzled;
 {
 	boolean wasmad = ANGRY(shkp);
 	struct eshk *eshkp = ESHK(shkp);
@@ -1015,10 +1016,21 @@ register boolean silentkops;
 					 MIGR_APPROX_XY, &eshkp->shd);
 		}
 		if (vanished)
-		    pline(E_J("Satisfied, %s suddenly disappears!",
-			      "%sは満足し、突然姿を消した！"), shk_nam);
-	} else if(wasmad)
-		pline(E_J("%s calms down.","%sは怒りを収めた。"), Monnam(shkp));
+#ifndef JP
+		    pline("%s, %s suddenly disappears!",
+			  puzzled ? "Puzzled" : "Satisfied", shk_nam);
+#else
+		    pline("%sは%s、突然姿を消した！", shk_nam,
+			  puzzled ? "困惑しつつも" : "満足し");
+#endif
+	} else if(wasmad) {
+#ifndef JP
+		pline("%s calms down.", Monnam(shkp));
+#else
+		pline("%sは怒りを%s。", Monnam(shkp),
+		      puzzled ? "忘れたようだ" : "収めた");
+#endif
+	}
 
 	if(!angry_shk_exists()) {
 #ifdef KOPS
@@ -1268,7 +1280,7 @@ proceed:
 				  "残念ながら、%sは満足しなかったようだ。"),
 			      mhe(shkp));
 		    else
-			make_happy_shk(shkp, FALSE);
+			make_happy_shk(shkp, FALSE, FALSE);
 		}
 		return(1);
 	}
@@ -1307,7 +1319,7 @@ proceed:
 			  "一部" : "");
 #endif /*JP*/
 		    pay(u.ugold < ltmp ? u.ugold : ltmp, shkp);
-		    make_happy_shk(shkp, FALSE);
+		    make_happy_shk(shkp, FALSE, FALSE);
 		} else {
 		    /* shopkeeper is angry, but has not been robbed --
 		     * door broken, attacked, etc. */
@@ -1326,7 +1338,7 @@ proceed:
 			mhim(shkp));
 		    pay(1000L,shkp);
 		    if (strncmp(eshkp->customer, plname, PL_NSIZ) || rn2(3))
-			make_happy_shk(shkp, FALSE);
+			make_happy_shk(shkp, FALSE, FALSE);
 		    else
 			pline(E_J("But %s is as angry as ever.",
 				  "だが、%sの怒りに火を注いだだけだった。"), mon_nam(shkp));

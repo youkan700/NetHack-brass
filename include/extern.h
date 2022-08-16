@@ -458,6 +458,7 @@ E void FDECL(impact_drop, (struct obj *,XCHAR_P,XCHAR_P,XCHAR_P));
 
 /* ### dothrow.c ### */
 
+E int FDECL(throw_obj, (struct obj *,int));
 E int NDECL(dothrow);
 E int NDECL(dofire);
 E int NDECL(dovfire);
@@ -850,6 +851,7 @@ E int FDECL(display_binventory, (int,int,BOOLEAN_P));
 E struct obj *FDECL(display_cinventory,(struct obj *));
 E boolean FDECL(worn_wield_only, (struct obj *));
 E boolean FDECL(mon_has_worn_wield_items, (struct monst *));
+E boolean FDECL(isgoldobj, (struct obj *));
 E struct obj *FDECL(display_minventory,(struct monst *,int,char *));
 E int NDECL(dotypeinv);
 E const char *FDECL(dfeature_at, (int,int,char *));
@@ -1450,6 +1452,7 @@ E boolean FDECL(searches_for_item, (struct monst *,struct obj *));
 E boolean FDECL(mon_reflects, (struct monst *,const char *));
 E boolean FDECL(ureflects, (const char *,const char *));
 E boolean FDECL(munstone, (struct monst *,BOOLEAN_P));
+E void FDECL(use_scr_earth, (struct monst *,struct obj *,int,int,BOOLEAN_P,BOOLEAN_P));
 
 /* ### music.c ### */
 
@@ -1805,7 +1808,11 @@ E void FDECL(forget_objects, (int));
 E void FDECL(forget_levels, (int));
 E void NDECL(forget_traps);
 E void FDECL(forget_map, (int));
+E void FDECL(maybe_tame, (struct monst *,struct obj *));
 E int FDECL(seffects, (struct obj *));
+E void FDECL(drop_boulder_on_player,
+             (BOOLEAN_P, BOOLEAN_P, BOOLEAN_P, BOOLEAN_P));
+E boolean FDECL(drop_boulder_on_monster, (int, int, BOOLEAN_P, BOOLEAN_P));
 #ifdef USE_TRAMPOLI
 E void FDECL(set_lit, (int,int,genericptr_t));
 #endif
@@ -1814,6 +1821,7 @@ E void FDECL(do_genocide, (int));
 E void FDECL(punish, (struct obj *));
 E void NDECL(unpunish);
 E boolean FDECL(cant_create, (int *, BOOLEAN_P));
+E void FDECL(remove_curse, (struct obj *, BOOLEAN_P));
 #ifdef WIZARD
 E boolean NDECL(create_particular);
 #endif
@@ -1966,7 +1974,7 @@ E boolean FDECL(tended_shop, (struct mkroom *));
 E void FDECL(delete_contents, (struct obj *));
 E void FDECL(obfree, (struct obj *,struct obj *));
 E void FDECL(home_shk, (struct monst *,BOOLEAN_P));
-E void FDECL(make_happy_shk, (struct monst *,BOOLEAN_P));
+E void FDECL(make_happy_shk, (struct monst *,BOOLEAN_P,BOOLEAN_P));
 E void FDECL(hot_pursuit, (struct monst *));
 E void FDECL(make_angry_shk, (struct monst *,XCHAR_P,XCHAR_P));
 E int NDECL(dopay);
@@ -2123,6 +2131,7 @@ E int FDECL(tech_inuse, (int));
 E void NDECL(tech_timeout);
 E boolean FDECL(tech_known, (SHORT_P));
 E void FDECL(learntech, (SHORT_P,long,int));
+E void FDECL(ofuda_hit, (struct monst *, struct obj *));
 
 /* ### teleport.c ### */
 

@@ -855,6 +855,7 @@ ASkullcrusher:		スカルクラッシャー
 AQuick Blade:		クイックブレード
 AGauntlets of Defense:	守りの篭手
 AFist of Fury:		怒りの鉄拳
+AEbony Lacquered Bow:	烏漆の弓
 # A
 AThe Orb of Detection:		探索のオーブ
 # B
@@ -867,6 +868,8 @@ AThe Staff of Aesculapius:	アスクレピオスの杖
 AThe Magic Mirror of Merlin:	マーリンの魔法の鏡
 # Mon
 AThe Eyes of the Overworld:	超世界の目
+# Med
+AThe Holy Dagger:		破魔の短剣
 # P
 AThe Mitre of Holiness:		聖なる法冠
 # Ran
@@ -901,4 +904,6 @@ Tcritical strike:	急所狙い
 Tdisarm:		武器飛ばし
 Tmaintain arms:		武具の手入れ
 Tidentify:		識別
-
+Tpurify:		みそぎ
+Tthrow an ofuda:	お札投げ
+Thamaya:		破魔矢
