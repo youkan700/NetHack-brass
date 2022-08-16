@@ -296,6 +296,14 @@ const short materialwt[] = {
 	 100,  265,  300,  300
 };
 
+/* convert chameleon index to monster index */
+const short cham_to_pm[4] = {
+	NON_PM,		/* placeholder for CHAM_ORDINARY */
+	PM_CHAMELEON,
+	PM_DOPPELGANGER,
+	PM_SANDESTIN
+};
+
 /* Vision */
 NEARDATA boolean vision_full_recalc = 0;
 NEARDATA char	 **viz_array = 0;/* used in cansee() and couldsee() macros */

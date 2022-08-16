@@ -993,9 +993,11 @@ struct mkroom	*croom;
 	if (115 <= o->spe && o->spe <= 125) {
 	    o->spe -= 120;
 	    otmp->sokoprize = 1;
-	    /* Wizards already have CoMR... give pointy hat instead */
-	    if (otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE &&
-		Role_if(PM_WIZARD)) set_otyp(otmp, CORNUTHAUM);
+	    if (otmp->otyp == CLOAK_OF_MAGIC_RESISTANCE) {
+		/* Wizards already have CoMR... give pointy hat instead */
+		if (Role_if(PM_WIZARD)) set_otyp(otmp, CORNUTHAUM);
+		else otmp->color = CLR_GRAY;
+	    }
 	}
 
 	if (o->spe != -127)	/* That means NOT RANDOM! */

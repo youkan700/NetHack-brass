@@ -6,6 +6,7 @@
 /* All of the techs from cmd.c are ported here */
 
 #include "hack.h"
+#include "eshk.h"
 
 /* #define DEBUG */		/* turn on for diagnostics */
 
@@ -23,6 +24,8 @@ static const struct innate_tech * NDECL(race_tech);
 
 static int FDECL(getobj_filter_surgery, (struct obj *));
 static int NDECL(surgery);
+static int NDECL(dopurify);
+static int NDECL(throw_ofuda);
 
 static int FDECL(getobj_filter_dwarvish_repair, (struct obj *));
 
@@ -46,6 +49,10 @@ static const struct innate_tech
 		       {   1, T_HEAL_HANDS, 1},
 		       {   0, 0, 0} },
 	mon_tech[] = { {   0, 0, 0} },
+	med_tech[] = { {   1, T_OFUDA, 1},
+		       {   3, T_PURIFY, 1},
+		       {  10, T_HAMAYA, 1},
+		       {   0, 0, 0} },
 	pri_tech[] = { {   1, T_TURN_UNDEAD, 1},
 		       {   1, T_BLESSING, 1},
 		       {   0, 0, 0} },
@@ -302,12 +309,6 @@ dotechmenu(how, tech_no)
 
 	longest = 22;
 	if (!iflags.menu_tab_sep) {
-//	    /* find the length of the longest tech */
-//	    for (longest = 0, i = 0; i < MAXTECH; i++) {
-//		if (techid(i) == NO_TECH) continue;
-//		if ((len = strlen(techname(i))) > longest)
-//		    longest = len;
-//	    }
 #ifndef JP                  //0123456789012345678901234567890123456789
 	    Sprintf(buf, "    Name                   Level   Status");
 #else
@@ -607,7 +608,6 @@ int tech_no;
 		if (findit()) pline("%s隠されたものに気づいた。", a);
 		else pline("%s周囲に特別なものがないことを確認した。", a);
 #endif /*JP*/
-//		t_timeout = rn1(250,250);
 		break;
 	    }
 
@@ -633,7 +633,6 @@ int tech_no;
 			    "自分の荷物の中身をすべてよく心得ている。"));
 		    break;
 		}
-//                t_timeout = rn1(500,1500);
 		break;
 
             case T_BERSERK:
@@ -642,7 +641,6 @@ int tech_no;
 		techt_inuse(tech_no) = d(2,8) +
                		(techlev(tech_no)/5) + 2;
 		incr_itimeout(&HFast, techt_inuse(tech_no));
-//		t_timeout = rn1(1000,500);
 		break;
 
             case T_FLURRY:
@@ -650,7 +648,6 @@ int tech_no;
 			uarmg ? "gloved" : "bare",      /* Del Lamb */
 			makeplural(body_part(HAND)));
                 techt_inuse(tech_no) = rnd((int) (techlev(tech_no)/6 + 1)) + 2;
-//                t_timeout = rn1(1000,500);
 		break;
 
             case T_PRACTICE:
@@ -679,7 +676,6 @@ int tech_no;
 			pline(E_J("Unfortunatly, you still don't know it's quality.",
 				  "残念ながら、あなたはその品質がわからなかった。"));
 		}
-//		t_timeout = rn1(250,250);
 		break;
 
             case T_SURGERY:
@@ -692,17 +688,14 @@ int tech_no;
 		    Your(E_J("body is on fire!",
 			     "体が燃え上がった！"));
 		    burn_away_slime();
-//		    t_timeout = 3000;
 		} else if (Sick) {
 		    You(E_J("lay your hands on the foul sickness...",
 			    "穢らわしい病巣の上に手をかざした…。"));
 		    make_sick(0L, (char*)0, TRUE, SICK_ALL);
-//		    t_timeout = 3000;
 		} else if (Upolyd ? u.mh < u.mhmax : u.uhp < u.uhpmax) {
 		    pline(E_J("A warm glow spreads through your body!",
 			      "暖かな輝きがあなたの身体中に広がった！"));
 		    healup(techlev(tech_no) * 4, 0, FALSE, FALSE);
-//		    t_timeout = 3000;
 		} else {
 		    pline(nothing_happens);
 		    return (0);
@@ -713,15 +706,13 @@ int tech_no;
 		You(E_J("scream \"KIIIII!\"","気合を込めた叫びをあげた！"));
 		aggravate();
                 techt_inuse(tech_no) = rnd((int) (techlev(tech_no)/6 + 1)) + 2;
-//                t_timeout = rn1(1000,500);
 		break;
 
 #ifdef STEED
 	    case T_CALM_STEED:
                 if (u.usteed) {
-                        pline("%s gets tamer.", Monnam(u.usteed));
+                        pline(E_J("%s gets tamer.", "%sはより懐いたようだ。"), Monnam(u.usteed));
                         tamedog(u.usteed, (struct obj *) 0);
-//                        t_timeout = rn1(1000,500);
                 } else {
                         Your(E_J("technique is only effective when riding a monster.",
 				 "技は騎乗中に使わないと効果がない。"));
@@ -1018,9 +1009,31 @@ int tech_no;
 		You(E_J("maintained your %s %s.","%sを%s手入れした。"), xname(otmp),
 		    (otmp->oeroded || otmp->oeroded2) ? E_J("as best", "できるだけ") :
 		     E_J("perfectly", "完璧に"));
-//		t_timeout = rn1(250,250);
 		break;
 	    }
+
+            case T_PURIFY:
+		if (dopurify() == 0) return(0);
+		break;
+
+            case T_OFUDA:
+                techt_inuse(tech_no) = 1;
+		i = throw_ofuda();
+                techt_inuse(tech_no) = 0;
+		if (i == 0) return(0);
+		break;
+
+	    case T_HAMAYA:
+#ifndef JP
+                Your("%s are filled with the power to defeat unholy beings!",
+			makeplural(body_part(HAND));
+#else
+                Your("両%sに破邪の力が宿った！",
+			body_part(HAND));
+#endif
+                techt_inuse(tech_no) = xlev_to_rank(u.ulevel);
+		break;
+
 	    default:
 	    	pline ("Error!  No such effect (%i)", tech_no);
 		break;
@@ -1104,6 +1117,13 @@ tech_timeout()
 		    case T_FLURRY:
 			You(E_J("relax.","緊張が解けた。"));
 			break;
+		    case T_HAMAYA:
+#ifndef JP
+			The("power on your %s fades away.", body_part(HAND));
+#else
+			Your("%sから破邪の力が消えた。", body_part(HAND));
+#endif
+			break;
 	            default:
 	            	break;
 	        } else switch (techid(i)) {
@@ -1165,6 +1185,7 @@ role_tech()
 		case PM_HEALER:		return (hea_tech);
 		case PM_KNIGHT:		return (kni_tech);
 		case PM_MONK: 		return (mon_tech);
+		case PM_MEDIUM:		return (med_tech);
 		case PM_PRIEST:		return (pri_tech);
 		case PM_RANGER:		return (ran_tech);
 		case PM_ROGUE:		return (rog_tech);
@@ -1290,6 +1311,490 @@ draw_energy()
 	return(0);
 }
 
+static int
+dopurify()
+{
+	boolean confused = (Confusion != 0);
+	struct obj *obj;
+	struct obj pseudo_scrl;
+
+	if (!Role_if(PM_MEDIUM)) {
+	    You("みそぎの作法を知らない。");
+	    return(0);
+	}
+
+	if (!IS_FOUNTAIN(levl[u.ux][u.uy].typ)) {
+	    pline("みそぎをするには泉が必要だ。");
+	    return(0);
+	} else
+	    if (Levitation && !Lev_at_will && !u.uinwater) {
+	    You_cant(E_J("reach the fountain below.","泉に届かない。"));
+	    return(0);
+	}
+
+	u.uconduct.gnostic++;
+
+	if (Inhell) {
+	    pline(E_J("Since you are in Gehennom, %s won't help you.",
+		      "ゲヘナの中では、%sの力はあなたに届かない。"),
+		  u_gname());
+	    aggravate();
+	    return(0);
+	}
+
+	if ((u.ualign.type != A_CHAOTIC &&
+	    (is_demon(youmonst.data) || is_undead(youmonst.data))) ||
+	     u.ugangr > 6 /* "Die, mortal!" */) {
+	    pline(E_J("Somehow, %s seems to ignore you.",
+		      "なぜか、%sはあなたを無視したようだ。"), u_gname());
+	    aggravate();
+	    exercise(A_WIS, FALSE);
+	    return(0);
+	}
+
+	if(confused) {
+	    if (Hallucination) {
+		You("水底のルルイエを見てしまった！ なんてこった！");
+		return(0);
+	    } else {
+		You("準備体操をせずに泳ごうとした！");
+		return(0);
+	    }
+	} else {
+	    if (Hallucination) {
+		You("%sを洗おうとしたが、%sを忘れてきた！",
+		    body_part(HAIR),
+		    has_head(youmonst.data) ? "シャンプー" : body_part(HEAD));
+		return(0);
+	    } else {
+		You("%sに祈りをささげ、澄んだ水で身を洗い清めた…。", u_gname());
+	    }
+	}
+
+	if (u.ulevel < 3) { 
+	    pline("あなたはまだ修行が足りないようだ。"); 
+	    return(0); 
+	}
+
+	if (u.uluck < 0)
+	    goto disturbed;
+
+	pseudo_scrl = zeroobj;
+	if (levl[u.ux][u.uy].blessedftn || !rn2(6)) {
+	    You_feel(E_J("like someone is helping you!",
+			 "誰かに助けられているような気がした！"));
+	    exercise(A_WIS, TRUE);
+	    levl[u.ux][u.uy].blessedftn = 0;
+	    /* remove curses in your inventory */
+	    pseudo_scrl.blessed = 1;
+	    remove_curse(&pseudo_scrl, FALSE);
+	    /* cure lycanthropy */
+	    if (u.ulycn >= LOW_PM) you_unwere(TRUE);
+	    /* cure sickness */
+	    use_unicorn_horn((struct obj *)0);
+	    nomul(-rnd((MAXULEV+6) - u.ulevel));
+	} else if (rn2(3)) {
+	    You_feel(E_J("like someone is helping you.",
+			 "誰かに助けられているような気がした。"));
+	    exercise(A_WIS, TRUE);
+	    /* remove curses of worn items */
+	    remove_curse(&pseudo_scrl, FALSE);
+	    /* cure lycanthropy  */
+	    if (u.ulycn >= LOW_PM) you_unwere(TRUE);
+	    /* consume the fountain */
+	    if (rn2(3)) dryup(u.ux, u.uy, TRUE);
+	    nomul(-rnd((MAXULEV+6) - u.ulevel));
+	} else if (!rn2(10)) {
+disturbed:
+	    You_feel(E_J("someone is watching you!  You get dressed in a hurry.",
+			 "何者かの視線を感じ、慌てて服を着た！"));
+	    aggravate();
+	    exercise(A_WIS, FALSE);
+	} else {
+	    pline("何も起こらなかった。");
+	    nomul(-5);
+	}
+
+	return (1);
+}
+
+static const char ofudas[] = { SCROLL_CLASS, 0 };
+#ifdef JP
+static const struct getobj_words ofudaw = { "どの巻物", "を", "投げる", "投げ" };
+#endif /*JP*/
+
+static int
+throw_ofuda()
+{
+	struct obj *scroll;
+	struct monst *mtmp;
+
+	/* check if you are ready to throw an ofuda */
+	if (Upolyd) {
+#ifndef JP
+	    You_cant("use your special power in your current form.");
+#else
+	    pline("変身中は、あなた本来の特別な力を使うことができない。");
+#endif /*JP*/
+	    return (0);
+	}
+	if(check_capacity((char *)0)) return(0);
+
+	/* choose an ofuda to throw */
+	scroll = getobj(ofudas, E_J("throw",&ofudaw), 0);
+	if (!scroll) return(0);
+
+	throw_obj(scroll, 0);
+	return (1);
+}
+
+void
+ofuda_hit(mon, obj)
+struct monst *mon;
+struct obj *obj;
+{
+	struct obj *otmp, *otmp2;
+	struct monst *mtmp;
+	int ct;
+	boolean wake = TRUE;	/* wake monster */
+	boolean nohap = TRUE;
+	boolean ismimic = FALSE;
+	char tmpbuf[BUFSZ];
+	char monbuf[BUFSZ];
+
+	if (u.uswallow && mon == u.ustuck) {
+	    pline_The(E_J("scroll hits %s %s!","巻物は%sの%sに命中した！"),
+		      s_suffix(mon_nam(mon)), mbodypart(mon, STOMACH));
+	} else {
+	    if (mon->data->mlet == S_MIMIC &&
+		mon->m_ap_type != M_AP_NOTHING) {
+		ismimic = TRUE;
+		(void) lookat(mon->mx, mon->my, tmpbuf, monbuf);
+	    }
+	    pline_The(E_J("scroll hits %s!","巻物は%sに命中した！"),
+		      ismimic ? tmpbuf : mon_nam(mon));
+	}
+
+	switch(obj->otyp) {
+
+	case SCR_DESTROY_ARMOR:
+	    otmp = some_armor(mon);
+	    if (otmp && !u.uswallow) {
+		if (canseemon(mon)) {
+		    pline(E_J("%s %s turns to dust!",
+			      "%s%sは塵と化した！"),
+			  s_suffix(Monnam(mon)),
+			  distant_name(otmp, xname));
+		    makeknown(SCR_DESTROY_ARMOR);
+		}
+		m_useup(mon, otmp);
+		nohap = FALSE;
+	    }
+	    break;
+
+	case SCR_CONFUSE_MONSTER:
+	    if (!mon->mconf) {
+		mon->mconf = 1;
+		if (!mon->mstun && mon->mcanmove && !mon->msleeping &&
+			canseemon(mon)) {
+		    pline(E_J("%s appears confused.",
+			      "%sは混乱したようだ。"), Monnam(mon));
+		    makeknown(SCR_CONFUSE_MONSTER);
+		}
+		nohap = FALSE;
+	    }
+	    break;
+
+	case SCR_SCARE_MONSTER: {
+	    int wasflee = mon->mflee;
+	    monflee(mon, 0, FALSE, TRUE);
+	    if (!wasflee && mon->mflee) {
+		makeknown(SCR_SCARE_MONSTER);
+		nohap = FALSE;
+	    }
+	    break;
+	}
+
+	case SCR_REMOVE_CURSE:
+	    if (mon->data->mlet == S_MUMMY ||
+		mon->data->mlet == S_ZOMBIE) {
+		pline(E_J("The curse on %s is removed and it returns to a corpse.",
+			  "%sにかけられていた呪いが祓われ、死体に戻った。"),
+		      mon_nam(mon));
+		killed(mtmp);
+		makeknown(SCR_REMOVE_CURSE);
+		nohap = FALSE;
+	    }
+	    break;
+
+	case SCR_CREATE_MONSTER:
+	    if (!u.uswallow) {
+		mtmp = make_familiar((struct obj *)0, mon->mx, mon->my, TRUE);
+		if (mtmp) {
+		    pline(E_J("%s appears to help you!",
+			      "%sがあなたを助けに現れた！"), Monnam(mtmp));
+		    makeknown(SCR_CREATE_MONSTER);
+		    nohap = FALSE;
+		}
+	    }
+	    break;
+
+	case SCR_GOLD_DETECTION:
+	    nohap = FALSE;
+	    if (mon->mnum == PM_GOLD_GOLEM) {
+		pline(E_J("Wow! It is all gold!","わぁ！ 全身が金だ！"));
+		if (mon->minvis) {
+		    mon->minvis = 0;
+		    newsym(mon->mx,mon->my);
+		}
+		break;
+	    }
+	    ct = 0;
+	    for (otmp = mon->minvent; otmp; otmp = otmp->nobj) {
+		if (isgoldobj(otmp)) {
+		    ct++;
+		    otmp2 = otmp;
+		}
+	    }
+	    if (ct == 0) {
+		if (mon->mgold)
+		    pline(E_J("%s has %ld %s.","%sは%ld %sの金を持っている。"),
+			  Monnam(mon), mon->mgold, currency(mon->mgold));
+		else
+		    pline(E_J("%s does not have any gold.",
+			      "%sは金を持っていない。"), Monnam(mon));
+	    } else if (ct == 1 && mon->mgold == 0) {
+		pline(E_J("%s has %s.","%sは%sを持っている。"),
+		      Monnam(mon), doname(otmp2));
+	    } else {
+		(void) display_minventory(mon, MINV_ALL|MINV_NOLET|MINV_GOLDOBJ, 0);
+	    }
+	    makeknown(SCR_GOLD_DETECTION);
+	    break;
+
+	case SCR_FOOD_DETECTION:
+	    nohap = FALSE;
+	    ct = 0;
+	    for (otmp = mon->minvent; otmp; otmp = otmp->nobj) {
+		if (is_edible(otmp)) {
+		    ct++;
+		    otmp2 = otmp;
+		}
+	    }
+	    if (ct == 0) {
+		pline(E_J("%s does not have any food.",
+			  "%sは食べ物を何も持っていない。"), Monnam(mon));
+	    } else if (ct == 1) {
+		pline(E_J("%s has %s.","%sは%sを持っている。"),
+		      Monnam(mon), doname(otmp2));
+	    } else {
+		(void) display_minventory(mon, MINV_ALL|MINV_NOLET|MINV_FOODOBJ, 0);
+	    }
+	    makeknown(SCR_FOOD_DETECTION);
+	    break;
+
+	case SCR_TAMING: {
+	    int waspeaceful = mon->mpeaceful;
+	    int wastame     = mon->mtame;
+	    maybe_tame(mon, obj);
+	    if (waspeaceful != mon->mpeaceful ||
+		wastame != mon->mtame) {
+		makeknown(SCR_TAMING);
+		nohap = FALSE;
+	    }
+	    if (mon->mpeaceful || mon->mtame)
+		wake = FALSE;
+	    break;
+	}
+
+	case SCR_FIRE: {
+	    struct zapinfo zi;
+	    setup_zapobj(&zi, obj, TRUE);
+	    explode(mon->mx, mon->my, &zi, (2*(rn1(3, 3) + 2 * bcsign(obj)) + 1), EXPL_FIERY);
+	    makeknown(SCR_FIRE);
+	    nohap = FALSE;
+	}
+
+	case SCR_EARTH:
+	    use_scr_earth(mon, obj, mon->mx, mon->my, TRUE, FALSE);
+	    makeknown(SCR_EARTH);
+	    nohap = FALSE;
+	    break;
+
+	case SCR_STINKING_CLOUD:
+	    (void) create_stinking_cloud(mon->mx, mon->my, 3+bcsign(obj),
+					 8+4*bcsign(obj), TRUE);
+	    makeknown(SCR_STINKING_CLOUD);
+	    nohap = FALSE;
+	    break;
+
+	case SCR_LIGHT:
+	    if (flash_hits_mon(mon, obj)) {
+		nohap = FALSE;
+		makeknown(SCR_LIGHT);
+	    }
+	    break;
+
+	case SCR_TELEPORTATION:
+	    u_teleport_mon(mon, TRUE);
+	    makeknown(SCR_TELEPORTATION);
+	    nohap = FALSE;
+	    break;
+
+	case SCR_IDENTIFY: {
+	    long save_invis;
+	    int mcham;
+	    if (!cansee(mon->mx, mon->my)) break;
+	    save_invis = HSee_invisible;
+	    HSee_invisible |= 1;
+	    if (ismimic) {
+		seemimic(mon);
+		pline_The(E_J("%s is actually a %s!","%sは%sの擬態だった！"),
+			  tmpbuf, mon_nam(mon));
+	    }
+	    mcham = mon->cham;
+	    if (mcham != CHAM_ORDINARY) {
+		strcpy(monbuf, mon_nam(mon));
+		mon->cham = CHAM_ORDINARY;
+		(void) newcham(mon, &mons[cham_to_pm[mcham]],
+			       FALSE, FALSE);
+		mon->mcan = 1;
+		pline_The(E_J("%s is actually a %s!","%sの正体は%sだった！"),
+			  monbuf, mon_nam(mon));
+	    }
+	    probe_monster(mon);
+	    nohap = FALSE;
+	    makeknown(SCR_IDENTIFY);
+	    HSee_invisible = save_invis;
+	    break;
+	}
+
+	case SCR_GENOCIDE: {
+	    struct zapinfo zi;
+	    int oldhp = mon->mhp;
+	    setup_zapinfo(&zi, AT_MAGC, AD_DETH, 1, 1,
+			  E_J("lethal power","致死の魔力"),
+			  E_J("power","魔力"), TRUE);
+	    zhitm(mon, &zi, &otmp);
+	    if (mon->mhp < oldhp) {
+		xkilled(mon, 1);
+		makeknown(SCR_GENOCIDE);
+	    } else {
+		if (mon->mnum == PM_DEATH) {
+		    if (canseemon(mon)) {
+			pline(E_J("%s absorbs the deadly power!",
+				  "%sは致死の魔力を吸収している！"),
+				  Monnam(mon));
+			pline(E_J("It seems even stronger than before.",
+				  "そして、前よりも強大になったように見える。"));
+		    }
+		} else {
+		    pline(E_J("%s seems not affected.",
+			      "%sには効果がないようだ。"),
+			      Monnam(mon));
+		}
+	    }
+	    nohap = FALSE;
+	    break;
+	}
+
+	case SCR_AMNESIA:
+	    if (mindless(mon->data)) break;
+	    mon->mtrapseen = 0L;
+	    mon->mflee = 0;
+	    if (mon->mtame) {
+		pline(E_J("%s seems to forget about you...",
+			  "%sはあなたのことを忘れてしまったようだ…。"),
+		      Monnam(mon));
+		mon->mtame = 0;
+		newsym(mon->mx, mon->my);
+		if (mon->mleashed) {
+		    pline(E_J("%s gets angry at being leashed!",
+			      "%sは綱で繋がれていることに気づき、怒った！"),
+			  Monnam(mon));
+		    m_unleash(mon, TRUE);
+		} else
+		    wake = 0;
+	    } else if (!mon->mpeaceful && always_peaceful(mon->data)) {
+		if (mon->isshk) {
+		    struct eshk *eshkp = ESHK(mon);
+		    eshkp->visitct = 0;
+		    eshkp->customer[0] = 0;
+		    if (inhishop(mon)) {
+			verbalize(E_J("What have I been doing?",
+				      "今まで何をしていたんだっけ？"));
+		    } else {
+			verbalize(E_J("Where am I? What am I doing here?",
+				      "ここはどこだ？ 私はここで何をしてるんだ？"));
+		    }
+		    make_happy_shk(mon, FALSE, TRUE);
+		} else {
+		    verbalize(E_J("What have I been doing?",
+				  "今まで何をしていたんだっけ？"));
+		    setmpeaceful(mon, FALSE);
+		}
+		wake = 0;
+	    } else {
+		if (!mon->mconf) {
+		    mon->mconf = 1;
+		    if (!mon->mstun && mon->mcanmove && !mon->msleeping &&
+			    canseemon(mon))
+			pline(E_J("%s appears confused.",
+				  "%sは混乱したようだ。"), Monnam(mon));
+		}
+	    }
+	    nohap = FALSE;
+	    break;
+
+	case SCR_CHARGING:
+	    if (mon->mspec_used) {
+		mon->mspec_used = 0;
+		nohap = 0;
+		if (canseemon(mon))
+		    pline(E_J("%s seems to regain its power.",
+			      "%sは力を取り戻したようだ。"), Monnam(mon));
+	    }
+	    break;
+
+	case SCR_PUNISHMENT:
+	    if (mon->misc_worn_check & W_ARMH) break;
+	    if (!has_head(mon->data)) break;
+	    otmp = mksobj(DUNCE_CAP, TRUE, FALSE);
+	    otmp->etherial = 1;
+	    curse(otmp);
+	    (void) mpickobj(mon, otmp);
+	    mon->misc_worn_check |= W_ARMH;
+	    otmp->owornmask |= W_ARMH;
+	    update_mon_intrinsics(mon, otmp, TRUE, TRUE);
+	    nohap = 0;
+	    if (canseemon(mon))
+#ifndef JP
+		pline("%s appears on %s %s!",
+		      An(xname(otmp)), s_suffix(mon_nam(mtmp)), body_part(HEAD));
+#else
+		pline("%sの%s上に%sが現れた！",
+		      Monnam(mon), body_part(HEAD), xname(otmp));
+#endif
+	    break;
+
+	case SCR_ENCHANT_ARMOR:
+	case SCR_ENCHANT_WEAPON:
+	case SCR_MAGIC_MAPPING:
+	default:
+	    break;
+	}
+
+	if(wake) {
+	    if(mon->mhp > 0) {
+		wakeup(mon);
+		m_respond(mon);
+//		if(mon->isshk && !*u.ushops) hot_pursuit(mon); /* done in thitmonst() */
+	    } else if(mon->m_ap_type)
+		seemimic(mon); /* might unblock if mimicing a boulder/door */
+	}
+
+	if (nohap) pline(nothing_happens);
+}
 
 #ifdef DEBUG
 void

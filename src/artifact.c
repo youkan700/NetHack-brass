@@ -1567,6 +1567,7 @@ arti_invoke(obj)
 	case CREATE_AMMO: {
 	    const int ammotype[4] = { ARROW, CROSSBOW_BOLT, FLINT, BULLET };
 	    struct obj *otmp;
+	    int atyp;
 
 	    if (obj->oartifact == ART_WEREBANE) {
 		int cnt;
@@ -1601,7 +1602,16 @@ arti_invoke(obj)
 		break;
 	    }
 
-	    otmp = mksobj(ammotype[objects[obj->otyp].oc_wprop & WP_SUBTYPE], TRUE, FALSE);
+	    atyp = ammotype[objects[obj->otyp].oc_wprop & WP_SUBTYPE];
+	    if (atyp == ARROW) {
+		switch (obj->otyp) {
+		    case YUMI:		atyp = YA;		break;
+		    case ELVEN_BOW:	atyp = ELVEN_ARROW;	break;
+		    case ORCISH_BOW:	atyp = ORCISH_ARROW;	break;
+		    default:		break;
+		}
+	    }
+	    otmp = mksobj(atyp, TRUE, FALSE);
 	    if (!otmp) goto nothing_special;
 	    otmp->blessed = obj->blessed;
 	    otmp->cursed = obj->cursed;
@@ -1613,6 +1623,8 @@ arti_invoke(obj)
 		if (otmp->spe > 0) otmp->spe = 0;
 	    } else
 		otmp->quan += rnd(5);
+	    if (artilist[obj->oartifact].alignment == A_LAWFUL)
+		otmp->opoisoned = 0;
 	    otmp->owt = weight(otmp);
 #ifndef JP
 	    otmp = hold_another_object(otmp, "Suddenly %s out.",

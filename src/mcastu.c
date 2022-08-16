@@ -174,9 +174,17 @@ castmu(mtmp, mattk, thinks_it_foundyou, foundyou)
 	boolean thinks_it_foundyou;
 	boolean foundyou;
 {
-	int	dmg, ml = mtmp->m_lev;
+	int dmg, ml = mtmp->m_lev;
 	int ret;
 	int spellnum = 0;
+
+	/* wearing a dunce cap ? */
+	if (mtmp->misc_worn_check & W_ARMH) {
+	    struct obj *otmp;
+	    otmp = which_armor(mtmp, W_ARMH);
+	    if (otmp && otmp->otyp == DUNCE_CAP)
+		ml = 0;
+	}
 
 	/* Three cases:
 	 * -- monster is attacking you.  Search for a useful spell.
@@ -215,7 +223,7 @@ castmu(mtmp, mattk, thinks_it_foundyou, foundyou)
 	}
 
 	/* monster unable to cast spells? */
-	if(mtmp->mcan || mtmp->mspec_used || mtmp->mstun || mtmp->mconf || !ml) {
+	if(mtmp->mcan || mtmp->mspec_used || mtmp->mstun || !ml) {
 	    cursetxt(mtmp, is_undirected_spell(mattk->adtyp, spellnum));
 	    return(0);
 	}

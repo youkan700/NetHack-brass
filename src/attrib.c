@@ -71,6 +71,11 @@ const struct innate {
 		     {  17, &(HTeleport_control), E_J("controlled","制御された"),E_J("uncontrolled","制御を失った") },
 		     {   0, 0, 0, 0 } },
 
+	med_abil[] = { {  1, &(HStealth), "", "" },
+		       {  7, &(HSearching), "知覚力を得た", "知覚力を失った" },
+		       { 14, &(HSee_invisible), "", "" },
+		       {  0, 0, 0, 0 } },
+
 	pri_abil[] = { {	15, &(HWarning), E_J("sensitive","気配に敏感になった"), E_J("","気配に鈍くなった") },
 		     {  20, &(HFire_resistance), E_J("cool","涼しさに包まれた"), E_J("warmer","また暑くなった") },
 		     {	 0, 0, 0, 0 } },
@@ -600,6 +605,7 @@ int oldlevel, newlevel;
 	case PM_HEALER:         abil = hea_abil;	break;
 	case PM_KNIGHT:         abil = kni_abil;	break;
 	case PM_MONK:           abil = mon_abil;	break;
+	case PM_MEDIUM:         abil = med_abil;	break;
 	case PM_PRIEST:         abil = pri_abil;	break;
 	case PM_RANGER:         abil = ran_abil;	break;
 	case PM_ROGUE:          abil = rog_abil;	break;

@@ -7,7 +7,6 @@
 #include "hack.h"
 #include "edog.h"
 
-STATIC_DCL int FDECL(throw_obj, (struct obj *,int));
 STATIC_DCL void NDECL(autoquiver);
 STATIC_DCL int FDECL(gem_accept, (struct monst *, struct obj *));
 STATIC_DCL int FDECL(throw_gold, (struct obj *));
@@ -34,7 +33,7 @@ extern boolean notonhead;	/* for long worms */
 #define	SHOOT_LASTTGT	0x0100
 
 /* Throw the selected object, asking for direction */
-STATIC_OVL int
+int
 throw_obj(obj, shotlimit)
 struct obj *obj;
 int shotlimit;
@@ -126,13 +125,20 @@ skip_getdir:
 	    switch (Role_switch) {
 	    case PM_RANGER:
 		multishot++;
+		if (uwep && uwep->oartifact == ART_LONGBOW_OF_DIANA)
+		    multishot++;
 		break;
 	    case PM_ROGUE:
 		if (objects[obj->otyp].oc_skill == P_DAGGER_GROUP ||
 		    objects[obj->otyp].oc_skill == P_KNIFE_GROUP) multishot++;
 		break;
+	    case PM_MEDIUM:
 	    case PM_SAMURAI:
-		if (obj->otyp == YA && uwep && uwep->otyp == YUMI) multishot++;
+		if (obj->otyp == YA && uwep && uwep->otyp == YUMI) {
+		    multishot++;
+		    if (uwep->oartifact == ART_EBONY_LACQUERED_BOW)
+			multishot++;
+		}
 		break;
 	    default:
 		break;	/* No bonus */
@@ -180,6 +186,9 @@ skip_getdir:
 		xname(obj),
 		m_shot.s ? (is_gun(uwep) ? "Œ‚‚Á‚½" : "ŽË‚½") : "“Š‚°‚½");
 #endif /*JP*/
+	}
+	if (tech_inuse(T_OFUDA)) {
+	    You(E_J("throw %s.","%s‚É—ì—Í‚ðž‚ß‚Ä“Š‚°‚½B"), xname(obj));
 	}
 
 	wep_mask = obj->owornmask;
@@ -1519,13 +1528,15 @@ register struct obj   *obj;
 		     * especially their own special types of bow.
 		     * Polymorphing won't make you a bow expert.
 		     */
-		    if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI)) &&
+		    if ((Race_if(PM_ELF) || Role_if(PM_SAMURAI) ||
+			 Role_if(PM_MEDIUM)) &&
 			(!Upolyd || your_race(youmonst.data)) &&
 			objects[uwep->otyp].oc_skill == P_BOW_GROUP) {
 			tmp++;
 			if (Race_if(PM_ELF) && uwep->otyp == ELVEN_BOW)
 			    tmp++;
-			else if (Role_if(PM_SAMURAI) && uwep->otyp == YUMI)
+			else if ((Role_if(PM_SAMURAI) || Role_if(PM_MEDIUM)) &&
+				 uwep->otyp == YUMI)
 			    tmp++;
 		    }
 		    if (is_gun(uwep)) {
@@ -1594,7 +1605,7 @@ register struct obj   *obj;
 			else if (obj->known) wep = uwep;
 		    }
 		    if (!wep->known && wepidentify_byhit(wep)) {
-			wep->known = 1;
+			wep->known = wep->rknown = 1;
 			You(E_J("find the quality of your weapon.",
 				"Ž©•ª‚Ì•Ší‚Ì•iŽ¿‚ðŒ©’è‚ß‚½B"));
 			prinv(NULL, wep, 0);
@@ -1605,7 +1616,7 @@ register struct obj   *obj;
 			    struct obj *otmp;
 			    for (otmp = invent; otmp; otmp = otmp->nobj) {
 				if (otmp->o_id == wep->corpsenm)
-				    otmp->known = 1;
+				    otmp->known = otmp->rknown = 1;
 			    }
 			    /* identify the already-thrown weapon... */
 			    for (otmp = fobj; otmp; otmp = otmp->nobj) {
@@ -1614,7 +1625,7 @@ register struct obj   *obj;
 				    otmp->othrown &&
 #endif /*PICKUP_THROWN*/
 				    wep->spe == otmp->spe && wep->blessed == otmp->blessed)
-				    otmp->known = 1;
+				    otmp->known = otmp->rknown = 1;
 			    }
 			}
 		    }
@@ -1665,6 +1676,12 @@ register struct obj   *obj;
 		return 1;
 	    }
 	    potionhit(mon, obj, TRUE);
+	    return 1;
+
+	} else if (obj->oclass == SCROLL_CLASS &&
+		tech_inuse(T_OFUDA)) {
+	    ofuda_hit(mon, obj);
+	    obfree(obj, (struct obj *)0);
 	    return 1;
 
 	} else if ((befriend_with_obj(mon->data, obj)

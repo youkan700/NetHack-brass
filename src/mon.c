@@ -49,7 +49,6 @@ STATIC_DCL void NDECL(warn_effects);
 #endif /* 0 */
 
 #ifndef OVLB
-STATIC_VAR short cham_to_pm[];
 #else
 STATIC_DCL struct obj *FDECL(make_corpse,(struct monst *));
 STATIC_DCL void FDECL(m_detach, (struct monst *, struct permonst *));
@@ -149,14 +148,6 @@ int mndx;
 	}
 	return mcham;
 }
-
-/* convert chameleon index to monster index */
-STATIC_VAR short cham_to_pm[] = {
-		NON_PM,		/* placeholder for CHAM_ORDINARY */
-		PM_CHAMELEON,
-		PM_DOPPELGANGER,
-		PM_SANDESTIN,
-};
 
 int get_true_pm(mtmp)
 struct monst *mtmp;
@@ -2738,12 +2729,13 @@ boolean msg;		/* "The oldmon turns into a newmon!" */
 	}
 
 	hpn = mtmp->mhp;
-	hpd = (mtmp->m_lev < 50) ? ((int)mtmp->m_lev)*8 : mdat->mlevel;
+	hpd = (mtmp->m_lev < 50) ? ((int)mtmp->m_lev) * m_hd(mtmp) : mdat->mlevel;
+	if (hpn > hpd) hpn = hpd;
 	if(!hpd) hpd = 4;
 
 	mtmp->m_lev = adj_lev(mdat);		/* new monster level */
 
-	mhp = (mtmp->m_lev < 50) ? ((int)mtmp->m_lev)*8 : mdat->mlevel;
+	mhp = (mtmp->m_lev < 50) ? ((int)mtmp->m_lev) * m_hd(mtmp) : mdat->mlevel;
 	if(!mhp) mhp = 4;
 
 	/* new hp: same fraction of max as before */
@@ -2757,6 +2749,7 @@ boolean msg;		/* "The oldmon turns into a newmon!" */
 
 /* and the same for maximum hit points */
 	hpn = mtmp->mhpmax;
+	if (hpn > hpd) hpn = hpd;
 #ifndef LINT
 	mtmp->mhpmax = (int)(((long)hpn*(long)mhp)/(long)hpd);
 #endif

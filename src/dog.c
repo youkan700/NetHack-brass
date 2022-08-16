@@ -92,7 +92,7 @@ boolean quietly;
 		}
 	    }
 
-	    mtmp = makemon(pm, x, y, MM_EDOG|MM_IGNOREWATER);
+	    mtmp = makemon(pm, x, y, MM_EDOG|MM_IGNOREWATER|MM_ADJACENTOK);
 	    add_xdat_mon(mtmp, XDAT_EDOG, 0);
 	    if (otmp && !mtmp) { /* monster was genocided or square occupied */
 	 	if (!quietly)
@@ -888,7 +888,7 @@ register struct obj *obj;
 	    return((struct monst *)0);
 #endif
 	if (mtmp->isshk && !obj) {
-	    make_happy_shk(mtmp, FALSE);
+	    make_happy_shk(mtmp, FALSE, FALSE);
 	    return((struct monst *)0);
 	}
 

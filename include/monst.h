@@ -30,8 +30,10 @@
  * MINV_ALL    If set, display all items in monster's inventory, otherwise
  *	       just display wielded weapons and worn items.
  */
-#define MINV_NOLET 0x01
-#define MINV_ALL   0x02
+#define MINV_NOLET   0x01
+#define MINV_ALL     0x02
+#define MINV_FOODOBJ 0x04
+#define MINV_GOLDOBJ 0x08
 
 #ifndef ALIGN_H
 #include "align.h"

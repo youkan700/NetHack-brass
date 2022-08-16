@@ -337,6 +337,10 @@ E struct c_common_strings {
 E const char *materialnm[];
 E const char *materialnm2[];
 E const uchar materialcolor[];
+E const short materialwt[];
+
+/* convert chameleon index to monster index */
+E const short cham_to_pm[4];
 
 /* Monster name articles */
 #define ARTICLE_NONE	0
