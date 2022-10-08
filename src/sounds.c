@@ -51,7 +51,7 @@ dosounds()
 	    E_J("bubbling water.",	    "水のせせらぎを"),
 	    E_J("water falling on coins.",  "コインに降り注ぐ水の音を"),
 	    E_J("the splashing of a naiad.","泉の乙女が水浴びする音を"),
-	    E_J("a soda fountain!",	    "!ラムネの泉の音を"),
+	    E_J("a soda fountain!",	    "!ドリンクバーの音を"),
 	};
 	You_hear(fountain_msg[rn2(3)+hallu]);
     }
