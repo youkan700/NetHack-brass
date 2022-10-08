@@ -3344,13 +3344,14 @@ struct attack *mattk;
 	    }
 	    shield = which_armor(mdef, W_ARMS);
 	    tmp += mdef->m_lev;
-	    if (tmp < 5) tmp = 5; /* balance... */
 	}
 	if (!shield) return 0;
 	tmp += (int)(shield->spe);
 	if (is_elf(mdef->data) && is_elven_armor(shield)) tmp++;
 	else if (is_dwarf(mdef->data) && is_dwarvish_armor(shield)) tmp++;
+
 	if (tmp < 1) tmp = 1;
+	if (mdef != &youmonst && tmp >= 12) tmp = 12; /* balance... */
 //pline("(parry:%d)", tmp);
 	if (rn2(20) < tmp) {
 	    if (mdef == &youmonst) {
