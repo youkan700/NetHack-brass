@@ -606,7 +606,7 @@ mattacku(mtmp)
 							makeplural(genericwere));
 				pline("%s%s!", upstart(buf), from_nowhere);
 #else
-				pline("%s‚ª%sŒ»‚ê‚½I", from_nowhere, genericwere);
+				pline("%s%s‚ªŒ»‚ê‚½I", from_nowhere, genericwere);
 #endif /*JP*/
 			    }
 			} /* else no help came; but you didn't know it tried */
