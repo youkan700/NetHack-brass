@@ -132,7 +132,7 @@ const char *name;	/* if null, then format `obj' */
 		    !strncmpi(name, "a ", 2)) kprefix = KILLED_BY;
 	}
 #else
-	if (!name) name = strcpy(onmbuf, killer_xname(obj));
+	if (!name) name = strcpy(onmbuf, mshot_xname(obj));
 	knm = killer_buf;
 	kprefix = kbprefix;
 #endif /*JP*/

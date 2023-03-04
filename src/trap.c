@@ -4641,7 +4641,7 @@ boolean disarm;
 #endif /*JP*/
 			}
 			make_stunned(HStun + rn1(7, 16),FALSE);
-			(void) make_hallucinated(HHallucination + rn1(5, 16),FALSE,0L);
+			(void) make_hallucinated(HHallucination + rn1(25, 50),FALSE,0L);
 			break;
 
 		case BOXTRAP_ALARM: {
