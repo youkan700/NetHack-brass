@@ -2604,10 +2604,13 @@ const char *s, *goal;
 	char dirsym;
 
 #ifdef REDO
-	if(in_doagain || *readchar_queue)
+	if(in_doagain || *readchar_queue) {
 	    dirsym = readchar();
-	else
+	    /* you may get DOAGAIN if a hero tried to wrest the last charge from a wand by repeating Ctrl-A */
+	    if (dirsym == DOAGAIN) goto force_ui;
+	} else
 #endif
+	force_ui:
 	    dirsym = yn_function ((s && *s != '^') ? s :
 					E_J("In what direction (or position)?",
 					    "‚Ç‚Ì•ûŒü(‚Ü‚½‚ÍˆÊ’u)‚ÉH"),
