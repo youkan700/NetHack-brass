@@ -30,7 +30,6 @@ STATIC_DCL long FDECL(mbag_item_gone, (int,struct obj *));
 STATIC_DCL void FDECL(observe_quantum_cat, (struct obj *));
 STATIC_DCL int FDECL(menu_loot, (int, struct obj *, BOOLEAN_P));
 STATIC_DCL int FDECL(in_or_out_menu, (const char *,struct obj *, BOOLEAN_P, BOOLEAN_P));
-STATIC_DCL int FDECL(container_at, (int, int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(able_to_loot, (int, int));
 STATIC_DCL boolean FDECL(mon_beside, (int, int));
 STATIC_DCL void NDECL(del_sokoprize);
@@ -1571,7 +1570,7 @@ encumber_msg()
 }
 
 /* Is there a container at x,y. Optional: return count of containers at x,y */
-STATIC_OVL int
+int
 container_at(x, y, countem)
 int x,y;
 boolean countem;
