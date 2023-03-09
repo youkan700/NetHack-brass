@@ -656,6 +656,7 @@ int mode;
     struct rm *ust;
     char waterbuf[BUFSZ];
     int wwalksafe = 0;
+    struct trap *ttmp;
 
     flags.door_opened = FALSE;
     /*
@@ -905,6 +906,15 @@ collision:
                     return FALSE;
                 }
         }
+    }
+    if (mode == DO_MOVE && (ttmp = t_at(x, y)) && ttmp->tseen) {
+	sprintf(waterbuf,
+		E_J("Really step into the %s?",
+		    "–{“–‚É%s‚É“¥‚Ýž‚Ý‚Ü‚·‚©H"),
+		defsyms[trap_to_defsym(ttmp->ttyp)].explanation);
+	if (yn(waterbuf) != 'y') {
+	    return FALSE;
+	}
     }
 
     /* OK, it is a legal place to move. */
