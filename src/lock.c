@@ -643,7 +643,12 @@ doopen()		/* try to open a door */
 
 	if(!get_adjacent_loc((char *)0, (char *)0, u.ux, u.uy, &cc)) return(0);
 
-	if((cc.x == u.ux) && (cc.y == u.uy)) return(0);
+	if((cc.x == u.ux) && (cc.y == u.uy)) {
+	    if (u.dz >= 0 && container_at(cc.x, cc.y, FALSE)) {
+		doloot();
+	    }
+	    return(0);
+	}
 
 	if ((mtmp = m_at(cc.x,cc.y))			&&
 		mtmp->m_ap_type == M_AP_FURNITURE	&&
