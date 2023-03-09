@@ -3,7 +3,7 @@ NetHack v3.4 を気の向くまま地味に改造しています。実験的に�
 [昔のサイト](http://www.maroon.dti.ne.jp/youkan/nethack/)
 
 ## Download (Win32 binary)  
-[2022/10/08版](https://github.com/youkan700/NetHack-brass/blob/master/Release/nb221008.7z)
+[2023/3/9版](https://github.com/youkan700/NetHack-brass/blob/master/Release/nb230309.7z)
 
 ## 新規要素
 * 浮遊能力を < で発動、> で停止するように変更。呪われた浮遊アイテムを身につけている場合は制御できない。アーティファクトと靴は無期限の、指輪は期限付きの浮遊を発動可能
@@ -30,6 +30,7 @@ NetHack v3.4 を気の向くまま地味に改造しています。実験的に�
 * 店主はペットが拾った商品を取り上げる
 * 発見物一覧に識別した卵をリストする
 * confirmオプションの拡張: 友好的な怪物に対し、attack(確認せず攻撃する・従来のfalse), confirm(確認する・従来のtrue), stop(確認せず攻撃しない・新)
+* 発見済みの罠に踏み込む際に確認を取る
 * [yzhack](http://yzh.github.io/yzhack/)から巫女・烏漆の弓・巫女の特殊技能(#technique みそぎ・お札投げ・破魔矢)を導入
 * Dylan Streb氏のWaterwalking improvements 1.0 patchを導入
 * Shiganai Sakushaさんの「Dungeon Map Overviewパッチ日本語版」を適用
