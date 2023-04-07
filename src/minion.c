@@ -16,6 +16,14 @@ struct monst *mon;
 
 	if (mon) {
 	    ptr = mon->data;
+
+	    if (uwep && uwep->oartifact == ART_DEMONBANE && is_demon(ptr)) {
+		if (canseemon(mon))
+		    pline(E_J("%s looks puzzled for a moment.",
+			      "%sÇÕè≠Çµç¢òfÇµÇΩÇÊÇ§ÇæÅB"), Monnam(mon));
+		return;
+	    }
+
 	    atyp = getmaligntyp(mon);
 	} else {
 	    ptr = &mons[PM_WIZARD_OF_YENDOR];

@@ -5026,6 +5026,71 @@ swamp_effects()
 	return(FALSE);
 }
 
+boolean
+issafetrap(trap)
+struct trap *trap;
+{
+	int ttype = trap->ttyp;
+
+	switch(ttype) {
+	    case ARROW_TRAP:
+	    case DART_TRAP:
+	    case ROCKTRAP:
+	    case ROLLING_BOULDER_TRAP:
+		/* always dangerous */
+		return FALSE;
+
+	    case SQKY_BOARD:
+		return (Levitation || Flying);
+
+	    case BEAR_TRAP:
+		return (Levitation || Flying ||
+		        amorphous(youmonst.data) || is_whirly(youmonst.data) ||
+			unsolid(youmonst.data) || (
+#ifdef STEED
+			!u.usteed &&
+#endif
+			youmonst.data->msize <= MZ_SMALL));
+
+	    case SLP_GAS_TRAP:
+		/* maybe ok to use sleep resistance... */
+		return (Sleep_resistance || breathless(youmonst.data));
+
+	    case RUST_TRAP:
+	    case FIRE_TRAP:
+	    case TELEP_TRAP:
+	    case LEVEL_TELEP:
+	    case STATUE_TRAP:
+	    case MAGIC_TRAP:
+	    case ANTI_MAGIC:
+	    case POLY_TRAP:
+	    case LANDMINE:
+		/* risk is not apparent */
+		return FALSE;
+
+	    case PIT:
+	    case SPIKED_PIT:
+	    case HOLE:
+	    case TRAPDOOR:
+		/* KMH -- You can't escape the Sokoban level traps */
+		if (In_sokoban(&u.uz)) return FALSE;
+		return (Levitation || Flying || is_clinger(youmonst.data));
+
+	    case WEB:
+		return (amorphous(youmonst.data) || is_whirly(youmonst.data) ||
+			unsolid(youmonst.data) || webmaker(youmonst.data));
+
+	    case MAGIC_PORTAL:
+		/* always safe */
+		return TRUE;
+
+	    default:
+		impossible("You hit a trap of type %u", trap->ttyp);
+	}
+
+	return FALSE;
+}
+
 #endif /* OVLB */
 
 /*trap.c*/

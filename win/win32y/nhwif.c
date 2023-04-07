@@ -1310,6 +1310,8 @@ char win32y_message_menu(char let, int how, const char *mesg) {
 		   windows typically won't need this functionality, so can
 		   substitute genl_message_menu (windows.c) instead.*/
 
+int win32y_player_role_selection(char *);
+
 /* player_selection ... picked from wintty.c */
 void win32y_player_selection(void) {
 	int i, k, n;
@@ -1368,60 +1370,13 @@ give_up:	/* Quit */
 		    flags.initrole = randrole();
 		}
  	    } else {
-	    	win32y_clear_nhwindow(NHW_WINID_BASE);
-		win32y_putstr(NHW_WINID_BASE, 0, E_J("Choosing Character's Role",
-						     "キャラクターの職業の選択"));
-		/* Prompt for a role */
-		win = create_nhwindow(NHW_MENU);
-		start_menu(win);
-		any.a_void = 0;         /* zero out all bits */
-		for (i = 0; roles[i].name.m; i++) {
-		    if (ok_role(i, flags.initrace, flags.initgend,
-							flags.initalign)) {
-			any.a_int = i+1;	/* must be non-zero */
-#ifndef JP
-			thisch = lowc(roles[i].name.m[0]);
-#else
-			thisch = lowc(roles[i].filecode[0]);
-#endif /*JP*/
-			if (thisch == lastch) thisch = highc(thisch);
-			if (flags.initgend != ROLE_NONE && flags.initgend != ROLE_RANDOM) {
-				if (flags.initgend == 1  && roles[i].name.f)
-					Strcpy(rolenamebuf, roles[i].name.f);
-				else
-					Strcpy(rolenamebuf, roles[i].name.m);
-			} else {
-				if (roles[i].name.f) {
-					Strcpy(rolenamebuf, roles[i].name.m);
-					Strcat(rolenamebuf, "/");
-					Strcat(rolenamebuf, roles[i].name.f);
-				} else 
-					Strcpy(rolenamebuf, roles[i].name.m);
-			}
-			add_menu(win, NO_GLYPH, &any, thisch,
-			    0, ATR_NONE, E_J(an(rolenamebuf),rolenamebuf), MENU_UNSELECTED);
-			lastch = thisch;
-		    }
-		}
-		any.a_int = pick_role(flags.initrace, flags.initgend,
-				    flags.initalign, PICK_RANDOM)+1;
-		if (any.a_int == 0)	/* must be non-zero */
-		    any.a_int = randrole()+1;
-		add_menu(win, NO_GLYPH, &any , '*', 0, ATR_NONE,
-				E_J("Random","適当に選ぶ"), MENU_UNSELECTED);
-		any.a_int = i+1;	/* must be non-zero */
-		add_menu(win, NO_GLYPH, &any , 'q', 0, ATR_NONE,
-				E_J("Quit","中止"), MENU_UNSELECTED);
 		Sprintf(pbuf, E_J("Pick a role for your %s","あなたの%sの職業を選んでください"), plbuf);
-		end_menu(win, pbuf);
-		n = select_menu(win, PICK_ONE, &selected);
-		destroy_nhwindow(win);
+		n = win32y_player_role_selection(pbuf);
 
 		/* Process the choice */
-		if (n != 1 || selected[0].item.a_int == any.a_int)
-		    goto give_up;		/* Selected quit */
+		if (n < 0) goto give_up;	/* Selected quit */
 
-		flags.initrole = selected[0].item.a_int - 1;
+		flags.initrole = n;
 		free((genericptr_t) selected),	selected = 0;
 	    }
 	    (void)  root_plselection_prompt(plbuf, QBUFSZ - 1,
@@ -1667,6 +1622,117 @@ give_up:	/* Quit */
 		   player_selection() が Quit オプションを提供する場合、
 		   プロセスの終了および付随する後始末はこの関数が行う必要が
 		   あります。*/
+
+/* プレイヤーの職業の選択 ヘルプメッセージ付き */
+#define PLSEL_SELECTED_QUIT 100
+#define PLSEL_SHOW_HELP     101
+int win32y_player_role_selection(char *prompt) {
+	int i, n;
+	char thisch, lastch = 0;
+	winid win;
+	anything any;
+	menu_item *selected = 0;
+	int tmp_role = 0;
+	int selected_role;
+	int show_help = 0;
+	char rolenamebuf[QBUFSZ], tmprolenamebuf[QBUFSZ];
+
+retry:
+	win32y_clear_nhwindow(NHW_WINID_BASE);
+	win32y_putstr(NHW_WINID_BASE, 0, E_J("Choosing Character's Role",
+					     "キャラクターの職業の選択"));
+	if (show_help && tmp_role) {
+	    int py;
+	    char *abstr;
+	    py = 3;
+	    abstr = roles[tmp_role-1].abstract;
+	    win32y_curs(NHW_WINID_BASE, 0, py);
+	    win32y_putstr(NHW_WINID_BASE, ATR_BOLD, roles[tmp_role-1].name.m);
+	    py += 2;
+	    while (*abstr != 0) {
+		for (i=0; (tmprolenamebuf[i] = *abstr++) != 0; i++);
+		win32y_curs(NHW_WINID_BASE, 0, py++);
+		win32y_putstr(NHW_WINID_BASE, 0, tmprolenamebuf);
+	    }
+	}
+
+	/* Prompt for a role */
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+	any.a_void = 0;         /* zero out all bits */
+	for (i = 0; roles[i].name.m; i++) {
+	    if (ok_role(i, flags.initrace, flags.initgend,
+			flags.initalign)) {
+		any.a_int = i+1;	/* must be non-zero */
+#ifndef JP
+		thisch = lowc(roles[i].name.m[0]);
+#else
+		thisch = lowc(roles[i].filecode[0]);
+#endif /*JP*/
+		if (thisch == lastch) thisch = highc(thisch);
+		if (flags.initgend != ROLE_NONE && flags.initgend != ROLE_RANDOM) {
+		    if (flags.initgend == 1  && roles[i].name.f)
+			Strcpy(rolenamebuf, roles[i].name.f);
+		    else
+			Strcpy(rolenamebuf, roles[i].name.m);
+		} else {
+		    if (roles[i].name.f) {
+			Strcpy(rolenamebuf, roles[i].name.m);
+			Strcat(rolenamebuf, "/");
+			Strcat(rolenamebuf, roles[i].name.f);
+		    } else
+			Strcpy(rolenamebuf, roles[i].name.m);
+		}
+		if (i+1 == tmp_role) Sprintf(tmprolenamebuf, E_J("Choose %s", "%sで始める"), rolenamebuf);
+		add_menu(win, NO_GLYPH, &any, thisch,
+			 0, ATR_NONE, E_J(an(rolenamebuf),rolenamebuf), MENU_UNSELECTED);
+		lastch = thisch;
+	    }
+	}
+	any.a_int = pick_role(flags.initrace, flags.initgend,
+			      flags.initalign, PICK_RANDOM)+1;
+	if (any.a_int == 0)	/* must be non-zero */
+	    any.a_int = randrole()+1;
+	add_menu(win, NO_GLYPH, &any , '*', 0, ATR_NONE,
+		 E_J("Random","適当に選ぶ"), MENU_UNSELECTED);
+	if (!show_help) {
+	    any.a_int = PLSEL_SHOW_HELP;
+	    add_menu(win, NO_GLYPH, &any , '?', 0, ATR_NONE,
+		     E_J("Show help","説明を見る"), MENU_UNSELECTED);
+	} else {
+	    if (tmp_role) {
+		any.a_int = PLSEL_SHOW_HELP;
+		add_menu(win, NO_GLYPH, &any , 'Y', 0, ATR_NONE,
+			 tmprolenamebuf, MENU_UNSELECTED);
+	    }
+	}
+	any.a_int = PLSEL_SELECTED_QUIT;	/* must be non-zero */
+	add_menu(win, NO_GLYPH, &any , 'q', 0, ATR_NONE,
+		 E_J("Quit","中止"), MENU_UNSELECTED);
+	end_menu(win, prompt);
+	n = select_menu(win, PICK_ONE, &selected);
+	destroy_nhwindow(win);
+
+	/* Process the choice */
+	if (n != 1 || selected[0].item.a_int == PLSEL_SELECTED_QUIT)
+	    return -1;		/* Selected quit */
+
+	if (selected[0].item.a_int == PLSEL_SHOW_HELP) {
+	    if (show_help == 0) {
+		show_help = 1;
+		goto retry;
+	    }
+	    selected[0].item.a_int = tmp_role;
+	} else if (show_help) {
+	    tmp_role = selected[0].item.a_int;
+	    goto retry;
+	}
+
+	selected_role = selected[0].item.a_int - 1;
+	free((genericptr_t) selected),	selected = 0;
+	return selected_role;
+}
+
 
 /* display_file */
 void win32y_display_file(char *fname, boolean complain) {

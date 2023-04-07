@@ -38,10 +38,16 @@ const struct Role roles[] = {
 #ifndef JP
 	"Quetzalcoatl", "Camaxtli", "Huhetotl", /* Central American */
 	"Arc", "the College of Archeology", "the Tomb of the Toltec Kings",
+	"[FIXME]\0"
 #else
 	"ケツァルコアトル", "カマキシトリ", "フフェテォトル",
 	"Arc", "考古学大学", "トルテカ王家の墳墓",
+	"遺跡の探検や発掘調査に長けた職業です。\0"
+	"戦闘はあまり得意ではありませんが、静かに素早く行動でき、\0"
+	"仕事に必要な便利な道具をいくつか持ち込んで出発します。\0"
+	"罠の発見、宝石の鑑定が得意です。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_ARCHEOLOGIST, NON_PM, NON_PM,
 	PM_LORD_CARNARVON, PM_STUDENT, PM_MINION_OF_HUHETOTL,
 	NON_PM, PM_HUMAN_MUMMY, S_SNAKE, S_MUMMY,
@@ -70,10 +76,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Mitra", "Crom", "Set", /* Hyborian */
 	"Bar", "the Camp of the Duali Tribe", "the Duali Oasis",
+	"[FIXME]\0"
 #else
 	"ミトラ", "クロム", "セト", /* Hyborian */
 	"Bar", "デュアリ族のキャンプ", "デュアリ・オアシス",
+	"あらゆる武器と防具の扱いに長けた、近接戦闘の専門家です。\0"
+	"立ちふさがる相手をすべて叩き潰す力を持ちますが、\0"
+	"魔法は好みません。また、毒への耐性を身につけています。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_BARBARIAN, NON_PM, NON_PM,
 	PM_PELIAS, PM_CHIEFTAIN, PM_THOTH_AMON,
 	PM_OGRE, PM_TROLL, S_OGRE, S_TROLL,
@@ -102,10 +113,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Anu", "_Ishtar", "Anshar", /* Babylonian */
 	"Cav", "the Caves of the Ancestors", "the Dragon's Lair",
+	"[FIXME]\0"
 #else
 	"アヌ", "_イシュタル", "アンシャル", /* Babylonian */
 	"Cav", "高祖の洞窟", "竜の棲み処",
+	"洞窟に住み、素朴な暮らしをしている一族です。\0"
+	"力が強く、原始的な武具を使った戦闘が得意です。\0"
+	"魔法はやや苦手です。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_CAVEMAN, PM_CAVEWOMAN, PM_LITTLE_DOG,
 	PM_SHAMAN_KARNOV, PM_NEANDERTHAL, PM_CHROMATIC_DRAGON,
 	PM_BUGBEAR, PM_HILL_GIANT, S_HUMANOID, S_GIANT,
@@ -134,10 +150,16 @@ const struct Role roles[] = {
 #ifndef JP
 	"_Athena", "Hermes", "Poseidon", /* Greek */
 	"Hea", "the Temple of Epidaurus", "the Temple of Coeus",
+	"[FIXME]\0"
 #else
 	"_アテナ", "ヘルメス", "ポセイドン", /* Greek */
 	"Hea", "エピダウロス寺院", "コイオス寺院",
+	"病気や怪我を癒す技術を習得している職業です。\0"
+	"戦闘はあまり得意ではありませんが、生き延びるのに必要な\0"
+	"知識を持ち、さまざまな医療道具と薬を携えています。\0"
+	"職業柄、はじめから毒への耐性を身につけています。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_HEALER, NON_PM, NON_PM,
 	PM_HIPPOCRATES, PM_ATTENDANT, PM_CYCLOPS,
 	PM_GIANT_RAT, PM_SNAKE, S_RODENT, S_YETI,
@@ -165,10 +187,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Lugh", "_Brigit", "Manannan Mac Lir", /* Celtic */
 	"Kni", "Camelot Castle", "the Isle of Glass",
+	"[FIXME]\0"
 #else
 	"ルーフ", "_ブリジット", "マナナン・マクリール", /* Celtic */
 	"Kni", "キャメロット城", "ガラスの島",
+	"独特な騎士道精神を重んじる戦士です。武器の扱いに長け、\0"
+	"重装備での戦闘が得意です。騎乗しての戦闘も得意で、\0"
+	"馬上槍を構えての突撃は高い威力を誇ります。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_KNIGHT, NON_PM, PM_PONY,
 	PM_KING_ARTHUR, PM_PAGE, PM_IXOTH,
 	PM_QUASIT, PM_OCHRE_JELLY, S_IMP, S_JELLY,
@@ -197,10 +224,16 @@ const struct Role roles[] = {
 	"Shan Lai Ching", "Chih Sung-tzu", "Huan Ti", /* Chinese */
 	"Mon", "the Monastery of Chan-Sune",
 	  "the Monastery of the Earth-Lord",
+	"[FIXME]\0"
 #else
 	"禹帝", "赤松子", "黄帝", /* Chinese */
 	"Mon", "チャン・スー修道院", "地王の修道院",
+	"独自の戒律を守り、自然の中で修行をしている修道士です。\0"
+	"徒手空拳での戦いを最も得意とします。重い鎧は苦手ですが、\0"
+	"軽装であっても重戦士に引けを取らない戦闘力を発揮します。\0"
+	"戒律により、肉食を避けています。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_MONK, NON_PM, NON_PM,
 	PM_GRAND_MASTER, PM_ABBOT, PM_MASTER_KAEN,
 	PM_EARTH_ELEMENTAL, PM_XORN, S_ELEMENTAL, S_XORN,
@@ -229,10 +262,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"_Amaterasu Omikami", "Raijin", "Susanowo", /* Japanese */
 	"Med", "the Old Shrine", "the Cave of fox-spirits",
+	"[FIXME]\0"
 #else
 	"_天照大神", "雷神", "須佐之男", /* Japanese */
 	"Med", "古き神社", "妖狐の洞窟",
+	"神社に仕える神職の女性です。力は弱いですが、弓が得意です。\0"
+	"清めの力を持ち、矢に破魔の力をこめて放つことができます。\0"
+	"お札（巻物）を投げて力を引き出す特殊能力を持っています。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_MEDIUM, NON_PM, NON_PM,
 	PM_SHINTO_PRIEST, PM_MAIDEN, PM_NINE_TAILED_FOX,
 	PM_FOX_SPIRIT, PM_HUMAN_ZOMBIE, S_DOG, S_ZOMBIE,
@@ -263,9 +301,15 @@ const struct Role roles[] = {
 	0, 0, 0,	/* chosen randomly from among the other roles */
 #ifndef JP
 	"Pri", "the Great Temple", "the Temple of Nalzok",
+	"[FIXME]\0"
 #else
 	"Pri", "偉大なる寺院", "ナルゾクの寺院",
+	"寺院に仕える僧侶戦士です。\0"
+	"純粋な戦士には及ばないものの、重装備での戦闘をこなし、\0"
+	"鈍器を扱うのが得意で、魔法も使えます。\0"
+	"品物の祝福・呪いの状態を一目で見分けることができます。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_PRIEST, PM_PRIESTESS, NON_PM,
 	PM_ARCH_PRIEST, PM_ACOLYTE, PM_NALZOK,
 	PM_HUMAN_ZOMBIE, PM_WRAITH, S_ZOMBIE, S_WRAITH,
@@ -296,10 +340,16 @@ const struct Role roles[] = {
 #ifndef JP
 	"Issek", "Mog", "Kos", /* Nehwon */
 	"Rog", "the Thieves' Guild Hall", "the Assassins' Guild Hall",
+	"[FIXME]\0"
 #else
 	"イセク", "モグ", "コス", /* Nehwon */
 	"Rog", "盗賊ギルドのアジト", "暗殺者ギルドのアジト",
+	"盗みを生業としているごろつきです。\0"
+	"素早く、手先が器用で、鍵や罠を外したり、\0"
+	"相手から所持品を盗み取るのが得意です。\0"
+	"小型の刃物を使いこなし、特殊な暗殺術を習得します。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_ROGUE, NON_PM, NON_PM,
 	PM_MASTER_OF_THIEVES, PM_THUG, PM_MASTER_ASSASSIN,
 	PM_LEPRECHAUN, PM_GUARDIAN_NAGA, S_NYMPH, S_NAGA,
@@ -342,10 +392,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Mercury", "_Venus", "Mars", /* Roman/planets */
 	"Ran", "Orion's camp", "the cave of the wumpus",
+	"[FIXME]\0"
 #else
 	"マーキュリー", "_ヴィーナス", "マーズ",
 	"Ran", "オリオンのキャンプ", "ワンパスの洞窟",
+	"山野での活動に長けた職業で、きわめて強力な射手です。\0"
+	"弓の扱いがとても上手く、遠距離から敵を倒します。\0"
+	"敵に気づかれずに素早く行動するすべを身につけています。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_RANGER, NON_PM, PM_LITTLE_DOG /* Orion & canis major */,
 	PM_ORION, PM_HUNTER, PM_SCORPIUS,
 	PM_FOREST_CENTAUR, PM_SCORPION, S_CENTAUR, S_SPIDER,
@@ -377,10 +432,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"_Amaterasu Omikami", "Raijin", "Susanowo", /* Japanese */
 	"Sam", "the Castle of the Taro Clan", "the Shogun's Castle",
+	"[FIXME]\0"
 #else
 	"_天照大神", "雷神", "須佐之男", /* Japanese */
 	"Sam", "太郎一族の城", "将軍の城",
+	"東方の辺境から来た、風変わりな戦士です。\0"
+	"異国の強力な武具を装備しており、恐るべき戦闘力で\0"
+	"立ちはだかる者すべてを斬り払います。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_SAMURAI, NON_PM, PM_LITTLE_DOG,
 	PM_LORD_SATO, PM_ROSHI, PM_ASHIKAGA_TAKAUJI,
 	PM_WOLF, PM_STALKER, S_DOG, S_ELEMENTAL,
@@ -408,10 +468,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Blind Io", "_The Lady", "Offler", /* Discworld */
 	"Tou", "Ankh-Morpork", "the Thieves' Guild Hall",
+	"[FIXME]\0"
 #else
 	"盲目のイオ", "_《女神》", "オフラー", /* Discworld */
 	"Tou", "アンク=モルポーク", "盗賊ギルドのアジト",
+	"運命の大迷宮に観光に来た旅行者です。\0"
+	"地図とカメラを手に、お土産を買うためのお金と、\0"
+	"たくさんの食べ物をカバンに詰め、迷宮を見物します。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_TOURIST, NON_PM, NON_PM,
 	PM_TWOFLOWER, PM_GUIDE, PM_MASTER_OF_THIEVES,
 	PM_GIANT_SPIDER, PM_FOREST_CENTAUR, S_SPIDER, S_CENTAUR,
@@ -439,10 +504,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Tyr", "Odin", "Loki", /* Norse */
 	"Val", "the Shrine of Destiny", "the cave of Surtur",
+	"[FIXME]\0"
 #else
 	"テュール", "オーディン", "ロキ", /* Norse */
 	"Val", "運命の聖堂", "スルトの洞窟",
+	"北方からやってきた女性戦士です。\0"
+	"力が強く、近接戦闘を得意とします。魔法は苦手です。\0"
+	"盾の扱いに特に秀でており、敵の攻撃を寄せ付けません。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_VALKYRIE, NON_PM, NON_PM /*PM_WINTER_WOLF_CUB*/,
 	PM_NORN, PM_WARRIOR, PM_LORD_SURTUR,
 	PM_FIRE_ANT, PM_FIRE_GIANT, S_ANT, S_GIANT,
@@ -470,10 +540,15 @@ const struct Role roles[] = {
 #ifndef JP
 	"Ptah", "Thoth", "Anhur", /* Egyptian */
 	"Wiz", "the Lonely Tower", "the Tower of Darkness",
+	"[FIXME]\0"
 #else
 	"プタハ", "トート", "アンフル", /* Egyptian */
 	"Wiz", "隠されし塔", "暗黒の塔",
+	"魔法のエキスパートです。\0"
+	"力は弱く、武器を使った戦闘はあまり得意ではありませんが、\0"
+	"高い知性であらゆる魔法を使いこなします。\0"
 #endif /*JP*/
+	,/*EOS*/
 	PM_WIZARD, NON_PM, PM_KITTEN,
 	PM_NEFERET_THE_GREEN, PM_APPRENTICE, PM_DARK_ONE,
 	PM_VAMPIRE_BAT, PM_XORN, S_BAT, S_WRAITH,
@@ -500,7 +575,7 @@ const struct Role roles[] = {
 struct Role urole =
 {	{"Undefined", 0}, { {0, 0}, {0, 0}, {0, 0},
 	{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0} },
-	"L", "N", "C", "Xxx", "home", "locate",
+	"L", "N", "C", "Xxx", "home", "locate", "abstract\0",
 	NON_PM, NON_PM, NON_PM, NON_PM, NON_PM, NON_PM,
 	NON_PM, NON_PM, 0, 0, 0, 0,
 	/* Str Int Wis Dex Con Cha */

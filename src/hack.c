@@ -907,7 +907,8 @@ collision:
                 }
         }
     }
-    if (mode == DO_MOVE && (ttmp = t_at(x, y)) && ttmp->tseen) {
+    if (mode == DO_MOVE && (ttmp = t_at(x, y)) &&
+	ttmp->tseen && !issafetrap(ttmp)) {
 	sprintf(waterbuf,
 		E_J("Really step into the %s?",
 		    "–{“–‚É%s‚É“¥‚İ‚İ‚Ü‚·‚©H"),

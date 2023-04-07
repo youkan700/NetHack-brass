@@ -817,6 +817,7 @@ goal_is_set:
 				      (levl[gx][gy].lit ||
 				       !levl[omx][omy].lit) &&
 				      (dist2(omx, omy, gx, gy) <= 36));
+		boolean can_shoot = dist2(omx, omy, gx, gy) <= 18 && lined_up2(mtmp);
 
 		if (!mtmp->mcansee ||
 		    (should_see && Invis && !perceives(ptr) && rn2(11)) ||
@@ -832,15 +833,16 @@ goal_is_set:
 			appr = -1;
 
 		/* keep distance from hero if mon has missiles */
-		if ((mw_tmp = MON_WEP(mtmp)) && is_launcher(mw_tmp) &&
-		    dist2(omx, omy, gx, gy) <= 18 && lined_up2(mtmp)) {
+		if ((mw_tmp = MON_WEP(mtmp)) && is_launcher(mw_tmp) && can_shoot) {
 		    struct obj *otmp;
 		    for (otmp = mtmp->minvent; otmp; otmp = otmp->nobj) {
 			if (ammo_and_launcher(otmp, mw_tmp)) appr = rn2(7) ? -1 : 0;
 			break;
 		    }
 		}
-		if (can_breathe(mtmp->data)) appr = (mtmp->mspec_used > 5) ? 1 : -1;
+		if (can_breathe(mtmp->data) && can_shoot) {
+		    appr = (mtmp->mspec_used <= 5) && rn2(7) ? -1 : 1;
+		}
 
 		if (!should_see && can_track(ptr)) {
 			register coord *cp;
