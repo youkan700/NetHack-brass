@@ -2980,8 +2980,8 @@ register schar delta;
 int udaminc_bonus()
 {
 	if (u.udaminc == 0) return 0;
-	if (u.udaminc >  0) return d(u.udaminc, 4);
-	return -d(-u.udaminc, 4);
+	if (u.udaminc >  0) return d(u.udaminc, 3);
+	return -d(-u.udaminc, 3);
 }
 
 #endif /* OVLB */

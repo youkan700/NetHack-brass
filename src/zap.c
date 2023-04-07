@@ -1069,47 +1069,34 @@ register struct obj *obj;
 	u_ring = (obj == uleft) || (obj == uright);
 	switch(obj->otyp) {
 	case RIN_GAIN_STRENGTH:
-	    if ((obj->owornmask & W_RING) && u_ring) {
-	    	ABON(A_STR)--;
-	    	flags.botl = 1;
-	    }
-	    break;
 	case RIN_GAIN_CONSTITUTION:
-	    if ((obj->owornmask & W_RING) && u_ring) {
-	    	ABON(A_CON)--;
-		recalchpmax();
-	    	flags.botl = 1;
-	    }
-	    break;
 	case RIN_ADORNMENT:
-	    if ((obj->owornmask & W_RING) && u_ring) {
-	    	ABON(A_CHA)--;
-	    	flags.botl = 1;
-	    }
-	    break;
 	case RIN_INCREASE_ACCURACY:
-	    if ((obj->owornmask & W_RING) && u_ring)
-	    	u.uhitinc--;
-	    break;
 	case RIN_INCREASE_DAMAGE:
-	    if ((obj->owornmask & W_RING) && u_ring)
-	    	u.udaminc--;
+	case RIN_PROTECTION:
+	    if ((obj->owornmask & W_RING) && u_ring) {
+		adj_abon(obj, -1);
+	    }
 	    break;
 	case HELM_OF_BRILLIANCE:
 	    if ((obj->owornmask & W_ARMH) && (obj == uarmh)) {
-	    	ABON(A_INT)--;
-	    	ABON(A_WIS)--;
-	    	flags.botl = 1;
+		adj_abon(obj, -1);
 	    }
 	    break;
 	case GAUNTLETS_OF_DEXTERITY:
 	    if ((obj->owornmask & W_ARMG) && (obj == uarmg)) {
-	    	ABON(A_DEX)--;
-	    	flags.botl = 1;
+		adj_abon(obj, -1);
 	    }
 	    break;
-	case RIN_PROTECTION:
-	    flags.botl = 1;
+	case CLOAK_OF_PROTECTION:
+	    if ((obj->owornmask & W_ARMC) && (obj == uarmc)) {
+		adj_abon(obj, -1);
+	    }
+	    break;
+	case ROBE_OF_PROTECTION:
+	    if ((obj->owornmask & W_ARM) && (obj == uarm)) {
+		adj_abon(obj, -1);
+	    }
 	    break;
 	}
 	if (carried(obj)) update_inventory();

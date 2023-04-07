@@ -2245,6 +2245,7 @@ E int FDECL(launch_obj,(SHORT_P,int,int,int,int,int));
 E char *FDECL(chest_trap_name, (struct obj *));
 E void FDECL(trap_chest, (struct obj *));
 E int NDECL(wiz_select_chest_trap);
+E boolean FDECL(issafetrap, (struct trap *));
 
 /* ### u_init.c ### */
 

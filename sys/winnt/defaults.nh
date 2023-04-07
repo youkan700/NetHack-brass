@@ -37,6 +37,7 @@ OPTIONS=autopickup,pickup_types:$,pickup_thrown
 #OPTIONS=menustyle:traditional
 OPTIONS=boulder:8
 OPTIONS=confirm:stop
+OPTIONS=autodig,!cmdassist
 
 #
 # General options.  You might also set "silent" so as not to attract

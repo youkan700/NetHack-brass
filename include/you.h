@@ -83,6 +83,7 @@ struct Role {
 	const char *filecode;	/* abbreviation for use in file names */
 	const char *homebase;	/* quest leader's location (from questpgr.c) */
 	const char *intermed;	/* quest intermediate goal (from questpgr.c) */
+	const char *abstract;   /* the role's description */
 
 	/*** Indices of important monsters and objects ***/
 	short malenum,		/* index (PM_) as a male (botl.c) */
