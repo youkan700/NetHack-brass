@@ -1285,10 +1285,15 @@ register struct monst *mtmp;
 		here->typ = DOOR;
 		here->doormask = D_NODOOR;
 	    }
-	} else if (IS_TREE(here->typ)) {
-	    here->typ = ROOM;
-	    if (pile && pile < 5)
-		(void) rnd_treefruit_at(mtmp->mx, mtmp->my);
+	} else if (IS_TREES(here->typ)) {
+	    if (IS_TREE(here->typ)) {
+		here->typ = GROUND;
+		if (pile && pile < 5)
+		    (void) rnd_treefruit_at(mtmp->mx, mtmp->my);
+	    } else {
+		/* dead tree */
+		here->typ = ROOM;
+	    }
 	} else {
 	    here->typ = CORR;
 	    if (pile && pile < 5)

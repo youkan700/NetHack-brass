@@ -105,7 +105,7 @@ stoned_dialogue()
 
 /* He is getting sicker and sicker prior to vomiting */
 static NEARDATA const char * const vomiting_texts[] = {
-	E_J("are feeling mildly nauseated.",	"軽い吐き気を感じた。"),			/* 14 */
+	E_J("are feeling mildly nauseated.",	"軽い吐き気を催した。"),			/* 14 */
 	E_J("feel slightly confused.",		"やや混乱してきた。"),				/* 11 */
 	E_J("can't seem to think straight.",	"まともに考えることができなくなった。"),	/* 8 */
 	E_J("feel incredibly sick.",		"ひどく気分が悪くなった。"),			/* 5 */

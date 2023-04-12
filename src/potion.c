@@ -167,7 +167,12 @@ boolean talk;
 	long old = Vomiting;
 
 	if(!xtime && old)
-	    if(talk) You_feel(E_J("much less nauseated now.","吐き気はおさまった。"));
+	    if(talk)
+#ifndef JP
+		You_feel("much less nauseated now.");
+#else
+		Your("吐き気はおさまった。");
+#endif /*JP*/
 
 	set_itimeout(&Vomiting, xtime);
 }
