@@ -398,7 +398,7 @@ register int roomno;
 		if(sanctum && Is_sanctum(&u.uz)) {
 		    if(priest->mpeaceful) {
 			msg1 = E_J("Infidel, you have entered Moloch's Sanctum!",
-				   "異教徒よ、お前はモーロックの聖域に踏み込んでいる！");
+				   "異教徒よ、お前はモロクの聖域に踏み込んでいる！");
 			msg2 = E_J("Be gone!","立ち去れ！");
 			setmpeaceful(priest, FALSE);
 		    } else

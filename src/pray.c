@@ -47,7 +47,7 @@ STATIC_OVL void NDECL(chromatic_dragon_ending);
  *	responsible for the theft of the Amulet from Marduk, the Creator.
  *	Moloch is unaligned.
  */
-static const char	*Moloch = E_J("Moloch","モーロック");
+static const char	*Moloch = E_J("Moloch","モロク");
 
 static const char *godvoices[] = {
     E_J("booms out","響き渡った"),
