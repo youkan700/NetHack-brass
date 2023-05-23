@@ -55,6 +55,8 @@ ALTAR:(36,02),coaligned,shrine
 MONSTER:'@',"Shaman Karnov",(35,02)
 # The treasure of Shaman Karnov
 OBJECT:'(',"chest",(34,02)
+# Gift from him (118 = -2 + 120)
+OBJECT:'[',"shield:silver",(35,02),uncursed,118
 # neanderthal guards for the audience chamber
 MONSTER:'@',"neanderthal",(20,03)
 MONSTER:'@',"neanderthal",(20,02)

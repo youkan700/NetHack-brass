@@ -1567,7 +1567,10 @@ xchar x, y;
 		wx = x + xdir[ep->engr_typ2 * 2];
 		wy = y + ydir[ep->engr_typ2 * 2];
 		if (levl[wx][wy].typ != ep->walltyp ||
-		    (ep->walltyp == DOOR && levl[wx][wy].flags <= D_BROKEN)) {
+		    (ep->walltyp == DOOR && levl[wx][wy].flags <= D_BROKEN) ||
+		    (IS_DOOR(levl[wx][wy].typ) && levl[wx][wy].flags != D_LOCKED &&
+		     *in_rooms(wx, wy, SHOPBASE))
+		    ) {
 		    /* sign was destroyed along with the wall or door */
 		    nxep = ep->nxt_engr;
 		    del_engr(ep);

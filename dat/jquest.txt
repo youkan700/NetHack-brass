@@ -1029,11 +1029,11 @@
 #minions of %n managed to steal %o.
 #They took it to %i and there, none of our
 #%g warriors have been able to go.
-  かの雌竜は、その巨体のため直に我らを襲ってはこぬが、やつの下僕どもは
+  かの雌竜は、その巨体ゆえに直に我らを襲ってはこぬが、やつの下僕どもは
   以来我らを苦しめ続けている。最初の襲撃で、多くが死に、そのうえ
   %nの下僕どもに%oを盗み出されてしまったのだ。
   やつらは%oを%iに持ち帰り、我ら%gの戦士は
-  まだ誰もそこまでたどりつけていない。
+  まだ誰もそこへたどりつけていない。
 
 #"You must find %i, and within it wrest
 #%o from %n.  She guards it as
@@ -1049,7 +1049,7 @@
   頼む、%p。我らのために%oを取り返し、ここへ戻してほしい。」
 %E
 %Cp Cav 00022
-「少ないが、これが我々にできる最大限の支援だ。任務に役立ててくれ。」
+「この盾の力を取り戻せれば、やつに対抗できるかもしれぬ。持って行くがよい。」
 %E
 %Cp Cav 00025
 #"%nC is immune to her own breath weapons.
