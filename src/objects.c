@@ -682,7 +682,7 @@ TOOL("orb of destruction", "glass orb",
 #ifndef MAGIC_GLASSES
 TOOL("lenses", (char *)0,	1, 0, 0, 0,  15,  3,  80, GLASS, HI_GLASS),
 #else
-GLASSES("glasses of magic reading",   "wire-rimmed glasses",   0, 0,	      10, 3, 80),
+GLASSES("glasses of magic reading",   "wire-rimmed glasses",   1, 0,	      10, 3, 80),
 GLASSES("glasses of gaze protection", "rimless glasses",       1, 0,	       2, 3, 80),
 GLASSES("glasses of infravision",     "silver-rimmed glasses", 1, INFRAVISION, 1, 3, 80),
 GLASSES("glasses of true sight",      "thick glasses",	       1, SEE_INVIS,   1, 3, 80),
