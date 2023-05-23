@@ -1370,7 +1370,7 @@ register struct obj	*sobj;
 		 */
 		cval = bcsign(sobj);
 		if(!objects[sobj->otyp].oc_name_known) more_experienced(0,10);
-		setup_zapobj(&zi, sobj, TRUE);
+		setup_zapobj(&zi, sobj, &youmonst);
 		useup(sobj);
 		makeknown(SCR_FIRE);
 		if(confused) {

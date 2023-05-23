@@ -928,11 +928,11 @@ dobreathe()
 	if (!mattk)
 	    impossible("bad breath attack?");	/* mouthwash needed... */
 	else if (mattk->adtyp == AD_RBRE)
-	    buzz_chromatic(u.ux, u.uy, u.dx, u.dy, mattk->damn);
+	    buzz_chromatic(&youmonst, u.dx, u.dy, mattk->damn);
         else {
 	    setup_zapinfo(&zi, AT_BREA, mattk->adtyp, mattk->damn, 6,
 			       (const char *)0, (const char *)0, /* use default names */
-			       TRUE);
+			       &youmonst);
 	    buzz(&zi, u.ux, u.uy, u.dx, u.dy);
 	}
 	return(1);

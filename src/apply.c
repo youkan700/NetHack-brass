@@ -3650,7 +3650,7 @@ do_break_wand(obj)
     wanexpl:
 	setup_zapinfo(&zi, AT_EXPL,
 		      (obj->otyp == WAN_DEATH) ? AD_DETH : (obj->otyp - WAN_MAGIC_MISSILE + 1),
-		      1, 1, 0, 0, TRUE);
+		      1, 1, 0, 0, &youmonst);
 	explode(u.ux, u.uy, &zi, dmg, expltype);
 	makeknown(obj->otyp);	/* explode described the effect */
 	goto discard_broken_wand;
@@ -3670,7 +3670,7 @@ do_break_wand(obj)
     }
 
     /* magical explosion and its visual effect occur before specific effects */
-    setup_zapinfo(&zi, AT_EXPL, AD_MAGM, 1, 1, 0, 0, TRUE);
+    setup_zapinfo(&zi, AT_EXPL, AD_MAGM, 1, 1, 0, 0, &youmonst);
     zi.oclass = WAND_CLASS;
     explode(obj->ox, obj->oy, &zi, rnd(dmg), EXPL_MAGICAL);
 
@@ -4159,7 +4159,7 @@ doapply()
 		useup(obj);
 		pline(E_J("As you activate the orb, it explodes!",
 			  "力を引き出そうとしたとたん、オーブは爆発した！"));
-		setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, 0, 0, TRUE);
+		setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, 0, 0, &youmonst);
 		zi.oclass = WAND_CLASS;
 		explode(u.ux, u.uy, &zi, d(12,6), EXPL_FIERY);
 		break;

@@ -870,7 +870,7 @@ buzzmu(mtmp, mattk)		/* monster uses spell (ranged) */
 		setup_zapinfo(&zi, AT_MAGC, mattk->adtyp,
 				   mattk->damn, 6,
 				   (const char *)0, (const char *)0, /* use default names */
-				   FALSE);
+				   mtmp);
 		buzz(&zi, mtmp->mx, mtmp->my, /*sgn*/(tbx), /*sgn*/(tby));
 	    } else impossible("Monster spell %d cast", mattk->adtyp-1);
 	}

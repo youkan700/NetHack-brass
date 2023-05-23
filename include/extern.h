@@ -1494,6 +1494,7 @@ E void FDECL(restnames, (int));
 E void FDECL(discover_object, (int,BOOLEAN_P,BOOLEAN_P));
 E void FDECL(undiscover_object, (int));
 E int NDECL(dodiscovered);
+E int NDECL(dodiscovered_group);
 
 /* ### objects.c ### */
 
@@ -2625,7 +2626,7 @@ E struct monst *FDECL(bhitcore, (int,int,int,int,int,int,
 E struct monst *FDECL(boomhit, (int,int,struct obj *));
 E int FDECL(burn_floor_paper, (int,int,BOOLEAN_P,BOOLEAN_P));
 E void FDECL(buzz, (struct zapinfo *,XCHAR_P,XCHAR_P,int,int));
-E void FDECL(buzz_chromatic, (XCHAR_P,XCHAR_P, int, int, int));
+E void FDECL(buzz_chromatic, (struct monst *, int, int, int));
 E void FDECL(melt_ice, (XCHAR_P,XCHAR_P));
 E int FDECL(zap_over_floor, (XCHAR_P,XCHAR_P,struct zapinfo *,boolean *));
 E void FDECL(fracture_rock, (struct obj *));
@@ -2641,8 +2642,8 @@ E void FDECL(damage_resistant_obj, (uchar,int));
 E int FDECL(bresenham_init, (struct bresenham *, int,int,int,int));
 E int FDECL(bresenham_step, (struct bresenham *));
 E void FDECL(bresenham_back, (struct bresenham *));
-E void FDECL(setup_zapinfo, (struct zapinfo *, uchar, uchar, uchar, uchar, const char *, const char *, BOOLEAN_P));
-E void FDECL(setup_zapobj, (struct zapinfo *, struct obj *, boolean));
+E void FDECL(setup_zapinfo, (struct zapinfo *, uchar, uchar, uchar, uchar, const char *, const char *, struct monst *));
+E void FDECL(setup_zapobj, (struct zapinfo *, struct obj *, struct monst *));
 E boolean FDECL(does_obj_worn_out, (struct obj *));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */

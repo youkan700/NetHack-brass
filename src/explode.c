@@ -699,7 +699,7 @@ splatter_burning_oil(x, y)
     int x, y;
 {
     struct zapinfo zi;
-    setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, "”R‚¦‚é–û", 0, TRUE);
+    setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, "”R‚¦‚é–û", 0, &youmonst);
     zi.oclass = BURNING_OIL;
     explode(x, y, &zi, d(4,4), EXPL_FIERY);
 }

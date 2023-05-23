@@ -725,7 +725,7 @@ struct monst *priest;
 
 	setup_zapinfo(&zi, AT_MAGC, AD_ELEC, 6, 6,
 			   (const char *)0, (const char *)0, /* use default names */
-			   FALSE);
+			   (struct monst *)0);
 	buzz(&zi, x, y, sgn(tbx), sgn(tby)); /* bolt of lightning */
 	exercise(A_WIS, FALSE);
 }

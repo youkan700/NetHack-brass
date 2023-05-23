@@ -1271,7 +1271,7 @@ struct monst *mtmp;
 		otmp->spe--;
 		if (oseen) makeknown(otmp->otyp);
 		m_using = TRUE;
-		setup_zapobj(&zi, otmp, FALSE);
+		setup_zapobj(&zi, otmp, mtmp);
 		buzz(&zi, mtmp->mx, mtmp->my,
 			/*sgn*/(mtmp->mux-mtmp->mx), /*sgn*/(mtmp->muy-mtmp->my));
 		m_using = FALSE;
@@ -1287,7 +1287,7 @@ struct monst *mtmp;
 				     "Šp“J‚ª‚«–Â‚ç‚³‚ê‚é‚Ì‚ð"));
 		otmp->spe--;
 		m_using = TRUE;
-		setup_zapobj(&zi, otmp, FALSE);
+		setup_zapobj(&zi, otmp, mtmp);
 		buzz(&zi, mtmp->mx, mtmp->my,
 			/*sgn*/(mtmp->mux-mtmp->mx), /*sgn*/(mtmp->muy-mtmp->my));
 		m_using = FALSE;
