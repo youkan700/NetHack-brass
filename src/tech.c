@@ -1609,7 +1609,7 @@ struct obj *obj;
 
 	case SCR_FIRE: {
 	    struct zapinfo zi;
-	    setup_zapobj(&zi, obj, TRUE);
+	    setup_zapobj(&zi, obj, &youmonst);
 	    explode(mon->mx, mon->my, &zi, (2*(rn1(3, 3) + 2 * bcsign(obj)) + 1), EXPL_FIERY);
 	    makeknown(SCR_FIRE);
 	    nohap = FALSE;
@@ -1674,7 +1674,7 @@ struct obj *obj;
 	    int oldhp = mon->mhp;
 	    setup_zapinfo(&zi, AT_MAGC, AD_DETH, 1, 1,
 			  E_J("lethal power","’vŽ€‚Ì–‚—Í"),
-			  E_J("power","–‚—Í"), TRUE);
+			  E_J("power","–‚—Í"), &youmonst);
 	    zhitm(mon, &zi, &otmp);
 	    if (mon->mhp < oldhp) {
 		xkilled(mon, 1);

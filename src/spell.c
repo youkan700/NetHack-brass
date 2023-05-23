@@ -919,7 +919,7 @@ boolean atme;
 			} else {
 			    setup_zapinfo(&zi, AT_EXPL,
 					  pseudo->otyp == SPE_FIREBALL ? AD_FIRE : AD_COLD,
-					  1, 1, 0, 0, TRUE);
+					  1, 1, 0, 0, &youmonst);
 			    zi.oclass = 0;
 			    explode(u.dx, u.dy, &zi, u.ulevel/2 + 1 + spell_damage_bonus(),
 					(pseudo->otyp == SPE_CONE_OF_COLD) ?

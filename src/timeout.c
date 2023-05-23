@@ -1520,7 +1520,7 @@ do_storms()
 	    if(dirx != 0 || diry != 0)
 		setup_zapinfo(&zi, AT_MAGC, AD_ELEC, 8, 6,
 				   (const char *)0, (const char *)0, /* use default names */
-				   FALSE);
+				   (struct monst *)0);
 		buzz(&zi, x, y, dirx, diry);
 	}
     }

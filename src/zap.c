@@ -39,6 +39,8 @@ STATIC_DCL int FDECL(spell_hit_bonus, (int));
 #endif
 STATIC_DCL int FDECL(zap_to_glyph2, (int,int,int,int,int,int,int));
 STATIC_DCL void FDECL(buzzcore, (struct zapinfo *, int *, boolean *, boolean));
+STATIC_DCL int FDECL(zapinfo2otyp, (struct zapinfo *));
+
 
 #define is_hero_spell(ztmp)	((ztmp)->byyou && (ztmp)->aatyp == AT_MAGC)
 
@@ -110,18 +112,21 @@ const char * const flash_simple_name[] = {	/* only for wands and spells */
 };
 
 void
-setup_zapinfo(ztmp, aatyp, adtyp, damn, damd, fltxt, fstxt, byyou)
+setup_zapinfo(ztmp, aatyp, adtyp, damn, damd, fltxt, fstxt, mon)
 struct zapinfo *ztmp;
 uchar aatyp, adtyp, damn, damd;
 const char *fltxt, *fstxt;
-boolean byyou;
+struct monst *mon; /* zapper */
 {
+	ztmp->aatyp = aatyp;
 	ztmp->adtyp = adtyp;
 	ztmp->damn = damn;
 	ztmp->damd = damd;
 	ztmp->fltxt = fltxt;
 	ztmp->fstxt = fstxt;
-	ztmp->byyou = byyou;
+	ztmp->zapper = mon;
+	ztmp->byyou = (mon == &youmonst);
+	ztmp->stdkiller = (!fltxt && !fstxt);
 	ztmp->beam_type = adtyp - 1;
 	ztmp->oclass = '\0';
 	if (aatyp == AT_BREA) {
@@ -130,37 +135,22 @@ boolean byyou;
 	    if (!fltxt) {
 		if (adtyp >= AD_MAGM && adtyp <= AD_DETH)
 		    ztmp->fltxt = flash_types[adtyp - 1 + 20];
-		else switch (adtyp) {
-/*		    case AD_DETH:
-			ztmp->fltxt = E_J("blast of death","死のブレス");
-			ztmp->beam_type = AD_DISN - 1;
-			break;*/
-		    default: impossible("setup_zapinfo: unknown breath?"); break;
-		}
+		else
+		    impossible("setup_zapinfo: unknown breath?");
 	    }
 	} else if (aatyp == AT_MAGC) {
 	    /* spell */
 	    if (!fstxt) {
 		if (adtyp >= AD_MAGM && adtyp <= AD_DETH)
 		    ztmp->fstxt = flash_simple_name[adtyp - 1 + 10];
-		else switch (adtyp) {
-/*		    case AD_DETH:
-			ztmp->fstxt = E_J("ray","死の指");
-			ztmp->beam_type = AD_DISN - 1;
-			break;*/
-		    default: impossible("setup_zapinfo: unknown spell?"); break;
-		}
+		else
+		    impossible("setup_zapinfo: unknown spell?");
 	    }
 	    if (!fltxt) {
 		if (adtyp >= AD_MAGM && adtyp <= AD_DETH)
 		    ztmp->fltxt = flash_types[adtyp - 1 + 10];
-		else switch (adtyp) {
-/*		    case AD_DETH:
-			ztmp->fltxt = E_J("finger of death","死の指");
-			ztmp->beam_type = AD_DISN - 1;
-                        break;*/
-		    default: impossible("setup_zapinfo: unknown spell?"); break;
-		}
+		else
+		    impossible("setup_zapinfo: unknown spell?");
 	    }
 	} else if (aatyp == AT_EXPL) {
 	    /* explosion */
@@ -170,43 +160,31 @@ boolean byyou;
 	    if (!fltxt) {
 		if (adtyp >= AD_MAGM && adtyp <= AD_DETH)
 		    ztmp->fltxt = flash_types[adtyp - 1 + 30];
-		else switch (adtyp) {
-/*		    case AD_DETH: ztmp->fltxt = E_J("death field","死の暴風"); break;*/
-		    default: impossible("setup_zapinfo: unknown spell?"); break;
-		}
+		else
+		    impossible("setup_zapinfo: unknown spell?");
 	    }
 	} else {
 	    /* wand */
 	    if (!fstxt) {
 		if (adtyp >= AD_MAGM && adtyp <= AD_DETH)
 		    ztmp->fstxt = flash_simple_name[adtyp - 1];
-		else switch (adtyp) {
-/*		    case AD_DETH:
-			ztmp->fstxt = E_J("ray","光線");
-			ztmp->beam_type = AD_DISN - 1;
-			break;*/
-		    default: impossible("setup_zapinfo: unknown wand?"); break;
-		}
+		else
+		    impossible("setup_zapinfo: unknown wand?");
 	    }
 	    if (!fltxt) {
 		if (adtyp >= AD_MAGM && adtyp <= AD_DETH)
 		    ztmp->fltxt = flash_types[adtyp - 1];
-		else switch (adtyp) {
-/*		    case AD_DETH:
-			ztmp->fltxt = E_J("death ray","死の光線");
-			ztmp->beam_type = AD_DISN - 1;
-			break;*/
-		    default: impossible("setup_zapinfo: unknown wand?"); break;
-		}
+		else
+		    impossible("setup_zapinfo: unknown wand?");
 	    }
 	}
 }
 
 void
-setup_zapobj(ztmp, otmp, byyou)
+setup_zapobj(ztmp, otmp, mon)
 struct zapinfo *ztmp;
 struct obj *otmp;
-boolean byyou;
+struct monst *mon;
 {
 	int otyp = otmp->otyp;
 	int nd = 6;
@@ -251,7 +229,7 @@ boolean byyou;
 	    impossible("setup_zapobj: unknown obj?");
 	    adtyp = AD_MAGM;
 	}
-	setup_zapinfo(ztmp, aatyp, adtyp, nd, 6, fltxt, fstxt, byyou);
+	setup_zapinfo(ztmp, aatyp, adtyp, nd, 6, fltxt, fstxt, mon);
 	ztmp->oclass = otmp->oclass;
 }
 
@@ -2154,7 +2132,7 @@ boolean ordinary;
 		    struct zapinfo zi;
 		    You(E_J("explode a fireball on top of yourself!",
 			    "自分の目の前でファイアボールを炸裂させた！"));
-		    setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, 0, 0, TRUE);
+		    setup_zapinfo(&zi, AT_EXPL, AD_FIRE, 1, 1, 0, 0, &youmonst);
 		    zi.oclass = 0;
 		    explode(u.ux, u.uy, &zi, d(6,6), EXPL_FIERY);
 		    break;
@@ -2684,14 +2662,14 @@ struct obj *obj;	/* wand or spell */
 	case WAN_FIRE:
 	case SPE_FIREBALL:
 	    setup_zapinfo(&zi, obj->otyp == WAN_FIRE ? AT_NONE : AT_MAGC, AD_FIRE,
-			       1, 6, (const char *)0, (const char *)0, TRUE);
+			       1, 6, (const char *)0, (const char *)0, &youmonst);
 	    zap_over_floor(x, y, &zi, 0);
 	    spoteffects(FALSE);
 	    break;
 	case WAN_COLD:
 	case SPE_CONE_OF_COLD:
 	    setup_zapinfo(&zi, obj->otyp == WAN_COLD ? AT_NONE : AT_MAGC, AD_COLD,
-			       1, 6, (const char *)0, (const char *)0, TRUE);
+			       1, 6, (const char *)0, (const char *)0, &youmonst);
 	    zap_over_floor(x, y, &zi, 0);
 	    spoteffects(FALSE);
 	    break;
@@ -2789,17 +2767,17 @@ register struct	obj	*obj;
 			    (int FDECL((*),(MONST_P,OBJ_P)))0,
 			    (int FDECL((*),(OBJ_P,OBJ_P)))0,
 			    (struct obj *)0);
-		setup_zapinfo(&zi, AT_MAGC, AD_FIRE, u.ulevel / 2 + 1, 6, 0, 0, TRUE);
+		setup_zapinfo(&zi, AT_MAGC, AD_FIRE, u.ulevel / 2 + 1, 6, 0, 0, &youmonst);
 		explode(bhitpos.x, bhitpos.y, &zi, d(12,6), EXPL_FIERY);
 	    } else if (otyp >= SPE_MAGIC_MISSILE && otyp <= SPE_FINGER_OF_DEATH) {
 		uchar adtyp = (uchar)(otyp - SPE_MAGIC_MISSILE + 1);
 		if (otyp == SPE_FINGER_OF_DEATH) adtyp = AD_DETH;
 		setup_zapinfo(&zi, AT_MAGC, adtyp, u.ulevel / 2 + 1, 6,
 				   (const char *)0, (const char *)0, /* use default names */
-				   TRUE);
+				   &youmonst);
 		buzz(&zi, u.ux, u.uy, u.dx, u.dy);
 	    } else if (objects[otyp].oc_dir == RAY) {
-		setup_zapobj(&zi, obj, TRUE);
+		setup_zapobj(&zi, obj, &youmonst);
 		buzz(&zi, u.ux, u.uy, u.dx, u.dy);
 	    } else
 		impossible("weffects: unexpected spell or wand");
@@ -3585,6 +3563,54 @@ xchar sx, sy;
 	int dd = ztmp->damd;
 	int dam = 0;
 	boolean not_effected = FALSE;
+	char kbuf[BUFSZ], *kstr;
+	int ksuf;
+
+	/* default killer name */
+	kstr = (char *)fltxt;
+	ksuf = E_J(KILLED_BY_AN,KILLED_SUFFIX);
+#ifdef JP
+	if (ztmp->stdkiller && ztmp->zapper) {
+	    if (ztmp->aatyp == AT_BREA) {
+		if (ztmp->byyou) {
+		    Sprintf(kbuf, "自分の吐いた%sで", flash_types[19+ztmp->adtyp]);
+		    kstr = kbuf;
+		    ksuf = KILLED_BY_AN; /* 死んだ */
+		} else {
+		    /* breathed by a monster */
+		    setup_killername(ztmp->zapper, kbuf);
+		    Sprintf(eos(kbuf), "に%sで", flash_types[19+ztmp->adtyp]);
+		    kstr = kbuf;
+		}
+	    } else if (ztmp->aatyp == AT_MAGC) {
+		if (ztmp->byyou) {
+		    Sprintf(kbuf, "自分の撃った%sで", flash_types[19+ztmp->adtyp]);
+		    kstr = kbuf;
+		    ksuf = KILLED_BY_AN; /* 死んだ */
+		} else {
+		    /* breathed by a monster */
+		    setup_killername(ztmp->zapper, kbuf);
+		    Sprintf(eos(kbuf), "の撃った%sで", flash_types[19+ztmp->adtyp]);
+		    kstr = kbuf;
+		}
+	    } else {
+		int otyp;
+		otyp = zapinfo2otyp(ztmp);
+		if (ztmp->byyou) {
+		    Sprintf(kbuf, "自分の撃った");
+		    ksuf = KILLED_BY_AN; /* 死んだ */
+		} else {
+		    setup_killername(ztmp->zapper, kbuf);
+		    Sprintf(eos(kbuf), "に");
+		}
+		Sprintf(eos(kbuf), "%s%sで", JOBJ_NAME(objects[otyp]),
+			ztmp->oclass == WAND_CLASS ? "杖" : "");
+		kstr = kbuf;
+	    }
+	} else {
+	    Sprintf(kbuf, "%sで", fltxt);
+	}
+#endif /*JP*/
 
 	if (!nd) nd = 1;
 	if (!dd) dd = 6;
@@ -3691,8 +3717,13 @@ xchar sx, sy;
 		damage_resistant_obj(ANTIMAGIC, rnd(3));
 		break;
 	    }
+#ifndef JP
 	    killer_format = E_J(KILLED_BY_AN,KILLED_SUFFIX);
 	    killer = fltxt;
+#else
+	    killer_format = ksuf;
+	    killer = kstr;
+#endif
 	    /* when killed by disintegration breath, don't leave corpse */
 	    u.ugrave_arise = (ztmp->adtyp == AD_DISN) ? -3 : NON_PM;
 	    done(DIED);
@@ -3742,7 +3773,7 @@ xchar sx, sy;
 
 	if (Half_spell_damage && dam && !ztmp->byyou && ztmp->aatyp == AT_MAGC)
 	    dam = (dam + 1) / 2;
-	losehp(dam, fltxt, E_J(KILLED_BY_AN,KILLED_SUFFIX));
+	losehp(dam, kstr, ksuf);
 	return;
 }
 
@@ -4159,13 +4190,7 @@ boolean dodelay;
 		    }
 		    damage_resistant_obj(REFLECTING, objdmg);
 		} else {
-#ifdef JP
-		    char buf[BUFSZ];
-		    Sprintf(buf, "%sで", fltxt);
-		    zhitu(ztmp, buf, sx, sy);
-#else
 		    zhitu(ztmp, fltxt, sx, sy);
-#endif /*JP*/
 		}
 	    } else {
 #ifndef JP
@@ -4286,11 +4311,12 @@ skip_hit:
 
 /* Chromatic Dragon's breath */
 void
-buzz_chromatic(sx,sy,dx,dy,nd)
-xchar sx,sy;
+buzz_chromatic(mon,dx,dy,nd)
+struct monst *mon;
 int dx,dy;
 int nd;
 {
+    xchar sx, sy;
     int range[5], adtyp[10];
     int c, s;
     int i, j, tmp;
@@ -4300,11 +4326,18 @@ int nd;
     struct bresenham save_bhitpos;
     boolean shopdamage = FALSE;
     boolean doloop = TRUE;
-    boolean byyou;
     register const char *fltxt;
     struct obj *otmp;
 
-    byyou = (sx == u.ux) && (sy == u.uy);
+    if (!mon) return;
+
+    if (mon == &youmonst) {
+	sx = u.ux;
+	sy = u.uy;
+    } else {
+	sx = mon->mx;
+	sy = mon->my;
+    }
 
     for (i=0; i<10; i++) adtyp[i] = AD_MAGM + i;
     for (i=0; i<5; i++) {
@@ -4312,7 +4345,7 @@ int nd;
 	tmp = adtyp[j];  adtyp[j] = adtyp[i]; adtyp[i] = tmp;
     }
     for (i=0; i<5; i++) {
-	setup_zapinfo(&zi[i], AT_BREA, adtyp[i], nd, 6, 0, 0, byyou);
+	setup_zapinfo(&zi[i], AT_BREA, adtyp[i], nd, 6, 0, 0, mon);
 	range[i] = rn1(7,7);
     }
     bresenham_init(&bb[4], sx, sy, sx+dx, sy+dy);
@@ -5385,6 +5418,38 @@ struct obj *otmp;
 	if (otmp->otyp == SHIELD && get_material(otmp) == SILVER)
 		return TRUE;
 	return FALSE;
+}
+
+int
+zapinfo2otyp(ztmp)
+struct zapinfo *ztmp;
+{
+	int otyp = STRANGE_OBJECT;
+	switch (ztmp->oclass) {
+	    case WAND_CLASS:
+		if (ztmp->adtyp >= AD_MAGM && ztmp->adtyp <= AD_ELEC) {
+		    otyp = (int)(ztmp->adtyp - AD_MAGM) + WAN_MAGIC_MISSILE;
+		} else {
+		    if (ztmp->adtyp == AD_DETH) otyp = WAN_DEATH;
+		}
+		break;
+	    case TOOL_CLASS:
+		switch (ztmp->adtyp) {
+		    case AD_FIRE: otyp = FIRE_HORN; break;
+		    case AD_COLD: otyp = FROST_HORN; break;
+		    default: break;
+		}
+		break;
+	    case SCROLL_CLASS:
+		if (ztmp->adtyp == AD_FIRE) otyp = SCR_FIRE;
+		break;
+	    case POTION_CLASS:
+		if (ztmp->adtyp == AD_FIRE) otyp = POT_OIL;
+		break;
+	    default:
+		break;
+	}
+	return otyp;
 }
 
 /*zap.c*/

@@ -2247,7 +2247,7 @@ dodip()
 	    /* Turn off engine before fueling, turn off fuel too :-)  */
 	    if (obj->lamplit || potion->lamplit) {
 		struct zapinfo zi;
-		setup_zapobj(&zi, potion, TRUE);
+		setup_zapobj(&zi, potion, &youmonst);
 		useup(potion);
 		explode(u.ux, u.uy, &zi, d(6,6), EXPL_FIERY);
 		exercise(A_WIS, FALSE);

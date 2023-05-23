@@ -458,6 +458,7 @@ struct getobj_words {
 struct zapinfo {
 	const char *fltxt;	/* "magic missle", "blast of cold", "burning oil" and etc. */
 	const char *fstxt;	/* "ray", "blast" and etc. */
+	struct monst *zapper;	/* who zapped this */
 	uchar aatyp;		/* AT_BREA:breath, AT_MAGC:spell, AT_NONE:wand */
 	uchar adtyp;		/* AD_MAGM, AD_FIRE... */
 	uchar damn;		/* num of damage dice */
@@ -465,7 +466,8 @@ struct zapinfo {
 	char  oclass;
 	uchar beam_type;	/* for zapglyph; 0-9 */
 	Bitfield(byyou, 1);	/* zapped by you */
-	/* 7 free bits */
+	Bitfield(stdkiller, 1);	/* use generic killer name */
+	/* 6 free bits */
 };
 
 /* extra attachment chunk for obj/mon */

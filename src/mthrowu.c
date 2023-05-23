@@ -980,7 +980,7 @@ breamu(mtmp, mattk)			/* monster breathes at you (ranged) */
 			      breathwep[typ-1]);
 		    setup_zapinfo(&zi, AT_BREA, typ, mattk->damn, 6,
 				       (const char *)0, (const char *)0, /* use default names */
-				       FALSE);
+				       mtmp);
 		    buzz(&zi, mtmp->mx, mtmp->my, /*sgn*/(tbx), /*sgn*/(tby));
 		    nomul(0);
 		    /* breath runs out sometimes. Also, give monster some
@@ -995,7 +995,7 @@ breamu(mtmp, mattk)			/* monster breathes at you (ranged) */
 		    /* Chromatic Dragon */
 		    if(canseemon(mtmp))
 			pline(E_J("%s breathes %s!","%sは五色のブレスを吐いた！"), Monnam(mtmp));
-		    buzz_chromatic(mtmp->mx, mtmp->my, tbx, tby, mattk->damn);
+		    buzz_chromatic(mtmp, tbx, tby, mattk->damn);
 		    if(!rn2(3))
 			mtmp->mspec_used = 10+rn2(10);
 		} else impossible("Breath weapon %d used", typ-1);

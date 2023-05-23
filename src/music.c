@@ -450,7 +450,7 @@ struct obj *instr;
 		    }
 		} else {
 		    struct zapinfo zi;
-		    setup_zapobj(&zi, instr, TRUE);
+		    setup_zapobj(&zi, instr, &youmonst);
 		    buzz(&zi, u.ux, u.uy, u.dx, u.dy);
 		}
 		makeknown(instr->otyp);

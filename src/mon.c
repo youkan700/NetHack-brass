@@ -1662,7 +1662,7 @@ boolean was_swallowed;			/* digestion */
 #endif /*JP*/
 	    	killer = killer_buf;
 	    	killer_format = KILLED_BY_AN;
-		setup_zapinfo(&zi, AT_EXPL, AD_PHYS, 1, 1, killer, 0, FALSE);
+		setup_zapinfo(&zi, AT_EXPL, AD_PHYS, 1, 1, killer, 0, mon);
 		zi.oclass = MON_EXPLODE;
 	    	explode(mon->mx, mon->my, &zi, tmp, EXPL_NOXIOUS); 
 	    	return (FALSE);
