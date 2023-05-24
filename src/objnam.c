@@ -790,14 +790,14 @@ char *prefix;
 		switch (obj->oeroded) {
 			case 2:	Strcat(prefix, E_J("very ","‚Æ‚Ä‚à")); break;
 			case 3:	Strcat(prefix, E_J("thoroughly ","Š®‘S‚É")); break;
-		}			
+		}
 		Strcat(prefix, is_rustprone(obj) ? E_J("rusty ","K‚Ñ‚½") : E_J("burnt ","Å‚°‚½"));
 	}
 	if (obj->oeroded2 && !iscrys) {
 		switch (obj->oeroded2) {
 			case 2:	Strcat(prefix, E_J("very ","‚Æ‚Ä‚à")); break;
 			case 3:	Strcat(prefix, E_J("thoroughly ","Š®‘S‚É")); break;
-		}			
+		}
 		Strcat(prefix, is_corrodeable(obj) ? E_J("corroded ","•…H‚µ‚½") :
 			E_J("rotted ","•…‚Á‚½"));
 	}

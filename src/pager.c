@@ -1189,8 +1189,16 @@ struct obj *otmp;
     }
 
     if (!txt_offset) {
-	(void) dlb_fclose(fp);
-	return;
+	datawin = create_nhwindow(NHW_MENU);
+	putstr(datawin, ATR_BOLD, distant_name(otmp, xname));
+	putstr(datawin, 0, "");
+#ifndef JP
+	Sprintf(buf, "%s.", An(distant_name(otmp, xname)));
+#else
+	Sprintf(buf, "%sÇæÅB", distant_name(otmp, xname));
+#endif
+	putstr(datawin, 0, buf);
+	goto disp;
     }
     if (dlb_fseek(fp, txt_offset, SEEK_SET) < 0) {
 	pline("? Seek error on 'objdesc' file!");

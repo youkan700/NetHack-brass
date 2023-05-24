@@ -346,7 +346,10 @@ STATIC_OVL boolean
 interesting_to_discover(i)
 register int i;
 {
-	/* Pre-discovered objects are now printed with a '*' */
+    /* Miko kimono is white but the original robe is coloured: Hide it */
+    if (Role_if(PM_MEDIUM) && i == ROBE) return FALSE;
+
+    /* Pre-discovered objects are now printed with a '*' */
     return((boolean)(objects[i].oc_uname != (char *)0 ||
 	    (objects[i].oc_name_known && OBJ_DESCR(objects[i]) != (char *)0)));
 }
@@ -440,6 +443,97 @@ dodiscovered()				/* free after Robert Viduya */
     } else
 	display_nhwindow(tmpwin, TRUE);
     destroy_nhwindow(tmpwin);
+
+    return 0;
+}
+
+int
+dodiscovered_group()
+{
+    register int i, dis;
+    int	ct = 0;
+    char *s, oclass, prev_class, classes[MAXOCLASSES];
+    winid tmpwin;
+    char buf[BUFSZ];
+    int eggcnt;
+    struct obj tmpegg;
+
+    anything any;
+    menu_item *selected;
+
+    /* select category */
+    tmpwin = create_nhwindow(NHW_MENU);
+
+    any.a_void = 0;	/* set all bits to zero */
+    start_menu(tmpwin);
+    for (i=0; i<MAXOCLASSES; i++) {
+	oclass = flags.inv_order[i];
+	if (!(oclass == WEAPON_CLASS ||
+	      oclass == ARMOR_CLASS ||
+	      oclass == RING_CLASS ||
+	      oclass == AMULET_CLASS ||
+	      oclass == TOOL_CLASS ||
+	      oclass == POTION_CLASS ||
+	      oclass == SCROLL_CLASS ||
+	      oclass == SPBOOK_CLASS ||
+	      oclass == WAND_CLASS ||
+	      oclass == GEM_CLASS)) continue;
+	any.a_int = (int)oclass;	/* identifier */
+	add_menu(tmpwin, NO_GLYPH, &any, 0, def_oc_syms[oclass], ATR_NONE,
+		 let_to_name(oclass, FALSE), MENU_UNSELECTED);
+    }
+    any.a_int = FOOD_CLASS;	/* identifier */
+    add_menu(tmpwin, NO_GLYPH, &any, 0, def_oc_syms[FOOD_CLASS], ATR_NONE,
+	     E_J("Eggs","卵"), MENU_UNSELECTED);
+    end_menu(tmpwin, E_J("Discoveries you want to see:","確認する発見物の種類:"));
+    i = select_menu(tmpwin, PICK_ONE, &selected);
+    destroy_nhwindow(tmpwin);
+
+    if (i > 0) {
+	oclass = selected[0].item.a_int;
+	free((genericptr_t) selected);
+
+	tmpwin = create_nhwindow(NHW_MENU);
+	Sprintf(buf, E_J("Discoveries (%s)","発見物一覧 (%s)"),
+		oclass == FOOD_CLASS ? E_J("Eggs","卵") : let_to_name(oclass, FALSE));
+	putstr(tmpwin, 0, buf);
+	putstr(tmpwin, 0, "");
+
+	ct = 0;
+
+	if (oclass != FOOD_CLASS) {
+	    for (i = bases[oclass];
+		 i < NUM_OBJECTS && objects[i].oc_class == oclass; i++) {
+		if ((dis = disco[i]) && interesting_to_discover(dis)) {
+		    ct++;
+		    Sprintf(buf, "%s %s",(objects[dis].oc_pre_discovered ? "*" : " "),
+				    obj_typename(dis));
+		    putstr(tmpwin, 0, buf);
+		}
+	    }
+	} else {
+	    /* discovered eggs */
+	    tmpegg = zeroobj;
+	    tmpegg.oclass = FOOD_CLASS;
+	    tmpegg.otyp = EGG;
+	    tmpegg.quan = 1;
+	    for (i=LOW_PM; i<NUMMONS; i++) {
+		if (mvitals[i].mvflags & MV_KNOWS_EGG) {
+		    tmpegg.corpsenm = i;
+		    Sprintf(buf, "  %s", doname(&tmpegg));
+		    putstr(tmpwin, 0, buf);
+		    ct++;
+		}
+	    }
+	}
+
+	if (ct == 0) {
+	    You(E_J("haven't discovered anything yet...",
+		    "まだ何も発見していない…。"));
+	} else
+	    display_nhwindow(tmpwin, TRUE);
+	destroy_nhwindow(tmpwin);
+    }
 
     return 0;
 }

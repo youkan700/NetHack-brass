@@ -1881,6 +1881,7 @@ static const struct func_tab cmdlist[] = {
 	{';', TRUE, doquickwhatis},
 	{'^', TRUE, doidtrap},
 	{'\\', TRUE, dodiscovered},		/* Robert Viduya */
+	{'|', TRUE, dodiscovered_group},
 	{'@', TRUE, dotogglepickup},
 	{M('2'), FALSE, dotwoweapon},
 	{WEAPON_SYM,  TRUE, doprwep},
