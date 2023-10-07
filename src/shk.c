@@ -43,6 +43,7 @@ STATIC_DCL long FDECL(get_cost, (struct obj *, struct monst *));
 STATIC_DCL long FDECL(set_cost, (struct obj *, struct monst *));
 STATIC_DCL const char *FDECL(shk_embellish, (struct obj *, long));
 STATIC_DCL long FDECL(cost_per_charge, (struct monst *,struct obj *,BOOLEAN_P));
+STATIC_DCL struct bill_x *FDECL(find_cheapest_item, (struct monst *));
 STATIC_DCL long FDECL(cheapest_item, (struct monst *));
 STATIC_DCL int FDECL(dopayobj, (struct monst *, struct bill_x *,
 			    struct obj **, int, BOOLEAN_P));
@@ -58,6 +59,7 @@ STATIC_DCL void FDECL(rile_shk, (struct monst *));
 STATIC_DCL void FDECL(rouse_shk, (struct monst *,BOOLEAN_P));
 STATIC_DCL void FDECL(remove_damage, (struct monst *, BOOLEAN_P));
 STATIC_DCL void FDECL(sub_one_frombill, (struct obj *, struct monst *));
+STATIC_DCL struct obj *FDECL(sub_cheapest_frombill, (struct monst *));
 STATIC_DCL void FDECL(add_one_tobill, (struct obj *, BOOLEAN_P));
 STATIC_DCL void FDECL(dropped_container, (struct obj *, struct monst *,
 				      BOOLEAN_P));
@@ -1101,21 +1103,36 @@ STATIC_VAR const char not_enough_money[];
 
 #ifdef OVL3
 
+STATIC_OVL struct bill_x *
+find_cheapest_item(shkp)   /* find the cheapest item on the list */
+struct monst *shkp;
+{
+	struct eshk *eshkp = ESHK(shkp);
+	int ct = eshkp->billct;
+	struct bill_x *bp = eshkp->bill_p;
+	struct bill_x *bpmin = bp;
+	long gmin = (bp->price * bp->bquan);
+
+	if (ct == 0) return (struct bill_x *)0;
+
+	while(ct--){
+		if(bp->price * bp->bquan < gmin) {
+			gmin = bp->price * bp->bquan;
+			bpmin = bp;
+		}
+		bp++;
+	}
+	return(bpmin);
+}
+
 STATIC_OVL long
 cheapest_item(shkp)   /* delivers the cheapest item on the list */
 register struct monst *shkp;
 {
-	struct eshk *eshkp = ESHK(shkp);
-	register int ct = eshkp->billct;
-	register struct bill_x *bp = eshkp->bill_p;
-	register long gmin = (bp->price * bp->bquan);
+	struct bill_x *bp;
 
-	while(ct--){
-		if(bp->price * bp->bquan < gmin)
-			gmin = bp->price * bp->bquan;
-		bp++;
-	}
-	return(gmin);
+	bp = find_cheapest_item(shkp);
+	return (bp ? bp->price * bp->bquan : 0);
 }
 #endif /*OVL3*/
 #ifdef OVL0
@@ -2098,8 +2115,9 @@ register boolean dummy;
 		return;
 
 	if (eshkp->billct == BILLSZ) {
-		You("got that for free!");
-		return;
+		struct obj *otmp;
+		otmp = sub_cheapest_frombill(shkp);
+		if (otmp) You(E_J("got %s for free!","%s‚ð‚½‚¾‚ÅŽè‚É“ü‚ê‚½I"), doname(otmp));
 	}
 
 	/* To recognize objects the shopkeeper is not interested in. -dgk
@@ -2223,8 +2241,9 @@ register boolean ininv, dummy, silent;
 	      ) return;
 
 	if(ESHK(shkp)->billct == BILLSZ) {
-		You(E_J("got that for free!","‚»‚ê‚ð‚½‚¾‚ÅŽè‚É“ü‚ê‚½I"));
-		return;
+		struct obj *otmp;
+		otmp = sub_cheapest_frombill(shkp);
+		if (otmp) You(E_J("got %s for free!","%s‚ð‚½‚¾‚ÅŽè‚É“ü‚ê‚½I"), doname(otmp));
 	}
 
 	if(obj->oclass == COIN_CLASS) {
@@ -2439,6 +2458,22 @@ register struct monst *shkp;
 		else
 		    sub_one_frombill(otmp, shkp);
 	    }
+}
+
+STATIC_OVL struct obj *
+sub_cheapest_frombill(shkp)
+register struct monst *shkp;
+{
+	struct obj *otmp;
+	struct bill_x *bp;
+
+	bp = find_cheapest_item(shkp);
+	if (!bp) return (struct obj *)0;
+
+        otmp = bp_to_obj(bp);
+        sub_one_frombill(otmp, shkp);
+
+        return otmp;
 }
 
 #endif /*OVLB*/
