@@ -412,7 +412,7 @@ register struct monst *mtmp;
 		    mondead(mtmp);
 		}
 		else if (cansee(mtmp->mx,mtmp->my))
-		    pline(E_J("%s burns slightly.","‰Š”M‚É‘Ï‚¦‚Ä‚¢‚éB"), Monnam(mtmp));
+		    pline(E_J("%s burns slightly.","%s‚Í‰Š”M‚É‘Ï‚¦‚Ä‚¢‚éB"), Monnam(mtmp));
 	    }
 	    if (mtmp->mhp > 0) {
 		(void) fire_damage(mtmp->minvent, FALSE, FALSE,
