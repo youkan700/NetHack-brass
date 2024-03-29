@@ -63,6 +63,7 @@ struct artifact {
 #define ENLIGHTENING	(LAST_PROP+8)
 #define CREATE_AMMO	(LAST_PROP+9)
 #define EMIT_LIGHT	(LAST_PROP+10)
+#define POISON_BLADE	(LAST_PROP+11)
 
 /* additional alighment */
 #define	A_CROSSALIGNED	(-127)

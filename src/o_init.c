@@ -312,6 +312,12 @@ boolean credit_hero;
 	if (mark_as_known) {
 	    objects[oindx].oc_name_known = 1;
 	    if (credit_hero) exercise(A_WIS, TRUE);
+
+	    /* clear uname */
+	    if (objects[oindx].oc_uname) {
+		free((genericptr_t)objects[oindx].oc_uname);
+		objects[oindx].oc_uname = (char *)0;
+	    }
 	}
 	if (moves > 1L) update_inventory();
     }

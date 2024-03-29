@@ -95,10 +95,11 @@ register boolean clumsy;
 		mlosehp(mon, dmg);
 	else
 		Your(E_J("kick does no damage.",
-			 "R‚è‚Å‚Íƒ_ƒ[ƒW‚ð•‰‚í‚¹‚ç‚ê‚È‚©‚Á‚½B"));
-	if (dmg > 0 && mon->mhp > 0 && martial() &&
-	    !bigmonst(mon->data) && !rn2(3) &&
-	    mon->mcanmove && mon != u.ustuck && !mon->mtrapped) {
+			 "R‚è‚Íƒ_ƒ[ƒW‚ð—^‚¦‚ç‚ê‚È‚©‚Á‚½B"));
+	if (dmg > 0 && mon->mhp > 0 && martial()) {
+	    /* hurtle */
+	    if (!bigmonst(mon->data) && !rn2(3) &&
+		mon->mcanmove && mon != u.ustuck && !mon->mtrapped) {
 		/* see if the monster has a place to move into */
 		mdx = mon->mx + u.dx;
 		mdy = mon->my + u.dy;
@@ -114,6 +115,15 @@ register boolean clumsy;
 			    if (mintrap(mon) == 2) trapkilled = TRUE;
 			}
 		}
+	    } else if (rn2(150) < P_SKILL(P_MARTIAL_ARTS)) {
+#ifndef JP
+		pline("%s loses %s balance from the blow.", Monnam(mon), mhis(mon));
+#else
+		pline("%s‚Í‘Ì¨‚ð•ö‚µ‚½B", Monnam(mon));
+#endif
+		mon->movement = 0;
+		mon->mstun = 1;
+	    }
 	}
 
 #ifdef SHOWDMG
@@ -210,7 +220,7 @@ register xchar x, y;
 		if(!rn2((i < j/10) ? 2 : (i < j/5) ? 3 : 4)) {
 			if(martial() && !rn2(2)) goto doit;
 			Your(E_J("clumsy kick does no damage.",
-				 "•nŽã‚ÈR‚è‚Å‚Íƒ_ƒ[ƒW‚ð•‰‚í‚¹‚ç‚ê‚È‚©‚Á‚½B"));
+				 "•nŽã‚ÈR‚è‚Å‚Íƒ_ƒ[ƒW‚ð—^‚¦‚ç‚ê‚È‚©‚Á‚½B"));
 			(void) passive(mon, FALSE, 1, AT_KICK, 0);
 			return;
 		}

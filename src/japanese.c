@@ -259,6 +259,9 @@ const char *str;
 		} else if (k == KCONST('E')) {
 		    /* ’†“_‚Ì’¼Œã‚ÍØ‚ê–Ú */
 		    return (len+2);
+		} else if (ishira && (k == KCONST('ñ') || k == KCONST('Šp'))) {
+		    /* u`‚Ìñvu`‚ÌŠp“Jv‚ÍØ‚ç‚È‚¢ */
+		    ishira = FALSE;
 		} else if (k >= KCONST('‚Ÿ') && k <= KCONST('‚ñ')) {
 		    /* ‚Ð‚ç‚ª‚È */
 		    ishira = TRUE;

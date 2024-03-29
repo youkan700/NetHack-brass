@@ -215,7 +215,7 @@ struct obj *wep;	/* uwep for attack(), null for kick_monster() */
 	if (flags.confirm && mtmp->mpeaceful
 	    && !Confusion && !Hallucination && !Stunned) {
 #else
-	if (iflags.confirm != 'a' && mtmp->mpeaceful
+	if (flags.confirm != 'a' && mtmp->mpeaceful
 	    && !Confusion && !Hallucination && !Stunned) {
 #endif /*CONFIRM_EX*/
 		/* Intelligent chaotic weapons (Stormbringer) want blood */
@@ -225,7 +225,7 @@ struct obj *wep;	/* uwep for attack(), null for kick_monster() */
 		}
 		if (canspotmon(mtmp)) {
 #ifdef CONFIRM_EX
-		    if (iflags.confirm == 'c') {
+		    if (flags.confirm == 'c') {
 #endif /*CONFIRM_EX*/
 			Sprintf(qbuf, E_J("Really attack %s?",
 				"本当に%sを攻撃しますか？"), mon_nam(mtmp));
@@ -585,7 +585,9 @@ uchar hflg;
 	    int oldhp = mon->mhp,
 		x = u.ux + u.dx, y = u.uy + u.dy;
 
-	    if ((!wep || objects[wep->otyp].oc_skill != P_FLAIL_GROUP) &&
+	    if ((!wep ||
+		 (objects[wep->otyp].oc_skill != P_FLAIL_GROUP &&
+		  !is_bane(wep, mon))) &&
 		parry_with_shield(&youmonst, mon, uattk)) return (malive);
 
 	    /* KMH, conduct */
@@ -1226,7 +1228,7 @@ int thrown;
 
 	    /* to be valid a projectile must have had the correct projector */
 	    wep = PROJECTILE(obj) ? uwep : obj;
-//	    tmp += weapon_dam_bonus(wep);
+	    tmp += weapon_dam_bonus(wep);
 	    /* [this assumes that `!thrown' implies wielded...] */
 	    use_skill(weapon_type(wep), 1);
 	    if (u.twoweap && !thrown) use_skill(P_TWO_WEAPON_COMBAT, 1);
@@ -1242,11 +1244,16 @@ int thrown;
 	if (tech_inuse(T_BERSERK)) tmp += 4;
 
 	if (ispoisoned) {
-	    int nopoison = 2;
+	    int nopoison = 2, instakill = 10, pdmg = 6;
 	    if (obj) {
-		nopoison = (obj->oartifact == ART_GRIMTOOTH) ? 1000 :
-			   (objects[obj->otyp].oc_merge) ? (10 - (obj->owt/10)) : 100;
+		nopoison = (objects[obj->otyp].oc_merge) ? (10 - (obj->owt/10)) : 100;
 		if(nopoison < 2) nopoison = 2;
+
+		if (obj->oartifact == ART_GRIMTOOTH) {
+		    nopoison = 1000;
+		    instakill = 5;
+		    pdmg = 10;
+		}
 	    }
 	    if Role_if(PM_SAMURAI) {
 		You(E_J("dishonorably use a poisoned weapon!",
@@ -1268,8 +1275,8 @@ int thrown;
 	    }
 	    if (resists_poison(mon))
 		needpoismsg = TRUE;
-	    else if (rn2(10))
-		tmp += rnd(6);
+	    else if (rn2(instakill))
+		tmp += rnd(pdmg);
 	    else poiskilled = TRUE;
 	}
 	if (tmp < 1) {
@@ -2874,6 +2881,11 @@ uchar hflg;
 					  "%s眼光はあなたの%sにはね返された。"),
 				    s_suffix(Monnam(mon))))
 			    ;
+#ifdef MAGIC_GLASSES
+			else if (ublindf && ublindf->otyp == GLASSES_OF_GAZE_PROTECTION) {
+			    pline(E_J("%s stares at you.","%sはあなたを見つめた。"), Monnam(mon));
+			}
+#endif
 			else if (Free_action)
 			    You(E_J("momentarily stiffen under %s gaze!",
 				    "%s眼光に一瞬固まった！"),

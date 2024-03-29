@@ -155,7 +155,7 @@ NON_DIGGABLE: (00,00,65,15)
 # Stairs
 STAIR: (05,11),up
 # Objects
-OBJECT:')',"dagger:silver",(53,05),blessed,0,"The Holy Dagger"
+OBJECT:')',"knife:silver",(53,05),blessed,0,"The Holy Dagger"
 OBJECT: '*',"diamond",random
 OBJECT: '*',"diamond",random
 OBJECT: '*',"diamond",random

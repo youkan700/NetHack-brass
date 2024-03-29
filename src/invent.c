@@ -1828,7 +1828,7 @@ long* out_cnt;
 	i = 0;
 	for(otmp = invent; otmp; otmp = otmp->nobj)
 	    if(!lets || !*lets || index(lets, otmp->invlet)) {
-		if (iflags.sortloot == 'f') {
+		if (flags.sortloot == 'f') {
 		    /* Insert object at correct index */
 		    for (j = i; j; j--) {
 			if (strcmpi(cxname2(otmp), cxname2(oarray[j-1]))>0) break;

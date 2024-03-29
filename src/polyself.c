@@ -1180,8 +1180,8 @@ dogaze()
 							&& !Hallucination) {
 #else
 		    if (mtmp->mpeaceful && !Confusion && !Hallucination) {
-			if (iflags.confirm == 's') continue;
-			if (iflags.confirm == 'c') {
+			if (flags.confirm == 's') continue;
+			if (flags.confirm == 'c') {
 #endif /*CONFIRM_EX*/
 #ifndef JP
 			Sprintf(qbuf, "Really %s %s?",

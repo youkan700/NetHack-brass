@@ -3351,7 +3351,7 @@ struct attack *mattk;
 	else if (is_dwarf(mdef->data) && is_dwarvish_armor(shield)) tmp++;
 
 	if (tmp < 1) tmp = 1;
-	if (mdef != &youmonst && tmp >= 12) tmp = 12; /* balance... */
+	if (mdef != &youmonst && tmp >= 10) tmp = 10; /* balance... */
 //pline("(parry:%d)", tmp);
 	if (rn2(20) < tmp) {
 	    if (mdef == &youmonst) {

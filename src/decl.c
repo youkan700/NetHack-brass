@@ -213,6 +213,7 @@ char preferred_pet;	/* '\0', 'c', 'd', 'n' (none) */
 NEARDATA struct monst *mydogs = (struct monst *)0;
 /* monsters that are moving to another dungeon level */
 NEARDATA struct monst *migrating_mons = (struct monst *)0;
+struct monst *monactive = (struct monst *)0;
 
 NEARDATA struct mvitals mvitals[NUMMONS];
 /* used to zero all elements of a struct monst */

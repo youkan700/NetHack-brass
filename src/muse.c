@@ -1168,11 +1168,21 @@ register struct obj *otmp;
 			    shieldeff(u.ux, u.uy);
 			    pline("Boing!");
 			} else*/ if (rnd(20) < 10 + u.uac) {
+			    int ksuf = E_J(KILLED_BY_AN,KILLED_SUFFIX);
+#ifdef JP
+			    char kbuf[BUFSZ];
+			    kbuf[0] = 0;
+			    if (monactive) {
+				setup_killername(monactive, kbuf);
+				Sprintf(eos(kbuf), "‚É");
+			    }
+			    Sprintf(eos(kbuf), "ÕŒ‚‚Ìñ‚Å");
+#endif /*JP*/
 			    pline_The(E_J("wand hits you!",
 					  "ñ‚Í‚ ‚È‚½‚É–½’†‚µ‚½I"));
 			    tmp = d(2,12);
 			    if(Half_physical_damage/*Half_spell_damage*/) tmp = (tmp+1) / 2;
-			    losehp(tmp, E_J("wand","ÕŒ‚‚Ìñ‚Å"), KILLED_BY_AN);
+			    losehp(tmp, E_J("wand",kbuf), ksuf);
 			} else pline_The(E_J("wand misses you.","ñ‚Í‚ ‚È‚½‚ðŠO‚ê‚½B"));
 			stop_occupation();
 			nomul(0);
@@ -1240,7 +1250,7 @@ struct obj *obj;			/* 2nd arg to fhitm/fhito */
 			mon->muy - mon->my,		/* dy */
 			range, weapon,
 			fhitm, fhito, obj,
-			FALSE);				/* not your shot */
+			FALSE);
 }
 
 /* Perform an offensive action for a monster.  Must be called immediately

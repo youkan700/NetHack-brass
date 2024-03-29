@@ -286,6 +286,7 @@ E NEARDATA struct you u;
 
 E NEARDATA struct monst youmonst;	/* init'd and defined in decl.c */
 E NEARDATA struct monst *mydogs, *migrating_mons;
+E struct monst *monactive;
 
 E NEARDATA struct mvitals {
 	uchar	born;

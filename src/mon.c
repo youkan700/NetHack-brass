@@ -579,6 +579,8 @@ movemon()
     for(mtmp = fmon; mtmp; mtmp = nmtmp) {
 	nmtmp = mtmp->nmon;
 
+	monactive = mtmp;
+
 	/* Find a monster that we have not treated yet.	 */
 	if(DEADMONSTER(mtmp))
 	    continue;
@@ -624,6 +626,8 @@ movemon()
 	if(dochugw(mtmp))		/* otherwise just move the monster */
 	    continue;
     }
+
+    monactive = (struct monst *)0;
 
     if (any_light_source())
 	vision_full_recalc = 1;	/* in case a mon moved with a light source */

@@ -63,6 +63,8 @@
 )runed broadsword:	ルーンの刻まれたブロードソード
 )long sword:		ロングソード
 )two-handed sword:	両手持ちの大剣
+)wakizashi:		脇差し
+)short samurai sword:	侍の小剣
 )katana:		刀
 )samurai sword:		侍の剣
 )tsurugi:		大刀
@@ -771,7 +773,8 @@ $gold piece:	金貨
 # jactinthは出エジプト記28章で黄水晶と訳されているが，
 # citrineとかぶるので橙水晶
 #
-*jacinth:	橙水晶
+#*jacinth:	橙水晶
+*jacinth:	ジルコン
 *orange:	橙色の
 *black opal:	黒オパール
 *black:		黒い
@@ -869,7 +872,7 @@ AThe Magic Mirror of Merlin:	マーリンの魔法の鏡
 # Mon
 AThe Eyes of the Overworld:	超世界の目
 # Med
-AThe Holy Dagger:		破魔の短剣
+AThe Holy Dagger:		破魔の短刀
 # P
 AThe Mitre of Holiness:		聖なる法冠
 # Ran

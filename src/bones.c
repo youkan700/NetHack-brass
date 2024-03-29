@@ -83,6 +83,7 @@ boolean restore;
 		    } else if (otmp->otyp != CORPSE && otmp->otyp != STATUE) {
 			del_xdat_obj(otmp, XDAT_NAME);
 		    }
+		    reset_color(otmp);
 
 		} else { /* saving */
 			/* do not zero out o_ids for ghost levels anymore */
@@ -154,8 +155,8 @@ struct obj *cont;
 		    end_burn(otmp, TRUE);	/* smother in statue */
 
 		/* many items disappear */
-		ch = (objects[otmp->otyp].oc_magic) ? 5 : 2;
-		if (rn2(ch) || Is_container(otmp)) {
+		ch = (objects[otmp->otyp].oc_magic) ? rn2(3) : !rn2(3);
+		if (ch || Is_container(otmp)) {
 		    if (obj_is_burning(otmp)) end_burn(otmp, TRUE);
 		    obfree(otmp, (struct obj *) 0);
 		    continue;

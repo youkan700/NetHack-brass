@@ -3884,13 +3884,41 @@ register xchar x, y;
 		? otmp : (struct obj *)0;
 }
 
+char *price_str(otmp, shkp)
+struct obj *otmp;
+struct monst *shkp;
+{
+    static char price[BUFSZ];
+    long cost;
+
+    price[0] = 0;
+    if (otmp->oclass == COIN_CLASS) return price;
+
+    cost = (otmp->no_charge || otmp == uball || otmp == uchain) ? 0L :
+	    get_cost(otmp, (struct monst *)0);
+    if (Has_contents(otmp))
+	cost += contained_cost(otmp, shkp, 0L, FALSE, FALSE);
+    if (!cost) {
+	Strcpy(price, E_J("no charge","–³—¿"));
+    } else {
+#ifndef JP
+	Sprintf(price, "%ld %s%s", cost, currency(cost),
+		otmp->quan > 1L ? " each" : "");
+#else
+	Sprintf(price, "%s%ld %s", otmp->quan > 1L ? "ˆê‚Â" : "",
+		cost, currency(cost));
+#endif /*JP*/
+    }
+    return price;
+}
+
 /* give price quotes for all objects linked to this one (ie, on this spot) */
 void
 price_quote(first_obj)
 register struct obj *first_obj;
 {
     register struct obj *otmp;
-    char buf[BUFSZ], price[40];
+    char buf[BUFSZ];
     long cost;
     int cnt = 0;
     winid tmpwin;
@@ -3901,22 +3929,7 @@ register struct obj *first_obj;
     putstr(tmpwin, 0, "");
     for (otmp = first_obj; otmp; otmp = otmp->nexthere) {
 	if (otmp->oclass == COIN_CLASS) continue;
-	cost = (otmp->no_charge || otmp == uball || otmp == uchain) ? 0L :
-		get_cost(otmp, (struct monst *)0);
-	if (Has_contents(otmp))
-	    cost += contained_cost(otmp, shkp, 0L, FALSE, FALSE);
-	if (!cost) {
-	    Strcpy(price, E_J("no charge","–³—¿"));
-	} else {
-#ifndef JP
-	    Sprintf(price, "%ld %s%s", cost, currency(cost),
-		    otmp->quan > 1L ? " each" : "");
-#else
-	    Sprintf(price, "%s%ld %s%s", otmp->quan > 1L ? "ˆê‚Â" : "",
-		    cost, currency(cost));
-#endif /*JP*/
-	}
-	Sprintf(buf, "%s, %s", doname(otmp), price);
+	Sprintf(buf, "%s, %s", doname(otmp), price_str(otmp, shkp));
 	putstr(tmpwin, 0, buf),  cnt++;
     }
     if (cnt > 1) {

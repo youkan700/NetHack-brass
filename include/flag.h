@@ -119,6 +119,12 @@ struct flag {
 	char	 end_disclose[NUM_DISCLOSURE_OPTIONS + 1];  /* disclose various info
 								upon exit */
 	char	 menu_style;	/* User interface style setting */
+#ifdef SORTLOOT
+        char sortloot;          /* sort items to loot alphabetically */
+#endif
+#ifdef CONFIRM_EX
+	char confirm;		/* confirm before hitting tame monsters */
+#endif /*CONFIRM_EX*/
 #ifdef AMII_GRAPHICS
 	int numcols;
 	unsigned short amii_dripens[ 20 ]; /* DrawInfo Pens currently there are 13 in v39 */
@@ -232,12 +238,6 @@ struct instance_flags {
 	boolean lan_mail;	/* mail is initialized */
 	boolean lan_mail_fetched; /* mail is awaiting display */
 #endif
-#ifdef SORTLOOT
-        char sortloot;          /* sort items to loot alphabetically */
-#endif
-#ifdef CONFIRM_EX
-	char confirm;		/* confirm before hitting tame monsters */
-#endif /*CONFIRM_EX*/
 /*
  * Window capability support.
  */

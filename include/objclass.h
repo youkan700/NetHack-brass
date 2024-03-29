@@ -42,10 +42,18 @@ struct objclass {
 
 #define a_can	oc_dir		/* armor: used in mhitu.c */
 
-				/* 12 bits... free 4 bits */
-	/*Bitfield(oc_subtyp,3);*/	/* Now too big for a bitfield... see below */
+	Bitfield(oc_rank,2);	/* rank of the object */
+#define COMMON		0
+#define FINE		1
+#define EXCELLENT	2
+#define SUPERB		3
+	Bitfield(oc_rsvd1,2);	/* 2 free bits */
+				/* 16 bits... */
+
+	Bitfield(oc_rsvd2,3);	/* 3 free bits */
 
 	Bitfield(oc_material,5);
+				/* 24 bits... */
 #define LIQUID		1	/* currently only for venom */
 #define WAX		2
 #define VEGGY		3	/* foodstuffs */

@@ -39,7 +39,6 @@ STATIC_DCL struct Jitem Japanese_items[];
 #else /* OVLB */
 
 STATIC_OVL struct Jitem Japanese_items[] = {
-	{ SHORT_SWORD, "wakizashi" },
 	{ BROADSWORD, "ninja-to" },
 	{ FLAIL, "nunchaku" },
 	{ GLAIVE, "naginata" },
@@ -57,7 +56,6 @@ STATIC_OVL struct Jitem Japanese_items[] = {
 
 #ifdef JP
 STATIC_OVL struct Jitem JJapanese_items[] = {
-	{ SHORT_SWORD, "˜e·‚µ" },
 	{ BROADSWORD, "”EÒ“" },
 	{ FLAIL, "ƒkƒ“ƒ`ƒƒƒN" },
 	{ GLAIVE, "“ã“" },
@@ -327,7 +325,10 @@ named_obj_name(obj)
 struct obj *obj;
 {
 	char *p;
-	if (obj->oartifact) return (char *)artiname(obj->oartifact);
+	if (obj->oartifact) {
+	    p = (char *)artiname(obj->oartifact);
+	    if (p && *p) return p;
+	}
 	if ((p = (char *)get_xdat_obj(obj, XDAT_NAME)) != 0) return p;
 	impossible("Try to get name from a non-named obj?");
 	return "";
@@ -3707,17 +3708,7 @@ struct obj *armor;
 {
     int t;
     if (armor) {
-	t = armor->otyp;
-	if ( is_robe(armor) ) return E_J("robe","ƒ[ƒu");
-	switch (t) {
-	case MAID_DRESS:
-	    return E_J("dress","••");
-	case NURSE_UNIFORM:
-	    return (objects[t].oc_name_known &&
-			armor->dknown) ? E_J("uniform","§•") : E_J("dress","•");
-	default:
-	    break;
-	}
+	if ( is_clothes(armor) ) return E_J("clothes","•");
     }
     return E_J("armor","ŠZ");
 }
