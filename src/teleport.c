@@ -222,6 +222,9 @@ boolean trapok;
 {
 	if (!trapok && t_at(x, y)) return FALSE;
 	if (!goodpos(x, y, &youmonst, 0)) return FALSE;
+#ifdef WIZARD
+	if (!wizard)
+#endif
 	if (!tele_jump_ok(u.ux, u.uy, x, y)) return FALSE;
 	if (!in_out_region(x, y)) return FALSE;
 	return TRUE;

@@ -629,10 +629,10 @@ initoptions()
 	flags.pickup_burden = MOD_ENCUMBER;
 
 #ifdef SORTLOOT
-	iflags.sortloot = 'n';
+	flags.sortloot = 'n';
 #endif
 #ifdef CONFIRM_EX
-	iflags.confirm = 'c';
+	flags.confirm = 'c';
 #endif
 
 	for (i = 0; i < NUM_DISCLOSURE_OPTIONS; i++)
@@ -1958,7 +1958,7 @@ goodfruit:
 		switch (tolower(*op)) {
 		    case 'n':
 		    case 'l':
-		    case 'f': iflags.sortloot = tolower(*op);
+		    case 'f': flags.sortloot = tolower(*op);
 			      break;
 		    default:  badoption(opts);
 			      return;
@@ -1976,7 +1976,7 @@ goodfruit:
 		switch (tolower(*op)) {
 		    case 'a':
 		    case 'c':
-		    case 's': iflags.confirm = tolower(*op);
+		    case 's': flags.confirm = tolower(*op);
 			      break;
 		    default:  badoption(opts);
 			      return;
@@ -2899,7 +2899,7 @@ boolean setinitial,setfromfile;
 	    }
 	    end_menu(tmpwin, "Select loot sorting type:");
 	    if (select_menu(tmpwin, PICK_ONE, &sortl_pick) > 0) {
-		iflags.sortloot = sortl_pick->item.a_char;
+		flags.sortloot = sortl_pick->item.a_char;
 		free((genericptr_t)sortl_pick);
 	    }
 	    destroy_nhwindow(tmpwin);
@@ -2920,7 +2920,7 @@ boolean setinitial,setfromfile;
 	    end_menu(tmpwin, E_J("Select your behavior to peaceful creature:",
 				 "友好的な相手に対する行動の選択:"));
 	    if (select_menu(tmpwin, PICK_ONE, &confirm_pick) > 0) {
-		iflags.confirm = confirm_pick->item.a_char;
+		flags.confirm = confirm_pick->item.a_char;
 		free((genericptr_t)confirm_pick);
 	    }
 	    destroy_nhwindow(tmpwin);
@@ -3180,7 +3180,7 @@ char *buf;
 	else if (!strcmp(optname, "confirm")) {
 	    char *confirmname = (char *)NULL;
 	    for (i=0; i < SIZE(confirmtype) && confirmname==(char *)NULL; i++) {
-		if (iflags.confirm == confirmtype[i][0])
+		if (flags.confirm == confirmtype[i][0])
 		    confirmname = (char *)confirmtype[i];
 	    }
 	    if (confirmname != (char *)NULL)
@@ -3333,7 +3333,7 @@ char *buf;
 	else if (!strcmp(optname, "sortloot")) {
 	    char *sortname = (char *)NULL;
 	    for (i=0; i < SIZE(sortltype) && sortname==(char *)NULL; i++) {
-		if (iflags.sortloot == sortltype[i][0])
+		if (flags.sortloot == sortltype[i][0])
 		    sortname = (char *)sortltype[i];
 	    }
 	    if (sortname != (char *)NULL)

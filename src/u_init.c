@@ -107,7 +107,7 @@ static struct trobj Monk[] = {
 };
 /* MEDIUM */
 static struct trobj Medium[] = {
-	{ DAGGER,		1, WEAPON_CLASS,	1, 0 },
+	{ KNIFE,		1, WEAPON_CLASS,	1, 0 },
 	{ YUMI,			0, WEAPON_CLASS,	1, 0 },
 	{ YA,			2, WEAPON_CLASS,       50, 0 },
 	{ YA,			0, WEAPON_CLASS,       30, 0 },
@@ -147,7 +147,7 @@ static struct trobj Rogue[] = {
 };
 static struct trobj Samurai[] = {
 	{ KATANA,		0, WEAPON_CLASS,	1, 0 },
-	{ SHORT_SWORD,		0, WEAPON_CLASS,	1, 0 }, /* wakizashi */
+	{ WAKIZASHI,		0, WEAPON_CLASS,	1, 0 },
 	{ YUMI,			0, WEAPON_CLASS,	1, 0 },
 	{ YA,			0, WEAPON_CLASS,       25, 0 }, /* variable quan */
 	{ SPLINT_MAIL,		0, ARMOR_CLASS,		1, 0 },
@@ -438,7 +438,7 @@ static const struct def_skill Skill_S[] = {
     { P_DAGGER_GROUP, P_BASIC },	{ P_KNIFE_GROUP,  P_SKILLED },
     { P_SHORT_BLADE_GROUP, P_EXPERT },	/*{ P_BROAD_BLADE_GROUP, P_SKILLED },*/
     { P_LONG_BLADE_GROUP, P_EXPERT },	/*{ P_TWO_HANDED_SWORD, P_EXPERT },*/
-    /*{ P_SCIMITAR, P_BASIC },*/	{ P_KATANA_GROUP, P_EXPERT },
+    /*{ P_SCIMITAR, P_BASIC },*/	{ P_KATANA_GROUP, P_GRAND_MASTER },
     { P_STAFF_GROUP, P_BASIC },		{ P_FLAIL_GROUP, P_SKILLED },
     { P_POLEARM_GROUP, P_EXPERT },	{ P_SPEAR_GROUP, P_BASIC },
     /*{ P_JAVELIN, P_BASIC },*/		/*{ P_LANCE, P_SKILLED },*/
@@ -720,7 +720,6 @@ u_init()
 		ini_inv(Samurai);
 		knows_class(WEAPON_CLASS);
 		knows_class(ARMOR_CLASS);
-		objects[SHORT_SWORD].oc_skill = P_SABER_GROUP;
 		skill_init(Skill_S);
 		break;
 	case PM_TOURIST:
@@ -1004,7 +1003,7 @@ register struct trobj *trop;
 		    change_material(obj, 0);
 		}
 		if (Role_if(PM_MEDIUM)) {
-		    if (obj->otyp == DAGGER) change_material(obj, SILVER);
+		    if (obj->otyp == KNIFE) change_material(obj, SILVER);
 		    else if (obj->otyp == ROBE) obj->color = CLR_WHITE;
 		}
 		if (obj->oclass == WEAPON_CLASS && obj->opoisoned) obj->opoisoned = 0;

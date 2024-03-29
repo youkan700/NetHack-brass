@@ -780,7 +780,7 @@ peffects(otmp)
 			  "げっ！ この液体は毒のような味がする。"));
 		if (otmp->blessed) {
 		    pline(E_J("(But in fact it was mildly stale %s.)",
-			      "(だが実際のところ、これは少し痛んだ%sジュースだった。)"),
+			      "(だが実際のところ、これは少し痛んだ%sだった。)"),
 			  fruitname(TRUE));
 		    if (!Role_if(PM_HEALER) && !Poison_resistance) {
 			/* NB: blessed otmp->fromsink is not possible */
@@ -791,7 +791,7 @@ peffects(otmp)
 		    if(Poison_resistance)
 			pline(
 			  E_J("(But in fact it was biologically contaminated %s.)",
-			      "(だが実際のところ、これは生物学的に汚染された%sジュースだった。)"),
+			      "(だが実際のところ、これは生物学的に汚染された%sだった。)"),
 			      fruitname(TRUE));
 		    if (Role_if(PM_HEALER))
 			pline(E_J("Fortunately, you have been immunized.",

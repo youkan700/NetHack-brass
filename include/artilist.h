@@ -77,11 +77,11 @@ A("Cleaver",			BATTLE_AXE,	0,
 
 A("Grimtooth",			ORCISH_DAGGER,	0,
 	0, 0, 0,
-	PHYS(2,6),	NO_DFNS,	NO_CARY,	0, A_CHAOTIC, NON_PM, PM_ORC, 300L ),
+	PHYS(2,6),	NO_DFNS,	NO_CARY,	POISON_BLADE, A_CHAOTIC, NON_PM, PM_ORC, 300L ),
 /*
  *	Orcrist and Sting have same alignment as elves.
  */
-A("Orcrist",			ELVEN_BROADSWORD,	0,
+A("Orcrist",			ELVEN_BROADSWORD,	MITHRIL,
 	(SPFX_WARN|SPFX_DFLAG2), 0, M2_ORC,
 	PHYS(15,ADMG_DOUBLE),	NO_DFNS,	NO_CARY,	0, A_CHAOTIC, NON_PM, PM_ELF, 2000L ),
 
@@ -91,7 +91,7 @@ A("Orcrist",			ELVEN_BROADSWORD,	0,
  *	M2_something flags.  In Sting's case it will trigger EWarn_of_mon
  *	for M2_ORC monsters.
  */
-A("Sting",			ELVEN_DAGGER,	0,
+A("Sting",			ELVEN_DAGGER,	MITHRIL,
 	(SPFX_WARN|SPFX_DFLAG2), 0, M2_ORC,
 	PHYS(15,ADMG_DOUBLE),	NO_DFNS,	NO_CARY,	0, A_CHAOTIC, NON_PM, PM_ELF, 800L ),
 /*
@@ -237,7 +237,7 @@ A("The Eyes of the Overworld",	LENSES, 0,
 	NO_ATTK,	NO_DFNS,	CARY(AD_MAGM),
 	ENLIGHTENING,	A_NEUTRAL,	 PM_MONK, NON_PM, 2500L ),
 
-A("The Holy Dagger",	DAGGER,	SILVER,
+A("The Holy Dagger",	KNIFE,	SILVER,
 	(SPFX_NOGEN|SPFX_REFLECT|SPFX_INTEL|SPFX_DFLAG2), SPFX_HPHDAM, M2_UNDEAD,
 	PHYS(5,ADMG_DOUBLE),	NO_DFNS,	CARY(AD_MAGM),
 	0,	A_LAWFUL, PM_MEDIUM, NON_PM, 1500L ),

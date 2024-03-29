@@ -1124,6 +1124,7 @@ const struct moti mat_obj_tbl[] = {
 	{PLATE_MAIL,	metal_armor_probs1},
 	{HELMET,	metal_armor_probs1},
 	{CLUB,		primitive_weapon_probs1},
+	{KNIFE,		silver_weapon_probs3},
 	{DAGGER,	silver_weapon_probs2},
 	{ARROW,		silver_weapon_probs1},
 	{LONG_SWORD,	silver_weapon_probs3},
@@ -1136,6 +1137,8 @@ const struct moti mat_obj_tbl[] = {
 	{SHIELD,	special_probs1},
 	{GAUNTLETS,	metal_armor_probs1},
 	{BULLET,	silver_weapon_probs1},
+	{ELVEN_DAGGER,	special_probs1},
+	{ELVEN_BROADSWORD, special_probs1},
 	{STRANGE_OBJECT, (void *)0 }
 };
 
@@ -1239,6 +1242,27 @@ struct obj *obj;
 	    (tprob -= iprobs->iprob) > 0;
 	    iprobs++);
 	return change_material(obj, iprobs->imat);
+}
+
+void
+reset_color(obj)
+struct obj *obj;
+{
+	int otyp = obj->otyp;
+
+	/* Wrong color might be set for obj with shuffled appearances */
+	if (is_robe(obj) ||
+	    (otyp >= HELMET && otyp <= HELM_OF_TELEPATHY) ||
+	    (otyp >= CLOAK_OF_PROTECTION && otyp <= CLOAK_OF_DISPLACEMENT) ||
+	    obj->oclass == RING_CLASS || obj->oclass == POTION_CLASS ||
+	    obj->oclass == WAND_CLASS || obj->oclass == SPBOOK_CLASS) {
+
+	    if (!obj->madeof) {
+		obj->color = objects[obj->otyp].oc_color; /* natural color */
+	    } else {
+		obj->color = materialcolor[obj->madeof]; /* material color */
+	    }
+	}
 }
 
 struct obj *
@@ -1992,6 +2016,79 @@ check_contained(container, mesg)
     }
 }
 #endif /* WIZARD */
+
+struct obj *
+mk_ranked_obj_at(let, x, y, rank, artif)
+char let;
+int x, y;
+int rank;
+boolean artif;
+{
+	struct obj *otmp;
+	int otyp;
+	int trycnt;
+
+	otmp = (struct obj *)0;
+	otyp = 0;
+	trycnt = 10;
+	if (let == ARMOR_CLASS) {
+	    trycnt = 5;
+	}
+	for (; trycnt; trycnt--) {
+	    if (otmp) obfree(otmp, (struct obj *)0);
+	    otmp = mkobj(let, artif);
+	    if (otmp->oartifact) break;
+	    if (objects[otmp->otyp].oc_rank >= rank) break;
+	}
+
+	/* try some compensation... */
+	if (!trycnt) {
+	    switch (otmp->oclass) {
+		case WEAPON_CLASS:
+		    /* try making it of silver */
+		    if (!change_material(otmp, SILVER)) {
+			otmp->spe += 2 + rnd(3);
+		    }
+		    if (otmp->spe < 0) otmp->spe = 0;
+		    break;
+		case ARMOR_CLASS:
+		    /* try making it of silver */
+		    if (!change_material(otmp, MITHRIL)) {
+			otmp->spe += 2 + rnd(3);
+		    }
+		    if (otmp->spe < 0) otmp->spe = 0;
+		    break;
+		case GEM_CLASS:
+		    if (get_material(otmp) == GLASS) {
+			otyp = otmp->otyp - 9;
+		    } else if (otmp->otyp == ROCK) {
+			otyp = FLINT;
+		    }
+		    break;
+		case FOOD_CLASS:
+		    if (otmp->otyp == TRIPE_RATION) {
+			otyp = rn2(3) ? LEMBAS_WAFER : TIN;
+		    } else if (otmp->otyp == EGG) {
+			otyp = LUMP_OF_ROYAL_JELLY;
+		    }
+		    break;
+		default:
+		    break;
+	    }
+	    if (otyp) {
+		obfree(otmp, (struct obj *)0);
+		otmp = mksobj(otyp, TRUE, artif);
+	    }
+	}
+	if ((otmp->oclass == WEAPON_CLASS || otmp->oclass == ARMOR_CLASS) &&
+	    otmp->spe < 0) otmp->spe = 0;
+	if (otmp->cursed) uncurse(otmp);
+
+	place_object(otmp, x, y);
+	return(otmp);
+}
+
+
 
 #endif /* OVL1 */
 

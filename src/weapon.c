@@ -138,7 +138,7 @@ int type;
 	for ( sn = skill_names; sn->num; sn++ ) {
 	    if (sn->num == type) {
 		if ((type == P_BARE_HANDED_COMBAT && martial_bonus()) ||
-		    (type == P_SABER_GROUP && Role_if(PM_SAMURAI))) sn++;
+		    (type == P_SABER_GROUP && (Role_if(PM_SAMURAI) || Role_if(PM_MEDIUM)))) sn++;
 		return sn->name;
 	    }
 	}
@@ -258,7 +258,12 @@ struct monst *mon;
 	if (otyp == CLUB && mat != WOOD) tmp++;
 
 	if (Is_weapon) {
-		tmp += otmp->spe;
+		/* give a bit bonus to Orcrist and Sting... */
+		if (otmp->madeof == MITHRIL && otmp->spe > 0) {
+		    tmp += d(otmp->spe, 3);
+		} else {
+		    tmp += otmp->spe;
+		}
 		/* negative enchantment mustn't produce negative damage */
 		if (tmp < 0) tmp = 0;
 	}
@@ -539,6 +544,7 @@ static const NEARDATA short hwep[] = {
 	GLAIVE, UNICORN_HORN, KATANA, LONG_SWORD, BILL_GUISARME,
 	PARTISAN, CRYSKNIFE, LANCE, RANSEUR, FLAIL, AXE, BEC_DE_CORBIN,
 	GUISARME, FAUCHARD, HEAVY_HAMMER, WAR_HAMMER, ELVEN_SHORT_SWORD,
+	WAKIZASHI,
 	SCIMITAR, SABER, DWARVISH_SPEAR, ELVEN_SPEAR, DWARVISH_SHORT_SWORD,
 	SPEAR, SHORT_SWORD, ORCISH_SHORT_SWORD, ORCISH_SPEAR, BULLWHIP,
 	GRAPPLING_HOOK, MACE, JAVELIN, QUARTERSTAFF, PICK_AXE,
@@ -1077,10 +1083,10 @@ int type;
 int degree;
 {
 	int skill = P_SKILL(type);
+	int upper_limit = (P_MAX_SKILL(type) > P_EXPERT) ? P_MAX_SKILL(type) : P_EXPERT;
 	int prob;
 	if (P_RESTRICTED(type)) return FALSE;
-	if (type == P_BARE_HANDED_COMBAT && skill >= P_GRAND_MASTER) return FALSE;
-	if (skill >= P_EXPERT) return FALSE;
+	if (skill >= upper_limit) return FALSE;
 	if (skill < P_BASIC)		 prob = (skill >= P_MAX_SKILL(type)) ? 50             : skill/20;
 	else if (skill < P_SKILLED     ) prob = (skill >= P_MAX_SKILL(type)) ? skill*2        : skill/10;
 	else if (skill < P_EXPERT      ) prob = (skill >= P_MAX_SKILL(type)) ? skill*skill/25 : skill/5;
@@ -1224,9 +1230,9 @@ struct obj *weapon;
     if (type == P_NONE) {
 	bonus = 0;
     } else if (type <= P_LAST_WEAPON) {
-	schar hbon1[11] = {
-	   /*  0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% */
-		-5, -4, -3, -2, -1,  0, +1, +2, +3, +4, +5
+	schar hbon1[13] = {
+	   /*  0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100%110% 120% */
+		-5, -4, -3, -2, -1,  0, +1, +2, +3, +4, +5,  +6, +7
 	};
 	skill = P_SKILL(type);
 	bonus = hbon1[skill/10];
@@ -1277,9 +1283,9 @@ struct obj *weapon;
     if (type == P_NONE) {
 	bonus = 0;
     } else if (type <= P_LAST_WEAPON) {
-	schar dbon1[11] = {
-	   /*  0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% */
-		-2, -2, -2, -1, -1,  0,  0, +1, +1, +2, +3
+	schar dbon1[13] = {
+	   /*   0% 10% 20% 30% 40% 50% 60% 70% 80% 90% 100% 110% 120% */
+		-2, -2, -2, -1, -1,  0,  0, +1, +1, +2,  +3,  +4,  +5
 	};
 	skill = P_SKILL(type);
 	bonus = dbon1[skill/10];
@@ -1569,7 +1575,7 @@ const schar *skills;
 			Strcat(buf, ", ");
 			l += 2;
 		    }
-		    if (Role_if(PM_SAMURAI) && Japanese_item_name(i))
+		    if ((Role_if(PM_SAMURAI) || Role_if(PM_MEDIUM)) && Japanese_item_name(i))
 			 actualn = Japanese_item_name(i);
 		    else actualn = E_J(OBJ_NAME(objects[i]), JOBJ_NAME(objects[i]));
 		    Strcat(buf, actualn);

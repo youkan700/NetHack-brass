@@ -934,6 +934,7 @@ struct mkroom	*croom;
     schar x, y;
     char c;
     boolean named;	/* has a name been supplied in level description? */
+    char oclass;
 
     if (rn2(100) < o->chance) {
 	named = o->name.str ? TRUE : FALSE;
@@ -955,15 +956,16 @@ struct mkroom	*croom;
 	    otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
 	else if (o->id < -1) {
 	    /* ranked random object */
+	    oclass = (char) def_char_to_objclass(c);
 	    switch (-(o->id)-2) {
 		case 0: /* fine */
-		    pline("create_object(): <fine>");
+		    otmp = mk_ranked_obj_at(oclass, x, y, FINE, !named && !rn2(7));
 		    break;
 		case 1: /* excellent */
-		    pline("create_object(): <excellent>");
+		    otmp = mk_ranked_obj_at(oclass, x, y, EXCELLENT, !named && !rn2(3));
 		    break;
 		case 2: /* superb */
-		    pline("create_object(): <superb>");
+		    otmp = mk_ranked_obj_at(oclass, x, y, SUPERB, !named);
 		    break;
 		default:
 		    pline("create_object(): ERROR!");
@@ -977,7 +979,7 @@ struct mkroom	*croom;
 	     * The special levels are compiled with the default "text" object
 	     * class characters.  We must convert them to the internal format.
 	     */
-	    char oclass = (char) def_char_to_objclass(c);
+	    oclass = (char) def_char_to_objclass(c);
 
 	    if (oclass == MAXOCLASSES)
 		panic("create_object:  unexpected object class '%c'",c);

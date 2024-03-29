@@ -700,6 +700,7 @@ boolean FDECL((*allow), (OBJ_P));/* allow function */
 	int n;
 	winid win;
 	struct obj *curr, *last;
+	struct monst *shkp = (struct monst *)0;
 #ifdef SORTLOOT
 	struct obj **oarray;
 #endif
@@ -707,6 +708,7 @@ boolean FDECL((*allow), (OBJ_P));/* allow function */
 	anything any;
 	boolean printed_type_name;
 	boolean see_equipment_by_IR = FALSE;
+	char buf[BUFSZ], *pstr;
 
 	*pick_list = (menu_item *) 0;
 	if (!olist) return 0;
@@ -720,6 +722,12 @@ boolean FDECL((*allow), (OBJ_P));/* allow function */
 		!(cansee(mtmp->mx, mtmp->my) && mon_visible(mtmp))) {
 		u.uprops[BLINDED].intrinsic++;
 		see_equipment_by_IR = TRUE;
+	    }
+	}
+
+	if (qflags & BY_NEXTHERE) {
+	    if (costly_spot(u.ux, u.uy)) {
+		shkp = shop_keeper(inside_shop(u.ux, u.uy));
 	    }
 	}
 
@@ -748,8 +756,8 @@ boolean FDECL((*allow), (OBJ_P));/* allow function */
 	i = 0;
 	for (curr = olist; curr; curr = FOLLOW(curr, qflags)) {
 	    if ((*allow)(curr)) {
-		if (iflags.sortloot == 'f' ||
-			(iflags.sortloot == 'l' && !(qflags & USE_INVLET)))
+		if (flags.sortloot == 'f' ||
+			(flags.sortloot == 'l' && !(qflags & USE_INVLET)))
 		{
 		    /* Insert object at correct index */
 		    for (j = i; j; j--)
@@ -803,11 +811,23 @@ boolean FDECL((*allow), (OBJ_P));/* allow function */
 			printed_type_name = TRUE;
 		    }
 
+		    if (shkp) {
+			pstr = price_str(curr, shkp);
+			if (pstr[0] == 0) {
+			    /* no price string */
+			    Strcpy(buf, doname(curr));
+			} else {
+			    Sprintf(buf, "%s, %s", doname(curr), pstr);
+			}
+		    } else {
+			Strcpy(buf, doname(curr));
+		    }
+
 		    any.a_obj = curr;
 		    add_menu(win, obj_to_glyph(curr), &any,
 			    qflags & USE_INVLET ? curr->invlet : 0,
 			    def_oc_syms[(int)objects[curr->otyp].oc_class],
-			    ATR_NONE, doname(curr), MENU_UNSELECTED);
+			    ATR_NONE, buf, MENU_UNSELECTED);
 		}
 	    }
 	    pack++;

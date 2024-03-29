@@ -707,6 +707,28 @@ struct obj *otmp;
 	return 0L;
 }
 
+int
+is_bane(otmp, mtmp)
+struct obj *otmp;
+struct monst *mtmp;
+{
+	struct permonst *ptr = mtmp->data;
+	const struct artifact *artifact = get_artifact(otmp);
+
+	if (artifact) {
+	    if (artifact->spfx & SPFX_DMONS) {
+		return (ptr->mnum == (int)artifact->mtype);
+	    } else if (artifact->spfx & SPFX_DCLAS) {
+		return (artifact->mtype == (unsigned long)ptr->mlet);
+	    } else if (artifact->spfx & SPFX_DFLAG1) {
+		return ((ptr->mflags1 & artifact->mtype) != 0L);
+	    } else if (artifact->spfx & SPFX_DFLAG2) {
+		return (ptr->mflags2 & artifact->mtype);
+	    }
+	}
+	return 0;
+}
+
 /* special attack bonus */
 int
 spec_abon(otmp, mon)
@@ -739,9 +761,6 @@ int tmp;
 	    return 0;
 	} else
 	    spec_dbon_applies = spec_applies(weap, mon);
-
-	/* give a bit bonus to Orcrist and Sting... */
-	if (weap->race == PM_ELF) dbon += rnd(4);
 
 	if (spec_dbon_applies) {
 	    int dd = weap->attk.damd;
@@ -1581,8 +1600,15 @@ arti_invoke(obj)
 		}
 		if (cnt <= 0) goto nothing_special;
 		otmp = mksobj(BULLET, TRUE, FALSE);
+		if (!otmp) goto nothing_special;
+		otmp->blessed = obj->blessed;
+		otmp->cursed = obj->cursed;
+		otmp->bknown = obj->bknown;
+		if ((obj->blessed && otmp->spe < 0) ||
+		    (obj->cursed  && otmp->spe > 0)) otmp->spe = 0;
 		change_material(otmp, SILVER);
 		otmp->quan = cnt;
+		otmp->owt = weight(otmp);
 #ifndef JP
 		pline("%s in the cylinder of %s.",
 		      aobjnam(otmp, "magically appear"), the(xname(obj)));
@@ -1623,7 +1649,7 @@ arti_invoke(obj)
 		if (otmp->spe > 0) otmp->spe = 0;
 	    } else
 		otmp->quan += rnd(5);
-	    if (artilist[obj->oartifact].alignment == A_LAWFUL)
+	    if (oart->alignment == A_LAWFUL)
 		otmp->opoisoned = 0;
 	    otmp->owt = weight(otmp);
 #ifndef JP
@@ -1674,6 +1700,18 @@ arti_invoke(obj)
 			}
 		    }
 		}
+	    }
+	    break;
+	  }
+	case POISON_BLADE: {
+#ifndef JP
+	    pline("%s glistens.", The(xname(obj)));
+#else
+	    pline("%s‚Ìn‚ª‚Ê‚ç‚è‚ÆŒõ‚Á‚½B", xname(obj));
+#endif /*JP*/
+	    if (!obj->opoisoned) {
+		obj->opoisoned = 1;
+		update_inventory();
 	    }
 	    break;
 	  }
@@ -1788,10 +1826,14 @@ long
 arti_cost(otmp)
 struct obj *otmp;
 {
+	struct artifact *oart;
+
 	if (!otmp->oartifact)
 	    return ((long)objects[otmp->otyp].oc_cost);
-	else if (artilist[(int) otmp->oartifact].cost)
-	    return (artilist[(int) otmp->oartifact].cost);
+
+	oart = get_artifact(otmp);
+	if (oart->cost)
+	    return (oart->cost);
 	else
 	    return (100L * (long)objects[otmp->otyp].oc_cost);
 }
@@ -1872,7 +1914,7 @@ winid win;
 			Sprintf(buf, E_J("To foes not magic resistant", "–‚–@UŒ‚‚ªŒø‚­“G‚É‘Î‚µ"));
 			break;
 		    case AD_DRLI:
-			Sprintf(buf, E_J("To foes not drain resistant", "ƒGƒiƒW[ƒhƒŒƒCƒ“‚ªŒø‚­“G‚É‘Î‚µ"));
+			Sprintf(buf, E_J("To foes not drain resistant", "¶–½—Í‹zû‚ªŒø‚­“G‚É‘Î‚µ"));
 			break;
 		    case AD_PHYS:
 			Sprintf(buf, E_J("To all foes", "‚ ‚ç‚ä‚é“G‚É‘Î‚µ"));

@@ -1236,6 +1236,9 @@ opentin()		/* called during each move whilst opening a tin */
 		what = JMONNAM(tin.tin->corpsenm);
 #endif /*JP*/
 	    }
+	    if (edibility) {
+		if (r == ROTTEN_TIN) dangerfood = TRUE;
+	    }
 #ifndef JP
 	    if (which == 0) what = makeplural(what);
 	    pline("It smells like %s%s%s.",
@@ -1249,7 +1252,6 @@ opentin()		/* called during each move whilst opening a tin */
 			dangerfood ? "L" : "“õ");
 #endif /*JP*/
 	    if (edibility) {
-		if (r == ROTTEN_TIN) dangerfood = TRUE;
 		if (isstoneorslime(tin.tin->corpsenm)) {
 		    pline(E_J("It could be very dangerous!",
 			      "‚±‚ê‚Í‚Æ‚Ä‚àŠëŒ¯‚È‚à‚Ì‚Éˆá‚¢‚È‚¢I"));
