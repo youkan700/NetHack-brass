@@ -367,7 +367,7 @@ int x;
 		    /* never select non-cockatrice corpses */
 		    !((x == CORPSE || x == EGG) &&
 			!touch_petrifies(&mons[otmp->corpsenm])) &&
-		    (!otmp->oartifact || touch_artifact(otmp,mtmp)))
+		    (!otmp->oartifact || touch_artifact(otmp,mtmp,FALSE)))
 		return otmp;
 	}
 	return (struct obj *)0;
@@ -567,7 +567,7 @@ register struct monst *mtmp;
 	/* prefer artifacts to everything else */
 	for(otmp=mtmp->minvent; otmp; otmp = otmp->nobj) {
 		if (otmp->oclass == WEAPON_CLASS
-			&& otmp->oartifact && touch_artifact(otmp,mtmp)
+			&& otmp->oartifact && touch_artifact(otmp,mtmp,FALSE)
 			&& ((strong && !wearing_shield)
 			    || !objects[otmp->otyp].oc_bimanual))
 		    return otmp;

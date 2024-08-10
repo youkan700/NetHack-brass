@@ -1197,7 +1197,7 @@ register struct obj	*sobj;
 		} else return !chwepon(sobj,
 				       sobj->cursed ? -1 :
 				       !uwep ? 1 :
-				       uwep->spe >= 9 ? (rn2(uwep->spe) == 0) :
+				       uwep->spe >= 7 ? (rn2(uwep->spe) == 0) :
 				       sobj->blessed ? rnd(3-uwep->spe/3) : 1);
 		break;
 	case SCR_TAMING:
@@ -1554,7 +1554,7 @@ boolean confused, helmet_protects, byu, skip_uswallow;
         stackobj(otmp2);
         newsym(u.ux, u.uy);
     }
-    if (dmg) losehp(dmg, E_J("scroll of earth","‘å’n‚ÌŠª•¨‚Å"), KILLED_BY_AN);
+    if (dmg) losehp(dmg, E_J("scroll of earth","‘å’n‚ÌŠª•¨‚Å"), E_J(KILLED_BY_AN, byu ? KILLED_BY_AN : KILLED_SUFFIX));
 }
 
 boolean

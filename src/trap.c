@@ -1624,7 +1624,7 @@ pitfall:
 			(void)keep_saddle_with_steedcorpse(steed_mid, fobj, saddle);
 #endif
 		newsym(u.ux,u.uy);		/* update trap symbol */
-		losehp(rnd(16), E_J("land mine","’n—‹‚É‚©‚©‚Á‚Ä"), KILLED_BY_AN);
+		losehp(rnd(16), E_J("land mine","’n—‹‚ð“¥‚ñ‚Å"), KILLED_BY_AN);
 		/* fall recursively into the pit... */
 		if ((trap = t_at(u.ux, u.uy)) != 0) dotrap(trap, RECURSIVETRAP);
 		fill_pit(u.ux, u.uy);

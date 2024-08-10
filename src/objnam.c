@@ -3322,6 +3322,9 @@ typfnd:
 		case SPE_BOOK_OF_THE_DEAD:
 		    typ = SPE_BLANK_PAPER;
 		    break;
+		case RIN_PORTAL:
+		    typ = RIN_TELEPORTATION;
+		    break;
 	    }
 	}
 

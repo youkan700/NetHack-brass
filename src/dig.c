@@ -15,7 +15,7 @@ STATIC_DCL void FDECL(mkcavepos, (XCHAR_P,XCHAR_P,int,BOOLEAN_P,BOOLEAN_P));
 STATIC_DCL void FDECL(mkcavearea, (BOOLEAN_P));
 STATIC_DCL int FDECL(dig_typ, (struct obj *,XCHAR_P,XCHAR_P));
 STATIC_DCL int NDECL(dig);
-STATIC_DCL void FDECL(dig_up_grave, (BOOLEAN_P));
+STATIC_DCL void FDECL(dig_up_grave, (BOOLEAN_P, char *, short));
 
 /* Indices returned by dig_typ() */
 #define DIGTYP_UNDIGGABLE 0
@@ -758,9 +758,20 @@ boolean pit_only;
 		return TRUE;
 
 	} else if (IS_GRAVE(lev->typ)) {
+	    struct engr *ep;
+	    char *corpse_name;
+	    short corpse_mnum;
 	    boolean bones = !!(levl[u.ux][u.uy].gravemask & GRV_BONES);
+
+	    // named and type-specified epitaph ?
+	    corpse_name = (char *)0;
+	    corpse_mnum = NON_PM;
+	    ep = engr_at(u.ux, u.uy);
+	    if (ep && ep->wallflag)
+		get_grave_resident_name(ep->wallflag - 1, &corpse_name, &corpse_mnum);
+
 	    digactualhole(u.ux, u.uy, BY_YOU, PIT);
-	    dig_up_grave(bones);
+	    dig_up_grave(bones, corpse_name, corpse_mnum);
 	    return TRUE;
 	} else if (lev->typ == DRAWBRIDGE_UP) {
 		/* must be floor or ice, other cases handled above */
@@ -832,8 +843,10 @@ boolean pit_only;
 }
 
 STATIC_OVL void
-dig_up_grave(bones)
+dig_up_grave(bones, corpse_name, corpse_mnum)
 boolean bones;
+char *corpse_name;
+short corpse_mnum;
 {
 	struct obj *otmp;
 
@@ -846,7 +859,7 @@ boolean bones;
 #else
 	    pline("これは唾棄すべき盗掘行為だ！");
 #endif /*JP*/
-	} else if (Role_if(PM_SAMURAI)) {
+	} else if (Role_if(PM_SAMURAI) || Role_if(PM_MEDIUM)) {
 	    adjalign(-sgn(u.ualign.type));
 	    You(E_J("disturb the honorable dead!","尊ぶべき死者を冒涜した！"));
 	} else if ((u.ualign.type == A_LAWFUL) && (u.ualign.record > -10)) {
@@ -873,6 +886,20 @@ boolean bones;
 	case 0:
 	case 1:
 	    You(E_J("unearth a corpse.","死体を掘り出した。"));
+
+	    // named and type-specified epitaph
+	    if (corpse_mnum != NON_PM) {
+		otmp = mkcorpstat(CORPSE, 0, &mons[corpse_mnum], u.ux, u.uy, FALSE);
+		if (corpse_name) otmp = oname(otmp, corpse_name);
+	    	otmp->age -= 100;		/* this is an *OLD* corpse */;
+		if (corpse_mnum == PM_CAVEMAN) {
+		    /* "Og now food" */
+		    otmp->oeaten = 100;
+		}
+		break;
+	    }
+
+	    // generic grave
 	    if (!!(otmp = mk_tt_object(CORPSE, u.ux, u.uy)))
 	    	otmp->age -= 100;		/* this is an *OLD* corpse */;
 	    break;
@@ -882,7 +909,7 @@ boolean bones;
  	    (void) makemon(mkclass(S_ZOMBIE,0), u.ux, u.uy, NO_MM_FLAGS);
 	    break;
 	case 3:
-	    if (!Blind) pline(Hallucination ? E_J("I want my mummy!","ママはどこ？") :
+	    if (!Blind) pline(Hallucination ? E_J("I want my mummy!","見ーられてた！") :
  			E_J("You've disturbed a tomb!","あなたは墓所を騒がせた！"));
  	    (void) makemon(mkclass(S_MUMMY,0), u.ux, u.uy, NO_MM_FLAGS);
 	    break;
@@ -1149,6 +1176,13 @@ struct obj *obj;
 #endif /*JP*/
 		u_wipe_engr(3);
 	} else {
+		struct trap *ttmp;
+		ttmp = t_at(u.ux, u.uy);
+		if (ttmp &&
+		    (ttmp->ttyp == HOLE || ttmp->ttyp == TRAPDOOR)) {
+		    dotrap(ttmp, 0);
+		    return (1);
+		}
 		if (digging.pos.x != u.ux || digging.pos.y != u.uy ||
 			!on_level(&digging.level, &u.uz) || !digging.down) {
 		    digging.chew = FALSE;

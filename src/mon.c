@@ -674,7 +674,7 @@ meatmetal(mtmp)
 	    if (mtmp->mnum == PM_RUST_MONSTER && !is_rustprone(otmp))
 		continue;
 	    if (is_metallic(otmp) && !obj_resists(otmp, 5, 95) &&
-		touch_artifact(otmp,mtmp)) {
+		touch_artifact(otmp,mtmp,FALSE)) {
 		if (mtmp->mnum == PM_RUST_MONSTER && otmp->oerodeproof) {
 		    if (canseemon(mtmp) && flags.verbose) {
 			pline(E_J("%s eats %s!","%s‚Í%s‚ðH‚×‚½I"),
@@ -772,7 +772,7 @@ meatobj(mtmp)		/* for gelatinous cubes */
 		mondied(mtmp);
 		return 2;
 	    } else if (is_organic(otmp) && !obj_resists(otmp, 5, 95) &&
-		    touch_artifact(otmp,mtmp)) {
+		    touch_artifact(otmp,mtmp,FALSE)) {
 		if (otmp->otyp == CORPSE && touch_petrifies(&mons[otmp->corpsenm]) &&
 			!resists_ston(mtmp))
 		    continue;
@@ -895,7 +895,7 @@ mpickstuff(mtmp, str)
 			!touch_petrifies(&mons[otmp->corpsenm]) &&
 			otmp->corpsenm != PM_LIZARD &&
 			!acidic(&mons[otmp->corpsenm])) continue;
-		if (!touch_artifact(otmp,mtmp)) continue;
+		if (!touch_artifact(otmp,mtmp,TRUE)) continue;
 		if (!can_carry(mtmp,otmp)) continue;
 		if (is_pool(mtmp->mx,mtmp->my) &&
 		    !is_swimming(mtmp) && !amphibious(mtmp->data)) continue;
@@ -1561,6 +1561,7 @@ register struct monst *mtmp;
 	if(mtmp->data->msound == MS_NEMESIS) nemdead();
 	if(glyph_is_invisible(levl[mtmp->mx][mtmp->my].glyph))
 	    unmap_object(mtmp->mx, mtmp->my);
+	if(mtmp->data->geno & G_UNIQ) reset_noteleport();
 	m_detach(mtmp, mptr);
 #ifdef MONSTEED
 	if (msvv) {
@@ -3213,6 +3214,21 @@ int dam;
 	if (canseemon(mtmp) && !is_mridden(mtmp))
 	    draw_hpbar(WIN_MAP, mtmp->mx, mtmp->my, mtmp->mhp, mtmp->mhpmax); //test//
 	return mtmp->mhp;
+}
+
+void
+reset_noteleport(void)
+{
+	if (!level.flags.noteleport) return;
+
+	if ((Is_asmo_level(&u.uz) && mvitals[PM_ASMODEUS].died > 0) ||
+	    (Is_juib_level(&u.uz) && mvitals[PM_JUIBLEX].died > 0) ||
+	    (Is_baal_level(&u.uz) && mvitals[PM_BAALZEBUB].died > 0) ||
+	    (Is_ocus_level(&u.uz) && mvitals[PM_ORCUS].died > 0) ||
+	    (Is_medusa_level(&u.uz) && mvitals[PM_MEDUSA].died > 0) ||
+	    (Is_knox(&u.uz) && mvitals[PM_CROESUS].died > 0)) {
+	    level.flags.noteleport = 0;
+	}
 }
 
 /*mon.c*/

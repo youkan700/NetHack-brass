@@ -135,7 +135,14 @@ OBJECT:'/',"wishing",contained
 # Prevent monsters from eating it.  (@'s never eat objects)
 ENGRAVING:place[0],burn,"Elbereth"
 # The treasure of the lord
-OBJECT:'(',"chest",(37,08)
+CONTAINER:'(',"chest",(37,08)
+OBJECT:'=',"portal",contained
+OBJECT[75%]:'*',random,contained
+OBJECT[75%]:'!',random,contained
+OBJECT[50%]:'?',random,contained
+OBJECT[25%]:'+',random,contained
+OBJECT[25%]:'/',random,contained
+OBJECT[25%]:'"',random,contained
 # Traps
 TRAP:"trap door",(40,08)
 TRAP:"trap door",(44,08)

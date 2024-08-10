@@ -870,7 +870,8 @@ register struct trap *ttmp;
 	 * the endgame, from accidently triggering the portal to the
 	 * next level, and thus losing the game
 	 */
-	if (In_endgame(&u.uz) && !u.uhave.amulet) {
+	if ((In_endgame(&u.uz) && !u.uhave.amulet) ||
+	    (ttmp->madeby_u && u.uhave.amulet)){
 	    You_feel(E_J("dizzy for a moment, but nothing happens...",
 			 "一瞬めまいを感じたが、何も起こらなかった…。"));
 	    return;
@@ -1192,7 +1193,7 @@ int in_sight;
 		    return 0;
 		} else {
 		    assign_level(&tolevel, &trap->dst);
-		    migrate_typ = MIGR_PORTAL;
+		    migrate_typ = !(trap->madeby_u) ? MIGR_PORTAL : MIGR_NEAR_PLAYER;
 		}
 	    } else { /* (tt == LEVEL_TELEP) */
 		int nlev;

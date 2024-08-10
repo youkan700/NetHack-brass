@@ -693,6 +693,7 @@ u_init()
 	case PM_MEDIUM:
 		ini_inv(Medium);
 		skill_init(Skill_Med);
+		knows_object(GLAIVE);
 		break;
 	case PM_PRIEST:
 		ini_inv(Priest);
