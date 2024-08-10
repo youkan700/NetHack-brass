@@ -300,7 +300,7 @@ uchar hflg;
 
 /*	Adjust vs. (and possibly modify) monster state.		*/
 
-	if(mtmp->mstun) tmp += 2;
+	if(mtmp->mstun) tmp += 5;
 	if(mtmp->mflee) tmp += 2;
 
 	if (mtmp->msleeping) {
@@ -308,7 +308,7 @@ uchar hflg;
 		tmp += 2;
 	}
 	if(!mtmp->mcanmove) {
-		tmp += 4;
+		tmp += 10;
 		if(!rn2(10)) {
 			mtmp->mcanmove = 1;
 			mtmp->mfrozen = 0;

@@ -4,6 +4,7 @@
 
 #include "hack.h"
 #include "edog.h"
+#include "eportal.h"
 
 #ifdef OVLB
 
@@ -57,6 +58,7 @@ STATIC_DCL int FDECL(use_gun, (struct obj *));
 STATIC_DCL int FDECL(getobj_filter_bullet, (struct obj *));
 STATIC_DCL int FDECL(use_bullet, (struct obj *));
 STATIC_DCL int FDECL(getobj_filter_gun, (struct obj *));
+STATIC_OVL int FDECL(use_portal_ring, (struct obj *));
 
 
 #ifdef	AMIGA
@@ -3804,6 +3806,10 @@ struct obj *otmp;
 		if (type == KITCHEN_APRON)
 			return GETOBJ_CHOOSEIT;
 		break;
+	    case RING_CLASS:
+		if (type == RIN_LEVITATION ||
+		    type == RIN_PORTAL) return GETOBJ_CHOOSEIT;
+		break;
 
 	    default:
 		break;
@@ -3893,7 +3899,7 @@ doapply()
 #endif /*JP*/
 	if(!obj) return 0;
 
-	if (obj->oartifact && !touch_artifact(obj, &youmonst))
+	if (obj->oartifact && !touch_artifact(obj, &youmonst, TRUE))
 	    return 1;	/* evading your grasp costs a turn; just be
 			   grateful that you don't drop it as well */
 
@@ -4278,6 +4284,9 @@ doapply()
 	case LEVITATION_BOOTS:
 		res = invoke_levitation(obj);
 		break;
+	case RIN_PORTAL:
+		res = use_portal_ring(obj);
+		break;
 	default:
 		/* Pole-weapons can strike at a distance */
 		if (is_ranged(obj)) {
@@ -4337,6 +4346,239 @@ unfixable_trouble_count(is_horn)
 	    if (HStun) unfixable_trbl++;
 	}
 	return unfixable_trbl;
+}
+
+STATIC_OVL int
+getobj_filter_dilithium(otmp)
+struct obj *otmp;
+{
+	if (otmp->otyp == DILITHIUM_CRYSTAL) return GETOBJ_CHOOSEIT;
+	return 0;
+}
+
+STATIC_OVL int
+use_portal_ring(obj)
+struct obj *obj;
+{
+    struct eportal *ep;
+    struct trap *uportal;
+    winid win;
+    anything any;
+    char buf[BUFSZ];
+    menu_item *selected;
+    int create_portal = 1;
+    int i, j, k;
+    int x, y;
+    int count;
+    struct obj *otmp;
+    static const char gems[] = { GEM_CLASS, 0 };
+#ifdef JP
+    static const struct getobj_words exw = { 0, 0, "強化に使う", "強化に使い" };
+#endif /*JP*/
+
+    if (!obj->owornmask) {
+	E_J(You("must put it on to invoke its power."),
+	    pline("身につけていなければ、指輪の魔力を引き出すことはできない。"));
+	return 0;
+    }
+
+    if(obj->age > monstermoves) {
+#ifdef WIZARD
+	if (!wizard || (yn("Force the invocation to succeed?") != 'y')) {
+#endif /*WIZARD*/
+#ifndef JP
+	    You_feel("that the ring needs time to use again.");
+#else
+	    pline("指輪が再び使えるようになるまで、しばらくかかるようだ。");
+#endif /*JP*/
+	    return 1;
+#ifdef WIZARD
+	}
+#endif /*WIZARD*/
+    }
+
+    ep = get_xdat_obj(obj, XDAT_PORTAL);
+    if(!ep || u.uhave.amulet || In_endgame(&u.uz)) {
+	You_feel(E_J("mysterious force surpress the power of your ring.",
+		     "不思議な力が指輪の力を抑え込んでいるのを感じた。"));
+	return 1;
+    }
+
+    /* Create window */
+    while (1) {
+	if (create_portal) {
+
+	    count = 0;
+	    any.a_void = 0;	/* set all bits to zero */
+	    any.a_int = 0;	/* use index+1 (cant use 0) as identifier */
+	    win = create_nhwindow(NHW_MENU);
+	    start_menu(win);
+	    for (i=0; i<ep->num_slots; i++) {
+		any.a_int++;
+		if (ep->dests[i].dlev.dnum != -1) {
+		    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, get_level_desc(&ep->dests[i].dlev), MENU_UNSELECTED);
+		    count++;
+		} else {
+		    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+			     E_J("(Record the place)","(この場所を記憶する)"), MENU_UNSELECTED);
+		}
+	    }
+
+	    any.a_int = 0;
+	    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+
+	    if (count > 0) {
+		any.a_int = MAX_EPORTAL_SLOT + 1;
+		add_menu(win, NO_GLYPH, &any, 'F', 0, ATR_NONE,
+			 E_J("Free a slot", "記憶を解放する"), MENU_UNSELECTED);
+	    }
+
+	    if (ep->num_slots < 8 && carrying(DILITHIUM_CRYSTAL) &&
+		objects[DILITHIUM_CRYSTAL].oc_name_known) {
+		any.a_int = MAX_EPORTAL_SLOT + 2;
+		add_menu(win, NO_GLYPH, &any, 'X', 0, ATR_NONE,
+			 E_J("Extend a slot", "指輪の力を強化する"), MENU_UNSELECTED);
+	    }
+
+	    end_menu(win, E_J("To where do you open the portal?","どの場所への門を開きますか？"));
+	    if (select_menu(win, PICK_ONE, &selected) > 0) {
+		i = selected[0].item.a_int;
+		free((genericptr_t)selected);
+	    } else {
+		i = 0;
+	    }
+	    destroy_nhwindow(win);
+
+	    if (i == 0) {
+		pline(Never_mind);
+		return 0;
+	    }
+
+	    i--;
+	    if (i == MAX_EPORTAL_SLOT) {
+		/* Free a slot*/
+		create_portal = 0;
+		continue;
+	    } else if (i == MAX_EPORTAL_SLOT + 1) {
+		/* Extend a slot */
+		otmp = getobj(gems, E_J("use",&exw), getobj_filter_dilithium);
+		if(!otmp || otmp->otyp != DILITHIUM_CRYSTAL) {
+		    pline(Never_mind);
+		    return 0;
+		}
+		useup(otmp);
+		ep->num_slots++;
+		if (!Blind) {
+		    pline(E_J("The crystal shines brilliantly, and then the ring absorb the energy!",
+			      "結晶がまぶしく輝くと、光が指輪に吸い込まれていった！"));
+		} else {
+		    You_feel(E_J("warmth on your ring!",
+				 "指輪が暖かくなるのを感じた！"));
+		}
+		pline(E_J("The crystal crumbles away.",
+			  "結晶は砕け散った。"));
+		return 1;
+	    }
+
+	    if (ep->dests[i].dlev.dnum != -1) {
+
+		if(on_level(&ep->dests[i].dlev, &u.uz)) {
+		    You_feel(E_J("very disoriented for a moment.",
+				 "一瞬、自分がどこにいるのか全くわからなくなった。"));
+		    return 1;
+		}
+
+		/* create portal */
+		for (j=0, k=rn2(8); j<8; j++) {
+		    x = u.ux + xdir[(j+k) & 0x07];
+		    y = u.uy + ydir[(j+k) & 0x07];
+		    if (isok(x, y) && !m_at(x, y) && !t_at(x, y) &&
+			((levl[x][y].typ >= CORR && levl[x][y].typ <= ICE) || IS_AIR(levl[x][y].typ))) {
+			uportal = maketrap(x, y, !obj->cursed ? MAGIC_PORTAL : LEVEL_TELEP);
+			if (!uportal) break;
+			uportal->tseen      = 1;
+			uportal->madeby_u   = 1;
+			uportal->dst.dnum   = ep->dests[i].dlev.dnum;
+			uportal->dst.dlevel = ep->dests[i].dlev.dlevel;
+			uportal->launch.x   = ep->dests[i].dx;
+			uportal->launch.y   = ep->dests[i].dy;
+			newsym(x, y);
+			if(!Blind) You(E_J("open a shiny magic portal!",
+					   "光輝く魔法の門を開いた！"));
+			obj->age = monstermoves + rnz(100);
+			return 1;
+		    }
+		}
+		if(!Blind) You(E_J("see a fiery sparkle in the air, but it fades away.",
+				   "眼前に火花がはじけるのを見たが、次第に消えてしまった。"));
+		else You_hear(E_J("a faint sparkle.","火花が弱々しくはじける音を聞いた。"));
+		return 1;
+	    } else {
+		/* record the place */
+		assign_level(&ep->dests[i].dlev, &u.uz);
+		ep->dests[i].dx = u.ux;
+		ep->dests[i].dy = u.uy;
+		pline(E_J("The place is recorded in the ring.",
+			"現在地が指輪に記憶された。"));
+		return 1;
+	    }
+
+	} else {
+
+	    any.a_void = 0;	/* set all bits to zero */
+	    any.a_int = 0;	/* use index+1 (cant use 0) as identifier */
+	    win = create_nhwindow(NHW_MENU);
+	    start_menu(win);
+	    for (i=0; i<ep->num_slots; i++) {
+		if (ep->dests[i].dlev.dnum != -1) {
+		    any.a_int = i+1;
+		    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, get_level_desc(&ep->dests[i].dlev), MENU_UNSELECTED);
+		} else {
+		    any.a_int = 0;
+		    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "    ---", MENU_UNSELECTED);
+		}
+	    }
+
+	    any.a_int = 0;
+	    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE, "", MENU_UNSELECTED);
+
+	    any.a_int = MAX_EPORTAL_SLOT + 1;
+	    add_menu(win, NO_GLYPH, &any, 'O', 0, ATR_NONE,
+		     E_J("Open a portal", "門を開く"), MENU_UNSELECTED);
+
+	    end_menu(win, E_J("Which slot do you want to free?","どの場所への記憶を解放しますか？"));
+	    if (count > 0 && select_menu(win, PICK_ONE, &selected) > 0) {
+		i = selected[0].item.a_int;
+		free((genericptr_t)selected);
+	    } else {
+		i = 0;
+	    }
+	    destroy_nhwindow(win);
+
+	    if (i == 0) {
+		pline(Never_mind);
+		return 0;
+	    }
+
+	    i--;
+	    if (i == MAX_EPORTAL_SLOT) {
+		/* Open a portal */
+		create_portal = 1;
+		continue;
+	    }
+
+	    ep->dests[i].dlev.dnum   = -1;
+	    ep->dests[i].dlev.dlevel = 0;
+	    ep->dests[i].dx = 0;
+	    ep->dests[i].dy = 0;
+
+	    You(E_J("free the memory slot of the ring..",
+		    "指輪の記憶する座標を解放した。"));
+	    return 1;
+	}
+    }
+
+    return 0;
 }
 
 #endif /* OVLB */

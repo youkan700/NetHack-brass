@@ -7,6 +7,7 @@
 #include "edog.h"
 #include "epri.h"
 #include "eshk.h"
+#include "eportal.h"
 #include "vault.h"
 
 /*size of data chunk = oxlth, mxlth*/
@@ -28,7 +29,8 @@ short xdat_reqsiz[] = {
 	sizeof(struct eshk),		/* XDAT_ESHK */
 	sizeof(struct egd),		/* XDAT_EGD */
 	sizeof(unsigned),		/* XDAT_M_ID */
-	sizeof(struct permonst)		/* XDAT_PERMONST */
+	sizeof(struct permonst),	/* XDAT_PERMONST */
+	sizeof(struct eportal)		/* XDAT_PORTAL */
 };
 
 /* create a new xdat with initial data (if any) */

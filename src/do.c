@@ -890,7 +890,7 @@ dodown()
 		if (!(trap = t_at(u.ux,u.uy)) ||
 			(trap->ttyp != TRAPDOOR && trap->ttyp != HOLE &&
 			 trap->ttyp != PIT && trap->ttyp != SPIKED_PIT)
-			|| !Can_fall_thru(&u.uz) || !trap->tseen) {
+			|| !trap->tseen) {
 
 			if (flags.autodig && !flags.nopick &&
 				uwep && is_pick(uwep)) {
@@ -951,6 +951,9 @@ dodown()
 		    u.utrap = rn1(6,2);
 		    vision_full_recalc = 1;	/* vision limits change */	/*[Sakusha]*/
 		    return(1);
+		} else if (flags.autodig && !flags.nopick &&
+			   uwep && is_pick(uwep)) {
+		    return use_pick_axe2(uwep);
 		} else {
 		    You(E_J("are already in the bottom of the %s",
 			    "すでに%sの底にいる。"),
@@ -965,6 +968,12 @@ dodown()
 	    You("%sに%sこんだ。", trap->ttyp == HOLE ? "穴の中" : "落とし扉",
 		locomotion(youmonst.data, "跳び"));
 #endif /*JP*/
+	    if (!Can_fall_thru(&u.uz)) {
+		seetrap(trap);	/* normally done in fall_through */
+		impossible("dotrap: %ss cannot exist on this level.",
+			   defsyms[trap_to_defsym(trap->ttyp)].explanation);
+		return(0);	/* don't activate it after all */
+	    }
 	}
 
 	if (trap && Is_stronghold(&u.uz)) {
@@ -1121,7 +1130,11 @@ boolean at_stairs, falling, portal;
 		familiar = FALSE;
 	boolean new = FALSE;	/* made a new level? */
 	struct monst *mtmp;
+	struct trap *ttmp, *ttmpn;
 	char whynot[BUFSZ];
+	xchar destx, desty;
+
+	destx = desty = 0;
 
 	if (dunlev(newlevel) > dunlevs_in_dungeon(newlevel))
 		newlevel->dlevel = dunlevs_in_dungeon(newlevel);
@@ -1187,6 +1200,22 @@ boolean at_stairs, falling, portal;
 
 	fd = currentlevel_rewrite();
 	if (fd < 0) return;
+
+	/* Check if you entered self-made portal */
+	if (portal) {
+	    ttmp = t_at(u.ux, u.uy);
+	    if (ttmp->ttyp == MAGIC_PORTAL && ttmp->madeby_u) {
+		destx = ttmp->launch.x;
+		desty = ttmp->launch.y;
+		portal = FALSE;
+	    }
+	}
+
+	/* Remove all temporary portals before leaving */
+	for (ttmp = ftrap; ttmp; ttmp = ttmpn) {
+	    ttmpn = ttmp->ntrap;
+	    if (ttmp->ttyp == MAGIC_PORTAL && ttmp->madeby_u) deltrap(ttmp);
+	}
 
 	if (falling) /* assuming this is only trap door or hole */
 	    impact_drop((struct obj *)0, u.ux, u.uy, newlevel->dlevel);
@@ -1290,12 +1319,14 @@ boolean at_stairs, falling, portal;
 	vision_full_recalc = 0;	/* don't let that reenable vision yet */
 	flush_screen(-1);	/* ensure all map flushes are postponed */
 
-	if (portal && !In_endgame(&u.uz)) {
+	if (destx > 0) {
+	    u_on_newpos(destx, desty);
+	} else if (portal && !In_endgame(&u.uz)) {
 	    /* find the portal on the new level */
 	    register struct trap *ttrap;
 
 	    for (ttrap = ftrap; ttrap; ttrap = ttrap->ntrap)
-		if (ttrap->ttyp == MAGIC_PORTAL) break;
+		if (ttrap->ttyp == MAGIC_PORTAL && !ttrap->madeby_u) break;
 
 	    if (!ttrap) panic("goto_level: no corresponding portal!");
 	    seetrap(ttrap);
@@ -1470,8 +1501,30 @@ boolean at_stairs, falling, portal;
 #else
 		pline("そこら中から悲痛なうめきと苦しげなあえぎが聞こえてくる。");
 #endif /*JP*/
-	    } else pline(E_J("It is hot here.  You smell smoke...",
-			     "ここは熱い。煙の臭いがする…。"));
+	    } else {
+		switch (In_which_hell(&u.uz)) {
+		  case INHELL_ASMODEUS:
+		    pline(E_J("It is cold here.  You feel freezed to death...",
+			      "ここは寒い。凍えそうだ…。"));
+		    break;
+		  case INHELL_JUIBLEX:
+		    pline(E_J("It is dump here.  You smell stinky...",
+			      "ここはひどく湿っている。腐敗臭がする…。"));
+		    break;
+		  case INHELL_BAALZEBUB:
+		    pline(E_J("It is hot here.  You smell smoke...",
+			      "ここはの空気は肺を刺すようだ…。"));
+		    break;
+		  case INHELL_ORCUS:
+		    pline(E_J("It is hot here.  You smell smoke...",
+			      "ここは死の臭いが充満している…。"));
+		    break;
+		  default:
+		    pline(E_J("It is hot here.  You smell smoke...",
+			      "ここは熱い。煙の臭いがする…。"));
+		    break;
+		}
+	    }
 	}
 
 	if (familiar) {

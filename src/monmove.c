@@ -29,7 +29,7 @@ register struct monst *mtmp;
 		pline(E_J("KABOOM!!  You see a door explode.",
 			  "ボカーン!!　あなたは扉が爆発するのを見た。"));
 	    else if (flags.soundok)
-		You_hear(E_J("a distant explosion.","遠くの爆発音を"));
+		You_hear(E_J("a distant explosion.","遠くに爆発音を"));
 	}
 	wake_nearto(mtmp->mx, mtmp->my, 7*7);
 	mtmp->mstun = 1;
@@ -951,7 +951,7 @@ goal_is_set:
 			!index(indigestion, otmp->oclass) &&
 			!(otmp->otyp == CORPSE &&
 			  touch_petrifies(&mons[otmp->corpsenm])))
-		      ) && touch_artifact(otmp,mtmp)) {
+		      ) && touch_artifact(otmp,mtmp,FALSE)) {
 			if(can_carry(mtmp,otmp) &&
 			   (throws_rocks(ptr) ||
 				!sobj_at(BOULDER,xx,yy)) &&

@@ -232,7 +232,7 @@ struct obj {
 #define is_gnomish_armor(otmp)	(FALSE)
 #define is_heavy_armor(otmp) (is_suit(otmp) && objects[otmp->otyp].oc_weight >= 200)
 
-#define WEP_ENCHANT_MAX  5
+#define WEP_ENCHANT_MAX  3
 #define WEP_ENCHANT_WARN 3
 
 /* Eggs and other food */

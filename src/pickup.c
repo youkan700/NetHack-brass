@@ -1353,7 +1353,7 @@ boolean telekinesis;	/* not picking it up directly by hand */
 
 	if (obj == uchain) {    /* do not pick up attached chain */
 	    return 0;
-	} else if (obj->oartifact && !touch_artifact(obj,&youmonst)) {
+	} else if (obj->oartifact && !touch_artifact(obj,&youmonst,TRUE)) {
 	    return 0;
 	} else if (obj->oclass == COIN_CLASS) {
 	    /* Special consideration for gold pieces... */
@@ -2091,6 +2091,21 @@ register struct obj *obj;
 		      doname(obj));
 		/* did not actually insert obj yet */
 		if (was_unpaid) addtobill(obj, FALSE, FALSE, TRUE);
+		if (Has_contents(current_container)) {
+		    struct obj *otmp, *otmpn;
+		    boolean mes = FALSE;
+		    for (otmp = current_container->cobj; otmp; otmp = otmpn) {
+			otmpn = otmp->nobj;
+			if (obj_resists(otmp, 5, 80)) {
+			    obj_extract_self(otmp);
+			    if (!mes) {
+				pline(E_J("Something is spitted out from the bag.", "”š”­‚µ‚½Š“‚©‚ç‰½‚©‚ª“]‚°—Ž‚¿‚½B"));
+				mes = TRUE;
+			    }
+			    dropy(otmp);
+			}
+		    }
+		}
 		obfree(obj, (struct obj *)0);
 		delete_contents(current_container);
 		if (!floor_container)
@@ -2152,7 +2167,7 @@ register struct obj *obj;
 		obj->owt = weight(obj);
 	}
 
-	if(obj->oartifact && !touch_artifact(obj,&youmonst)) return 0;
+	if(obj->oartifact && !touch_artifact(obj,&youmonst,TRUE)) return 0;
 
 	if (obj->otyp == CORPSE) {
 	    if ( (touch_petrifies(&mons[obj->corpsenm])) && !uarmg
@@ -2362,7 +2377,7 @@ register int held;
 	/* a cursed magic bag.						    */
 	for (curr = obj->cobj; curr; curr = otmp) {
 	    otmp = curr->nobj;
-	    if (Is_mbag(obj) && obj->cursed && !rn2(13)) {
+	    if (Is_mbag(obj) && obj->cursed && !obj_resists(curr, 92, 98)) {
 		obj_extract_self(curr);
 		loss += mbag_item_gone(held, curr);
 		used = 1;

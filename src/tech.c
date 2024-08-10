@@ -1613,6 +1613,7 @@ struct obj *obj;
 	    explode(mon->mx, mon->my, &zi, (2*(rn1(3, 3) + 2 * bcsign(obj)) + 1), EXPL_FIERY);
 	    makeknown(SCR_FIRE);
 	    nohap = FALSE;
+	    break;
 	}
 
 	case SCR_EARTH:

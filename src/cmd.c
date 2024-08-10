@@ -3653,7 +3653,7 @@ wiz_roomlist()
 STATIC_OVL int
 wiz_objdesc()
 {
-create_mplayers(15, FALSE);
+pline("%s (%d,%d) %s", get_level_desc(&u.uz), u.ux, u.uy, level.flags.noteleport ? "noteleport" : "can_tele");
 return 0;
 
 #if 0

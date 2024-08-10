@@ -169,7 +169,7 @@ struct obj *wep;
 		is_sword(wep) ? "Œ•" :
 		    wep->otyp == BATTLE_AXE ? "•€" : "•Ší");
 #endif /*JP*/
-	else if (wep->oartifact && !touch_artifact(wep, &youmonst)) {
+	else if (wep->oartifact && !touch_artifact(wep, &youmonst, TRUE)) {
 	    res++;	/* takes a turn even though it doesn't get wielded */
 	} else {
 	    /* Weapon WILL be wielded after this point */

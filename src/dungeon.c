@@ -2340,7 +2340,7 @@ boolean printdun;
 	/* calculate level number */
 	i = depthstart + mptr->lev.dlevel - 1;
 	if (Is_astralevel(&mptr->lev))
-		Sprintf(buf, TAB E_J("Astral Plane:", "¸—ìŠE:"));
+		Sprintf(buf, TAB E_J("Astral Plane:", "“VãŠE:"));
 
 	else if (In_endgame(&mptr->lev))
 		/* Negative numbers are mildly confusing, since they are never
@@ -2350,7 +2350,7 @@ boolean printdun;
 		 * level 1.  There's not much to show, but maybe the player
 		 * wants to #annotate them for some bizarre reason.
 		 */
-		Sprintf(buf, TAB E_J("Plane %i:", "“VãŠE %i:"), -i);
+		Sprintf(buf, TAB E_J("Plane %i:", "¸—ìŠE %i:"), -i);
 	else
 		Sprintf(buf, TAB E_J("Level %d:", "%dŠK:"), i);
 
@@ -2458,5 +2458,107 @@ boolean printdun;
 	}
 }
 #endif /*D_OVERVIEW*/
+
+char *
+get_level_desc(dlev)
+d_level *dlev;
+{
+	s_level *slev;
+	static char buf[BUFSZ];
+	int i, depthstart;
+#ifdef D_OVERVIEW
+	mapseen *mptr;
+#endif //D_OVERVIEW
+
+	buf[0] = '\0';
+
+	slev = Is_special(dlev);
+
+	if (In_mines(dlev) && slev && slev->flags.town) {
+
+	    return E_J("The Gnomish Mine Town", "ƒm[ƒ€‚ÌzŽRŠX");
+
+	} else if (In_hell(dlev)) {
+
+	    if (Is_sanctum(dlev)) {
+
+		return E_J("The Sanctum of Moloch", "ƒ‚ƒƒN‚Ì_ˆæ");
+
+	    } else if (Invocation_lev(dlev)) {
+
+		return E_J("The Bottom of Gehenom", "ƒQƒwƒi Å‰º‘w");
+
+	    } else if (Is_valley(dlev)) {
+
+		return E_J("The Valley of the Dead", "Ž€‚Ì’J");
+
+	    }
+
+	} else {
+
+	    if (Is_stronghold(dlev)) {
+
+		return E_J("The Castle", "éÇ");
+
+	    } else if (Is_medusa_level(dlev)) {
+
+		return E_J("The Island of Medusa", "ƒƒfƒ…[ƒT‚Ì“‡");
+
+	    } else if (Is_knox(dlev)) {
+
+		return E_J("The Fort Ludios", "ƒ[ƒfƒBƒIƒXÔ");
+
+	    }
+
+	}
+
+	if (dlev->dnum == quest_dnum || dlev->dnum == knox_level.dnum)
+		depthstart = 1;
+	else
+		depthstart = dungeons[dlev->dnum].depth_start;
+
+#ifndef JP
+	Sprintf(buf, "%s", dungeons[dlev->dnum].dname);
+#else
+	Sprintf(buf, "%s", jdgnnam(dlev->dnum));
+#endif
+
+	/* calculate level number */
+	i = depthstart + dlev->dlevel - 1;
+	if (Is_astralevel(dlev))
+		Sprintf(buf, E_J("Astral Plane", "“VãŠE"));
+
+	else if (In_endgame(dlev))
+		/* Negative numbers are mildly confusing, since they are never
+		 * shown to the player, except in wizard mode.  We could show
+		 * "Level -1" for the earth plane, for example.  Instead,
+		 * show "Plane 1" for the earth plane to differentiate from
+		 * level 1.  There's not much to show, but maybe the player
+		 * wants to #annotate them for some bizarre reason.
+		 */
+#ifndef JP
+		Sprintf(buf, "Plane of %s",
+			Is_earthlevel(dlev) ? "Earth" :
+			Is_airlevel(dlev)   ? "Air" :
+			Is_firelevel(dlev)  ? "Fire" :
+			Is_waterlevel(dlev) ? "Water" : "???");
+#else
+		Sprintf(buf, "%s‚Ì¸—ìŠE",
+			Is_earthlevel(dlev) ? "’n" :
+			Is_airlevel(dlev)   ? "•—" :
+			Is_firelevel(dlev)  ? "‰Î" :
+			Is_waterlevel(dlev) ? "…" : "H");
+#endif
+	else
+		Sprintf(eos(buf), E_J(", Level %d", " %dŠK"), i);
+
+#ifdef D_OVERVIEW
+	mptr = find_mapseen(dlev);
+	if (mptr && mptr->custom)
+		Sprintf(eos(buf), " (%s)", mptr->custom);
+#endif //D_OVERVIEW
+
+	return buf;
+}
 
 /*dungeon.c*/

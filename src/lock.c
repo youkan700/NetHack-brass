@@ -902,9 +902,10 @@ register struct obj *obj, *otmp;	/* obj *is* a box */
 	    break;
 	case WAN_OPENING:
 	case SPE_KNOCK:
-	    if (obj->olocked) {		/* unlock; couldn't be broken */
+	    if (obj->olocked || obj->otrapped) {		/* unlock; couldn't be broken */
 		pline(E_J("Klick!","カチリ！"));
 		obj->olocked = 0;
+		obj->otrapped = 0;
 		res = 1;
 	    } else			/* silently fix if broken */
 		obj->obroken = 0;
@@ -943,8 +944,10 @@ int x, y;
 		newsym(x,y);
 		if (cansee(x,y)) pline(E_J("A door appears in the wall!",
 					   "壁に扉が現れた！"));
-		if (otmp->otyp == WAN_OPENING || otmp->otyp == SPE_KNOCK)
+		if (otmp->otyp == WAN_OPENING || otmp->otyp == SPE_KNOCK) {
+		    door->doormask = D_CLOSED; /* remove the trap */
 		    return TRUE;
+		}
 		break;		/* striking: continue door handling below */
 	    case WAN_LOCKING:
 	    case SPE_WIZARD_LOCK:
@@ -1024,7 +1027,7 @@ int x, y;
 	case SPE_KNOCK:
 	    if (door->doormask & D_LOCKED) {
 		msg = E_J("The door unlocks!","扉の鍵が外れた！");
-		door->doormask = D_CLOSED | (door->doormask & D_TRAPPED);
+		door->doormask = D_CLOSED;
 	    } else res = FALSE;
 	    break;
 	case WAN_STRIKING:
@@ -1038,7 +1041,7 @@ int x, y;
 			    pline(E_J("KABOOM!!  You see a door explode.",
 				      "ボカーン!!　あなたは扉が爆発するのを見た。"));
 			else if (flags.soundok)
-			    You_hear(E_J("a distant explosion.","遠くの爆発音を"));
+			    You_hear(E_J("a distant explosion.","遠くに爆発音を"));
 		    }
 		    door->doormask = D_NODOOR;
 		    unblock_point(x,y);

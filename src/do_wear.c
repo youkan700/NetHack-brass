@@ -613,6 +613,11 @@ Gloves_off()
 	uswapwepgone();	/* lifesaved still doesn't allow touching cockatrice */
     }
 
+    if (uwep && uwep->oartifact && !touch_artifact(uwep, &youmonst, FALSE)) {
+	dropx(uwep);
+	uwepgone();
+    }
+
     return 0;
 }
 
@@ -2030,7 +2035,7 @@ dowear()
 
 	if (!canwearobj(otmp,&mask,TRUE)) return(0);
 
-	if (otmp->oartifact && !touch_artifact(otmp, &youmonst))
+	if (otmp->oartifact && !touch_artifact(otmp, &youmonst, FALSE))
 	    return 1;	/* costs a turn even though it didn't get worn */
 
 	if (otmp->otyp == HELM_OF_OPPOSITE_ALIGNMENT &&
@@ -2208,7 +2213,7 @@ doputon()
 		    "武器を手放せないため、指輪をはめられない。"));
 			return(0);
 		}
-		if (otmp->oartifact && !touch_artifact(otmp, &youmonst))
+		if (otmp->oartifact && !touch_artifact(otmp, &youmonst, FALSE))
 		    return 1; /* costs a turn even though it didn't get worn */
 		setworn(otmp, mask);
 		Ring_on(otmp);
@@ -2217,7 +2222,7 @@ doputon()
 			already_wearing(E_J("an amulet","魔除け"));
 			return(0);
 		}
-		if (otmp->oartifact && !touch_artifact(otmp, &youmonst))
+		if (otmp->oartifact && !touch_artifact(otmp, &youmonst, FALSE))
 		    return 1;
 		setworn(otmp, W_AMUL);
 		if (otmp->otyp == AMULET_OF_CHANGE) {
@@ -2267,7 +2272,7 @@ doputon()
 			You_cant(E_J("wear that!","それを身につけることはできない！"));
 			return(0);
 		}
-		if (otmp->oartifact && !touch_artifact(otmp, &youmonst))
+		if (otmp->oartifact && !touch_artifact(otmp, &youmonst, FALSE))
 		    return 1;
 		Blindf_on(otmp);
 		return(1);

@@ -589,6 +589,9 @@ RING("see invisible", SEE_INVIS, "engagement",
 					    150, 1, 0, 5, IRON, HI_METAL, FINE),
 RING("protection from shape changers", PROT_FROM_SHAPE_CHANGERS, "shiny",
 					    100, 1, 0, 5, IRON, CLR_BRIGHT_CYAN, FINE),
+OBJECT(OBJ("portal", "warped"),
+	BITS(0,0,1,0,1,0,1,1,0,0,0,P_NONE,GOLD,SUPERB), 0,
+	RING_CLASS, 0, 0, 3, 5000, 0, 0, 0, 0, 20, HI_GOLD),
 #undef RING
 /* Rings in Rogue but not in NetHack:
     alexandrite, amethyst, carnelian, germanium, garnet,

@@ -4,19 +4,19 @@
 
 #include "hack.h"
 #include "prop.h"
+#include "eportal.h"
 
 STATIC_DCL void FDECL(mkbox_cnts,(struct obj *));
 STATIC_DCL void FDECL(obj_timer_checks,(struct obj *, XCHAR_P, XCHAR_P, int));
-#ifdef OVL1
 STATIC_DCL void FDECL(container_weight, (struct obj *));
 STATIC_DCL void FDECL(save_mtraits, (struct obj *, struct monst *));
 #ifdef WIZARD
 STATIC_DCL const char *FDECL(where_name, (int));
 STATIC_DCL void FDECL(check_contained, (struct obj *,const char *));
 #endif
-#endif /* OVL1 */
 STATIC_DCL const struct probmat *FDECL(get_obj_material_table, (struct obj *));
 STATIC_DCL void FDECL(adjust_weight_by_material, (struct obj *obj));
+STATIC_DCL void FDECL(init_portal_ring, (struct obj *));
 
 extern struct obj *thrownobj;		/* defined in dothrow.c */
 
@@ -27,7 +27,6 @@ struct icp {
     char iclass;	/* item class */
 };
 
-#ifdef OVL1
 
 const struct icp mkobjprobs[] = {
 {100, WEAPON_CLASS},
@@ -413,8 +412,6 @@ register struct obj *otmp;
 	return;
 }
 
-#endif /* OVL1 */
-#ifdef OVLB
 
 static const char dknowns[] = {
 		WAND_CLASS, RING_CLASS, POTION_CLASS, SCROLL_CLASS,
@@ -569,8 +566,10 @@ boolean artif;
 		case CHEST:
 		case LARGE_BOX:		otmp->olocked = !!(rn2(5));
 					otmp->otrapped = (depth(&u.uz) > rn2(20));
-					if (otmp->otrapped)
+					if (otmp->otrapped) {
 					    trap_chest(otmp);
+					    if (otmp->corpsenm == BOXTRAP_EXPLODING) otmp->olocked = 1;
+					}
 		case ICE_BOX:
 		case SACK:
 		case OILSKIN_SACK:
@@ -721,6 +720,8 @@ boolean artif;
 			  otmp->otyp == RIN_AGGRAVATE_MONSTER ||
 			  otmp->otyp == RIN_HUNGER || !rn2(9))) {
 			curse(otmp);
+		} else if (otmp->otyp == RIN_PORTAL) {
+		    init_portal_ring(otmp);
 		}
 		break;
 	case ROCK_CLASS:
@@ -907,8 +908,6 @@ register struct obj *otmp;
 	return;
 }
 
-#endif /* OVLB */
-#ifdef OVL1
 
 void
 blessorcurse(otmp, chance)
@@ -938,8 +937,6 @@ int otyp;
 	}
 }
 
-#endif /* OVL1 */
-#ifdef OVLB
 
 int
 bcsign(otmp)
@@ -948,8 +945,6 @@ register struct obj *otmp;
 	return(!!otmp->blessed - !!otmp->cursed);
 }
 
-#endif /* OVLB */
-#ifdef OVL0
 
 /*
  *  Calculate the weight of the given object.  This will recursively follow
@@ -1288,8 +1283,6 @@ int monnum;
 	return otmp;
 }
 
-#endif /* OVL0 */
-#ifdef OVLB
 
 struct obj *
 mkgold(amount, x, y)
@@ -1310,8 +1303,6 @@ int x, y;
     return (gold);
 }
 
-#endif /* OVLB */
-#ifdef OVL1
 
 /* return TRUE if the corpse has special timing */
 #define special_corpse(num)  (((num) == PM_LIZARD)		\
@@ -1406,8 +1397,6 @@ struct obj *obj;
 	return obj->omon;
 }
 
-#endif /* OVL1 */
-#ifdef OVLB
 
 /* make an object named after someone listed in the scoreboard file */
 struct obj *
@@ -1467,8 +1456,6 @@ register struct obj *otmp;
 			 omat <= WOOD && omat != LIQUID));
 }
 
-#endif /* OVLB */
-#ifdef OVL1
 
 /*
  * These routines maintain the single-linked lists headed in level.objects[][]
@@ -2088,8 +2075,26 @@ boolean artif;
 	return(otmp);
 }
 
+void
+init_portal_ring(otmp)
+struct obj *otmp;
+{
+	struct eportal eptmp;
+	int i;
 
+	eptmp.num_slots = 3;
+	for (i=0; i<MAX_EPORTAL_SLOT; i++) {
+	    eptmp.dests[i].dlev.dnum   = -1;	/* empty slot */
+	    eptmp.dests[i].dlev.dlevel = 0;
+	    eptmp.dests[i].dx = 0;
+	    eptmp.dests[i].dy = 0;
+	}
+	eptmp.dests[0].dlev = stronghold_level;
+	eptmp.dests[0].dx = 41;
+	eptmp.dests[0].dy = 11;
 
-#endif /* OVL1 */
+	add_xdat_obj(otmp, XDAT_PORTAL, &eptmp);
+}
+
 
 /*mkobj.c*/

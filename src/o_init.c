@@ -200,7 +200,8 @@ shuffle_all()
 			    j -= 1;  /* only water has a fixed description */
 			else if (oclass == AMULET_CLASS ||
 				 oclass == SCROLL_CLASS ||
-				 oclass == SPBOOK_CLASS) {
+				 oclass == SPBOOK_CLASS ||
+				 oclass == RING_CLASS) {
 			    while (!objects[j].oc_magic || objects[j].oc_unique)
 				j--;
 			}
@@ -366,6 +367,7 @@ static short uniq_objs[] = {
 	SPE_BOOK_OF_THE_DEAD,
 	CANDELABRUM_OF_INVOCATION,
 	BELL_OF_OPENING,
+	RIN_PORTAL,
 };
 
 int
@@ -392,7 +394,8 @@ dodiscovered()				/* free after Robert Viduya */
 	    Sprintf(buf, "  %s", E_J(OBJ_NAME(objects[uniq_objs[i]]),
 				    JOBJ_NAME(objects[uniq_objs[i]])));
 #ifdef JP
-	    if (i == 0/*AoY*/) Strcpy(eos(buf), "ñÇèúÇØ");
+	    if (uniq_objs[i] == AMULET_OF_YENDOR) Strcpy(eos(buf), "ñÇèúÇØ");
+	    else if (uniq_objs[i] == RIN_PORTAL) Strcpy(eos(buf), "éwó÷");
 #endif /*JP*/
 	    putstr(tmpwin, 0, buf);
 	    ++ct;

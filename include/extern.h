@@ -74,7 +74,7 @@ E boolean FDECL(arti_reflects, (struct obj *));
 E boolean FDECL(defends, (int,struct obj *));
 E boolean FDECL(protects, (int,struct obj *));
 E void FDECL(set_artifact_intrinsic, (struct obj *,BOOLEAN_P,long));
-E int FDECL(touch_artifact, (struct obj *,struct monst *));
+E int FDECL(touch_artifact, (struct obj *,struct monst *,BOOLEAN_P));
 E int FDECL(spec_abon, (struct obj *,struct monst *));
 E int FDECL(spec_dbon, (struct obj *,struct monst *,int));
 E void FDECL(discover_artifact, (XCHAR_P));
@@ -546,6 +546,7 @@ E void NDECL(recalc_mapseen);
 E void FDECL(recbranch_mapseen, (d_level *, d_level *));
 E void FDECL(remdun_mapseen, (int));
 #endif /*D_OVERVIEW*/
+E char *FDECL(get_level_desc, (d_level *));
 
 /* ### eat.c ### */
 
@@ -631,6 +632,7 @@ E void FDECL(dispose_grave, (int,int));
 E void FDECL(read_wallsign_at, (int,int));
 E void FDECL(make_wallsign_at, (int,int,int,int,const char *,XCHAR_P));
 E void NDECL(remember_wallsign_on);
+E boolean FDECL(get_grave_resident_name, (int, char **, short *));
 
 /* ### exper.c ### */
 
@@ -1291,6 +1293,7 @@ E boolean FDECL(angry_guards, (BOOLEAN_P));
 E void NDECL(pacify_guards);
 E struct monst *FDECL(unlink_mlink, (struct monst *));
 E int FDECL(mlosehp, (struct monst *, int));
+E void NDECL(reset_noteleport);
 
 /* ### mondata.c ### */
 

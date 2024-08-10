@@ -446,7 +446,8 @@ mattacku(mtmp)
 		    }
 		} else {
 		    if (!youseeit)
-			pline("It tries to move where you are hiding.");
+			pline(E_J("It tries to move where you are hiding.",
+				  "‰½‚©‚ª‚ ‚È‚½‚Ìö‚ÞêŠ‚É“¥‚Ýž‚à‚¤‚Æ‚µ‚½B"));
 		    else {
 			/* Ugly kludge for eggs.  The message is phrased so as
 			 * to be directed at the monster, not the player,
@@ -3342,15 +3343,18 @@ struct attack *mattk;
 	    } else {
 		if (magr->minvis && !perceives(mdef->data)) return 0;
 	    }
+	    if (mdef->mux != u.ux || mdef->muy != u.uy) return 0;
 	    shield = which_armor(mdef, W_ARMS);
 	    tmp += mdef->m_lev;
 	}
 	if (!shield) return 0;
+	tmp += (int)(shield->owt / 10) - 5;
 	tmp += (int)(shield->spe);
 	if (is_elf(mdef->data) && is_elven_armor(shield)) tmp++;
 	else if (is_dwarf(mdef->data) && is_dwarvish_armor(shield)) tmp++;
 
-	if (tmp < 1) tmp = 1;
+	if (tmp <  1) tmp =  1; // guarantee 5% chance for successful parrying
+	if (tmp > 19) tmp = 19; // guarantee 5% chance for fail
 	if (mdef != &youmonst && tmp >= 10) tmp = 10; /* balance... */
 //pline("(parry:%d)", tmp);
 	if (rn2(20) < tmp) {

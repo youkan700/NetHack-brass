@@ -376,7 +376,7 @@ const char *drop_fmt, *drop_arg, *hold_msg;
 	    /* in case touching this object turns out to be fatal */
 	    place_object(obj, u.ux, u.uy);
 
-	    if (!touch_artifact(obj, &youmonst)) {
+	    if (!touch_artifact(obj, &youmonst, TRUE)) {
 		obj_extract_self(obj);	/* remove it from the floor */
 		dropy(obj);		/* now put it back again :-) */
 		return obj;
@@ -556,6 +556,7 @@ register struct obj *obj;
 	if (obj->otyp == AMULET_OF_YENDOR ||
 			obj->otyp == CANDELABRUM_OF_INVOCATION ||
 			obj->otyp == BELL_OF_OPENING ||
+			obj->otyp == RIN_PORTAL ||
 			obj->otyp == SPE_BOOK_OF_THE_DEAD) {
 		/* player might be doing something stupid, but we
 		 * can't guarantee that.  assume special artifacts

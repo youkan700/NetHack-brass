@@ -1142,7 +1142,7 @@ register int pm;
 	}
 
 	if (catch_lycanthropy && defends(AD_WERE, uwep)) {
-	    if (!touch_artifact(uwep, &youmonst)) {
+	    if (!touch_artifact(uwep, &youmonst, TRUE)) {
 		dropx(uwep);
 		uwepgone();
 	    }

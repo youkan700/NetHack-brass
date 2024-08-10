@@ -458,6 +458,8 @@ register xchar e_type;
 	ep->engr_wall = 0;
 	ep->engr_read = 0;
 	ep->engr_lth = strlen(s) + 1;
+	ep->walltyp = 0;
+	ep->wallflag = 0;
 }
 
 /* delete any engraving at location <x,y> */
@@ -1406,6 +1408,14 @@ struct engr *ep;
 /* Epitaphs for random headstones */
 static const char *epitaphs[] = {
 #ifndef JP
+	//--- Resident specified
+	"Sparky -- he was a very good dog",
+	"Og friend. Og good dude. Og died. Og now food",
+	"Mary had a little lamb/Its fleece was white as snow/When Mary was in trouble/The lamb was first to go",
+	"Here lies Ezekiel, age 102.  The good die young.",
+	"Here lies Johnny Yeast. Pardon me for not rising.",
+	"Here lies the body of Jonathan Blake. Stepped on the gas instead of the brake.",
+	//--- Generic
 	"Rest in peace",
 	"R.I.P.",
 	"Rest In Pieces",
@@ -1413,29 +1423,33 @@ static const char *epitaphs[] = {
 	"1994-1995. The Longest-Lived Hacker Ever",
 	"The Grave of the Unknown Hacker",
 	"We weren't sure who this was, but we buried him here anyway",
-	"Sparky -- he was a very good dog",
 	"Beware of Electric Third Rail",
 	"Made in Taiwan",
-	"Og friend. Og good dude. Og died. Og now food",
 	"Beetlejuice Beetlejuice Beetlejuice",
 	"Look out below!",
 	"Please don't dig me up. I'm perfectly happy down here. -- Resident",
 	"Postman, please note forwarding address: Gehennom, Asmodeus's Fortress, fifth lemure on the left",
-	"Mary had a little lamb/Its fleece was white as snow/When Mary was in trouble/The lamb was first to go",
 	"Be careful, or this could happen to you!",
 	"Soon you'll join this fellow in hell! -- the Wizard of Yendor",
 	"Caution! This grave contains toxic waste",
 	"Sum quod eris",
 	"Here lies an Atheist, all dressed up and no place to go",
-	"Here lies Ezekiel, age 102.  The good die young.",
 	"Here lies my wife: Here let her lie! Now she's at rest and so am I.",
-	"Here lies Johnny Yeast. Pardon me for not rising.",
 	"He always lied while on the earth and now he's lying in it",
 	"I made an ash of myself",
 	"Soon ripe. Soon rotten. Soon gone. But not forgotten.",
-	"Here lies the body of Jonathan Blake. Stepped on the gas instead of the brake.",
-	"Go away!"
+	"Go away!",
+	"Their entire party had been slaughtered. Press Enter to leave the cemetery!", /* Wizardry */
+	"It's a sad thing that my adventures had ended here!!"		/* Shadowgate */
 #else
+	//--- 墓の住人が指定されているもの
+	"スパーキー ── 素晴らしい犬だった",
+	"オグ　シンユウ　イイヤツ. オグ　シンダ　オヤツ.",
+	"メリーさんの羊 まっしろ羊 メリーさんの危機に まず逃げた",
+	"エゼキエルここに眠る。享年102歳。いい奴ほど早く死ぬ",
+	"ジョニー・イーストここに眠る。寝たままで失礼します", /* 実在のおもしろ碑文 */
+	"ジョナサン・ブレーキここに眠る。ブレーキとアクセルを間違えた",
+	//--- 一般
 	"安らかに眠れ",
 	"R.I.P.",
 	"安らかに細切れ",
@@ -1443,31 +1457,53 @@ static const char *epitaphs[] = {
 	"1994-1995. 史上最も長生きしたハッカー",
 	"名も無きハッカーの墓",
 	"誰かは知らねど、とにかくここに埋葬した誰かの墓",
-	"スパーキー ── 素晴らしい犬だった",
 	"送電用の第三軌条に注意",
 	"Made in Taiwan",
-	"シンユウ, オレノダチ. シンダアト, オレノメシ",
 	"ビートルジュース ビートルジュース ビートルジュース",
 	"下を見ろ！",
 	"掘り起こさないで下さい。今とっても幸せなんです ── 住人",
 	"郵便屋さんへ、こちらに転居しました: ゲヘナ, アスモデウス要塞, 左から5番目の死霊宛",
-	"メリーさんの羊 まっしろ羊 メリーさんの危機に まず逃げた",
 	"気をつけよ、さもなくばお前もこうなるぞ！",
 	"お前もすぐにこやつ同様地獄行きよ！ ── イェンダーの魔法使い",
 	"危険！　墓内に有害廃棄物収蔵",
 	"我はかつて汝であり、汝はやがて我となる",
 	"無神論者ここに眠る。旅支度済めども、行くべき所なし",
-	"エゼキエルここに眠る。享年102歳。いい奴ほど早く死ぬ",
 	"わが妻ここに眠る: 寝かせてあげて！ 妻は安息を得、私もです",
-	"ジョニー・イーストここに眠る。寝たままで失礼します", /* 実在のおもしろ碑文 */
 	"彼はいつも土の上で寝ていたが、今や土の中で寝ている",
 	"自分で自分を灰にした",
 	"早く咲き、早く散り、早く去ぬ。しかし決して忘られぬ",
-	"ジョナサン・ブレーキここに眠る。ブレーキとアクセルを間違えた",
 	"立ち去れ！",
+	"パーティは全滅した. 墓地を出るにはリターンキーを押してください",	/* Wizardry */
+	"ざんねん!! わたしの ぼうけんは これで おわってしまった!!",		/* シャドウゲイト */
 	"何を見て「ヨシ！」って言ったんですか？"
 #endif /*JP*/
 };
+
+#define NUM_NAMED_DEADMEN 6
+static struct {
+
+	char *name;	// name of the resident in this grave
+	short mnum;	// PM_xxx
+
+} grave_resident[NUM_NAMED_DEADMEN] = {
+
+	{ E_J("Sparky",         "スパーキー"),           PM_DOG },
+	{ E_J("Og",             "オグ"),                 PM_CAVEMAN },
+	{ E_J("Mary",           "メリー"),               PM_HUMAN },
+	{ E_J("Ezekiel",        "エゼキエル"),           PM_ELF },
+	{ E_J("Johnny Yeast",   "ジョニー・イースト"),   PM_HUMAN },
+	{ E_J("Jonathan Blake", "ジョナサン・ブレーキ"), PM_HUMAN }
+};
+
+boolean
+get_grave_resident_name(int index, char **pname, short *pmnum) {
+	if (index < 0 || index >= NUM_NAMED_DEADMEN) {
+	    return FALSE;
+	}
+	if (pname) *pname = grave_resident[index].name;
+	if (pmnum) *pmnum = grave_resident[index].mnum;
+	return TRUE;
+}
 
 /* Create a headstone at the given location.
  * The caller is responsible for newsym(x, y).
@@ -1478,6 +1514,8 @@ int x, y;
 const char *str;
 {
 	int base;
+	int epitaph_index = -1;
+	struct engr *e;
 
 	/* Can we put a grave here? */
 	if (t_at(x,y)) return;
@@ -1507,9 +1545,16 @@ const char *str;
 	levl[x][y].disturbed = 0;
 
 	/* Engrave the headstone */
-	if (!str) str = epitaphs[rn2(SIZE(epitaphs))];
+	if (!str) {
+	    epitaph_index = rn2(SIZE(epitaphs));
+	    str = epitaphs[epitaph_index];
+	}
 	del_engr_at(x, y);
 	make_engr_at(x, y, str, 0L, HEADSTONE);
+
+	e = engr_at(x, y);
+	if (e && epitaph_index >= 0 && epitaph_index < NUM_NAMED_DEADMEN)
+	    e->wallflag = epitaph_index + 1;
 	return;
 }
 

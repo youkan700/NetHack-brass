@@ -127,6 +127,9 @@ boolean restore;
 			} else if (otmp->otyp == SPE_BOOK_OF_THE_DEAD) {
 			    set_otyp(otmp, SPE_BLANK_PAPER);
 			    curse(otmp);
+			} else if (otmp->otyp == RIN_PORTAL) {
+			    set_otyp(otmp, RIN_TELEPORTATION);
+			    curse(otmp);
 			}
 		}
 	}

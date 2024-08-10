@@ -739,6 +739,10 @@
 =protection from shape changers
 	This ring makes shape-shifters around you
 	revert to their original form.
+=portal
+	This special ring remembers the coodinate of
+	the dungeon and summons a magic portal which
+	leads you to the remembered place.
 #
 =black onyx
 =moonstone
@@ -775,6 +779,8 @@
 	An %d.
 =shiny
 	A ring made of polished iron.
+=warped
+	A golden ring of strange warped shape.
 #
 #	amulets
 #

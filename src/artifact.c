@@ -558,16 +558,20 @@ long wp_mask;
  * fooled by such trappings.
  */
 int
-touch_artifact(obj,mon)
+touch_artifact(obj,mon,byhand)
     struct obj *obj;
     struct monst *mon;
+    boolean byhand;
 {
     register const struct artifact *oart = get_artifact(obj);
     boolean badclass, badalign, self_willed, yours;
+    boolean prot;
 
     if(!oart) return 1;
 
     yours = (mon == &youmonst);
+    prot = yours && byhand && uarmg && (get_material(uarmg) == MITHRIL);
+
     /* all quest artifacts are self-willed; it this ever changes, `badclass'
        will have to be extended to explicitly include quest artifacts */
     self_willed = ((oart->spfx & SPFX_INTEL) != 0);
@@ -608,19 +612,28 @@ touch_artifact(obj,mon)
 #else
 	You("%sの力を浴びた！", xname(obj));
 #endif /*JP*/
-	dmg = d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
-	if (Antimagic) damage_resistant_obj(ANTIMAGIC, rnd(dmg));
+	if (prot) {
 #ifndef JP
-	sprintf(buf, "touching %s", oart->name);
+	    Your("mithril gauntlet%s you from its raging energies!",
+		 bimanual(obj) ? "s protect" : " protects");;
 #else
-	Sprintf(buf, "%sに触って", jartifact_names[obj->oartifact]);
+	    pline("ミスリルのガントレットが、%sの強力なエネルギーからあなたの身を守った！", xname(obj));
 #endif /*JP*/
-	losehp(dmg, buf, KILLED_BY);
-	exercise(A_WIS, FALSE);
+	} else {
+	    dmg = d((Antimagic ? 2 : 4), (self_willed ? 10 : 4));
+	    if (Antimagic) damage_resistant_obj(ANTIMAGIC, rnd(dmg));
+#ifndef JP
+	    sprintf(buf, "touching %s", oart->name);
+#else
+	    Sprintf(buf, "%sに触って", jartifact_names[obj->oartifact]);
+#endif /*JP*/
+	    losehp(dmg, buf, KILLED_BY);
+	    exercise(A_WIS, FALSE);
+	}
     }
 
     /* can pick it up unless you're totally non-synch'd with the artifact */
-    if (badclass && badalign && self_willed) {
+    if (badclass && badalign && self_willed && !prot) {
 #ifndef JP
 	if (yours) pline("%s your grasp!", Tobjnam(obj, "evade"));
 #else
@@ -1414,7 +1427,7 @@ doinvoke()
 
     obj = getobj(invoke_types, E_J("invoke",&invkw), getobj_filter_invoke);
     if(!obj) return 0;
-    if (obj->oartifact && !touch_artifact(obj, &youmonst)) return 1;
+    if (obj->oartifact && !touch_artifact(obj, &youmonst, TRUE)) return 1;
     return arti_invoke(obj);
 }
 
