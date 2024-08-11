@@ -1204,7 +1204,7 @@ boolean at_stairs, falling, portal;
 	/* Check if you entered self-made portal */
 	if (portal) {
 	    ttmp = t_at(u.ux, u.uy);
-	    if (ttmp->ttyp == MAGIC_PORTAL && ttmp->madeby_u) {
+	    if (ttmp && ttmp->ttyp == MAGIC_PORTAL && ttmp->madeby_u) {
 		destx = ttmp->launch.x;
 		desty = ttmp->launch.y;
 		portal = FALSE;
