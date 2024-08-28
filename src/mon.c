@@ -3228,6 +3228,8 @@ reset_noteleport(void)
 	    (Is_medusa_level(&u.uz) && mvitals[PM_MEDUSA].died > 0) ||
 	    (Is_knox(&u.uz) && mvitals[PM_CROESUS].died > 0)) {
 	    level.flags.noteleport = 0;
+	    (void) memset((genericptr_t) &updest, 0, sizeof updest);
+	    (void) memset((genericptr_t) &dndest, 0, sizeof dndest);
 	}
 }
 

@@ -3397,7 +3397,7 @@ playersteal()
 			base = 5;
 			dexadj = 1;
 			intadj = 3;
-	    }        
+	    }
 		 if (ACURR(A_DEX) < 10) statbonus = (ACURR(A_DEX) - 10) * dexadj;
 	    else if (ACURR(A_DEX) > 14) statbonus = (ACURR(A_DEX) - 14) * dexadj;
 
@@ -3415,7 +3415,10 @@ playersteal()
 	    if (chanch < 5) chanch = 5;
 	    if (chanch > 95) chanch = 95;
 #ifdef WIZARD
-	    if (wizard) pline("[%d%]",chanch);
+	    if (wizard) {
+		if (yn("Force it to succeed?") == 'y') chanch = 100;
+		else pline("[%d%]",chanch);
+	    }
 #endif /*WIZARD*/
 	    if (rnd(100) < chanch || mtmp->mtame) {
 		struct obj *otmp, *otmp2;
@@ -3450,7 +3453,10 @@ playersteal()
 		       ) failed = TRUE;
 		    ch = rn2(200);
 #ifdef WIZARD
-		    if (wizard) pline("[%d/%d]",owt,ch);
+		    if (wizard) {
+			if (chanch == 100) { ch = 200; owt = 1; }
+			else pline("[%d/%d]",owt,ch);
+		    }
 #endif /*WIZARD*/
 		    if (owt > 190) owt = 190;
 		    if (ch < owt*2 ||

@@ -1082,8 +1082,10 @@ goal_is_set:
 		} else if (!(mw_tmp = MON_WEP(mtmp)) || !is_pick(mw_tmp)) {
 		    mtmp->weapon_check = NEED_PICK_AXE;
 		}
-		if (mtmp->weapon_check >= NEED_PICK_AXE && mon_wield_item(mtmp))
-		    return(3);
+		if (mtmp->weapon_check >= NEED_PICK_AXE) {
+		    if (mon_wield_item(mtmp)) return(3);
+		    can_tunnel = 0;
+		}
 	    }
 	    /* If ALLOW_U is set, either it's trying to attack you, or it
 	     * thinks it is.  In either case, attack this spot in preference to

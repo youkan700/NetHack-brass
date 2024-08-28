@@ -599,7 +599,6 @@ winid endwin;
 
     for (otmp = list; otmp; otmp = otmp->nobj) {
 	if (otmp->oartifact ||
-			otmp->otyp == RIN_PORTAL ||
 			otmp->otyp == BELL_OF_OPENING ||
 			otmp->otyp == SPE_BOOK_OF_THE_DEAD ||
 			otmp->otyp == CANDELABRUM_OF_INVOCATION) {

@@ -262,14 +262,16 @@ register struct monst *mtmp;
 	    case S_ANGEL:
 		{
 		    int spe2;
+		    int a;
 
 		    /* create minion stuff; can't use mongets */
 		    otmp = mksobj(LONG_SWORD, FALSE, FALSE);
 
 		    /* maybe make it special */
-		    if (!rn2(20) || is_lord(ptr))
-			create_artifact(otmp, rn2(2) ? ART_DEMONBANE :
-						       ART_SUNSWORD);
+		    if (!rn2(20) || is_lord(ptr)) {
+			a = rn2(2) ? ART_DEMONBANE : ART_SUNSWORD;
+			if (!exist_artifact(a)) create_artifact(otmp, a);
+		    }
 		    bless(otmp);
 		    otmp->oerodeproof = TRUE;
 		    spe2 = rn2(4);
