@@ -627,7 +627,11 @@ register struct obj *obj;
 		return(1);
 	    }
 	    if (!IS_ALTAR(levl[u.ux][u.uy].typ) && flags.verbose)
-		You(E_J("drop %s.","%sを置いた。"), doname(obj));
+#ifndef JP
+		You("drop %s.", doname(obj));
+#else
+		You("%sを%s。", doname(obj), covers_objects(u.ux,u.uy) ? "落とした" : "置いた");
+#endif
 	}
 	dropx(obj);
 	return(1);
@@ -1513,7 +1517,7 @@ boolean at_stairs, falling, portal;
 		    break;
 		  case INHELL_BAALZEBUB:
 		    pline(E_J("It is hot here.  You smell smoke...",
-			      "ここはの空気は肺を刺すようだ…。"));
+			      "ここの空気は肺を刺すようだ…。"));
 		    break;
 		  case INHELL_ORCUS:
 		    pline(E_J("It is hot here.  You smell smoke...",
