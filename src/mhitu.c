@@ -756,15 +756,19 @@ mattacku(mtmp)
 			weaponhit:
 			    hittmp = 0;
 			    if (foundyou) {
+				struct attack tmpattk;
 				otmp = MON_WEP(mtmp);
+				tmpattk.aatyp = AT_WEAP;
+				tmpattk.adtyp = mattk->adtyp;
 				if(otmp) {
+				    tmpattk.adtyp = get_artifact_adtyp(otmp);
 				    hittmp = hitval(otmp, &youmonst);
 				    tmp += hittmp;
 				    if (!is_animobj(mtmp->data))
 					mswings(mtmp, otmp);
 				}
 				if ((!otmp || objects[otmp->otyp].oc_skill != P_FLAIL_GROUP) &&
-				    parry_with_shield(mtmp, &youmonst, mattk)) break;
+				    parry_with_shield(mtmp, &youmonst, &tmpattk)) break;
 				if(tmp > (j = dieroll = rnd(20+i)))
 				    sum[i] = hitmu(mtmp, mattk);
 				else
@@ -3347,7 +3351,14 @@ struct attack *mattk;
 	    shield = which_armor(mdef, W_ARMS);
 	    tmp += mdef->m_lev;
 	}
+
+	/* no shield */
 	if (!shield) return 0;
+
+	/* metallic shield cannot parry elec damage... except for elemental shield */
+	if (mattk->adtyp == AD_ELEC && is_metallic(shield) &&
+	    shield->otyp != ELEMENTAL_SHIELD) return 0; 
+
 	tmp += (int)(shield->owt / 10) - 5;
 	tmp += (int)(shield->spe);
 	if (is_elf(mdef->data) && is_elven_armor(shield)) tmp++;
@@ -3410,6 +3421,40 @@ struct attack *mattk;
 			break;
 		    case AT_WEAP:
 			if (magr == &youmonst) {
+			    int wtype = weapon_type(uwep);
+			    /* chance to shatter the opponent shield */
+			    if (uwep &&
+				(wtype == P_AXE_GROUP ||
+				 uwep->otyp == HALBERD || uwep->otyp == VOULGE ||
+				 uwep->otyp == TSURUGI || (uwep->otyp == KATANA && !uarms) ||
+				 uwep->oartifact == ART_VORPAL_BLADE) &&
+				get_material(shield) == WOOD) {
+				int prob;
+				prob = uwep->owt * (100 + P_SKILL(wtype) * 2) / 100;
+				prob += uwep->spe * 50;
+				prob -= shield->spe * 50;
+				if (wizard) pline("[%d]", prob);
+				if (prob > rn2(1000)) {
+				    if (wtype == P_AXE_GROUP ||	wtype == P_POLEARM_GROUP) {
+#ifndef JP
+					You("attack %s and shatter %s shield!", mon_nam(mdef), mhis(mdef));
+#else
+					You("%s‚Ì‚‚ğ’@‚«Š„‚Á‚½I", mon_nam(mdef));
+#endif
+				    } else {
+#ifndef JP
+					You("attack %s and slice %s shield!", mon_nam(mdef), mhis(mdef));
+#else
+					You("%s‚Ì‚‚ğ^‚Á“ñ‚Â‚Éa‚è•¥‚Á‚½I", mon_nam(mdef));
+#endif
+				    }
+				    m_useup(mdef, shield);
+				    if (rn2(4)) {
+					monflee(mdef, d(2,3), TRUE, TRUE);
+				    }
+				    return 1; /* parried */
+				}
+			    }
 			    You(E_J("hit %s.","%s‚ğUŒ‚‚µ‚½B"), mon_nam(mdef));
 			}
 #ifndef JP
@@ -3422,6 +3467,16 @@ struct attack *mattk;
 		    default:
 			break;
 		}
+	    }
+	    if (parried) {
+		if      (mattk->adtyp == AD_FIRE && is_flammable(shield))
+		    rust_dmg(shield, E_J("the shield","‚"), 0, FALSE, mdef);
+		else if (mattk->adtyp == AD_RUST && is_rustprone(shield))
+		    rust_dmg(shield, E_J("the shield","‚"), 1, FALSE, mdef);
+		else if (mattk->adtyp == AD_DCAY && is_rottable(shield))
+		    rust_dmg(shield, E_J("the shield","‚"), 2, FALSE, mdef);
+		else if (mattk->adtyp == AD_CORR && is_corrodeable(shield))
+		    rust_dmg(shield, E_J("the shield","‚"), 3, FALSE, mdef);
 	    }
 	}
 	return (parried);

@@ -4,7 +4,6 @@
 
 #include "hack.h"
 
-#ifdef OVL0
 extern const char *hu_stat[];	/* defined in eat.c */
 
 const char * const enc_stat[] = {
@@ -18,12 +17,14 @@ const char * const enc_stat[] = {
 
 STATIC_DCL void NDECL(bot1);
 STATIC_DCL void NDECL(bot2);
-#endif /* OVL0 */
 
 #ifdef HPMON
 extern void FDECL(term_start_color, (int));
 extern void NDECL(term_end_color);
 STATIC_DCL int FDECL(attrib_color, (int));
+STATIC_DCL char *FDECL(maybe_flush, (int, char *, char *));
+STATIC_DCL char *FDECL(maybe_putstr, (int *, char *, char *));
+STATIC_DCL void FDECL(colored_putstr, (int , char *));
 #endif /*HPMON*/
 
 /* MAXCO must hold longest uncompressed status line, and must be larger
@@ -40,15 +41,10 @@ STATIC_DCL int FDECL(attrib_color, (int));
 #define MAXCO (COLNO+20)
 #endif
 
-#ifndef OVLB
-STATIC_DCL int mrank_sz;
-#else /* OVLB */
-STATIC_OVL NEARDATA int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
-#endif /* OVLB */
+static int mrank_sz = 0; /* loaded by max_rank_sz (from u_init) */
 
 STATIC_DCL const char *NDECL(rank);
 
-#ifdef OVL1
 
 /* convert experience level (1..30) to rank index (0..8) */
 int
@@ -134,8 +130,6 @@ int *rank_indx, *title_length;
 	return NON_PM;
 }
 
-#endif /* OVL1 */
-#ifdef OVLB
 
 void
 max_rank_sz()
@@ -149,8 +143,6 @@ max_rank_sz()
 	return;
 }
 
-#endif /* OVLB */
-#ifdef OVL0
 
 #ifdef SCORE_ON_BOTL
 long
@@ -175,6 +167,42 @@ int a;
 	if (ACURR(a) == AMAX(a)) return NO_COLOR;
 	return (ACURR(a) > AMAX(a)) ? CLR_WHITE : CLR_YELLOW;
 }
+
+char *maybe_flush(color, head, tail)
+int color;
+char *head;
+char *tail;
+{
+	if (color != NO_COLOR) {
+	    putstr(WIN_STATUS, 0, head);
+	    *head = 0;
+            return head;
+	}
+        return tail;
+}
+char *maybe_putstr(pcolor, head, tail)
+int *pcolor;
+char *head;
+char *tail;
+{
+	if (*pcolor != NO_COLOR) {
+	    term_start_color(*pcolor);
+	    putstr(WIN_STATUS, 0, head);
+	    term_end_color();
+	    *pcolor = NO_COLOR;
+	    *head = 0;
+            return head;
+	}
+        return tail;
+}
+void colored_putstr(color, str)
+int color;
+char *str;
+{
+	term_start_color(color);
+	putstr(WIN_STATUS, 0, str);
+	term_end_color();
+}
 #endif /*HPMON*/
 
 STATIC_OVL void
@@ -189,6 +217,7 @@ bot1()
 
 	curs(WIN_STATUS, 1, 0);
 
+        /* Player name and rank */
 	Strcpy(newbot1, plname);
 	if('a' <= newbot1[0] && newbot1[0] <= 'z') newbot1[0] += 'A'-'a';
 	newbot1[10] = 0;
@@ -214,14 +243,12 @@ bot1()
 	j = (nb + 2) - newbot1; /* aka strlen(newbot1) but less computation */
 	if((i - j) > 0)
 		Sprintf(nb = eos(nb),"%*s", i-j, " ");	/* pad with spaces */
-	Sprintf(nb = eos(nb),"St:");
+
+        /* Strength */
+        Sprintf(nb = eos(nb),"St:");
 #ifdef HPMON
 	c = attrib_color(A_STR);
-	if (c != NO_COLOR) {
-	    putstr(WIN_STATUS, 0, newbot1);
-	    nb = newbot1;
-	    *nb = 0;
-	}
+        nb = maybe_flush(c, newbot1, nb);
 #endif /*HPMON*/
 	if (ACURR(A_STR) > 18) {
 		if (ACURR(A_STR) > STR18(100))
@@ -233,32 +260,16 @@ bot1()
 	} else
 		Sprintf(nb = eos(nb), "%-1d ",ACURR(A_STR));
 #ifdef HPMON
-	if (c != NO_COLOR) {
-	    term_start_color(c);
-	    putstr(WIN_STATUS, 0, newbot1);
-	    term_end_color();
-	    c = NO_COLOR;
-	    nb = newbot1;
-	    *nb = 0;
-	}
+        nb = maybe_putstr(&c, newbot1, nb);
+
+        /* Dex, Con, Int, Wiz, Cha */
 	for (i = 0; i < 5; i++) {
 	    Sprintf(nb = eos(nb), "%s:", atrnam[i]);
 	    j = atridx[i];
 	    c = attrib_color(j);
-	    if (c != NO_COLOR) {
-		if (*newbot1) putstr(WIN_STATUS, 0, newbot1);
-		nb = newbot1;
-		*nb = 0;
-	    }
+            nb = maybe_flush(c, newbot1, nb);
 	    Sprintf(nb = eos(nb), "%-1d ", ACURR(j));
-	    if (c != NO_COLOR) {
-		term_start_color(c);
-		putstr(WIN_STATUS, 0, newbot1);
-		term_end_color();
-		c = NO_COLOR;
-		nb = newbot1;
-		*nb = 0;
-	    }
+            nb = maybe_putstr(&c, newbot1, nb);
 	}
 #else /*HPMON*/
 	Sprintf(nb = eos(nb),
@@ -309,6 +320,7 @@ bot2()
 	register char *nb;
 	int hp, hpmax;
 	int cap = near_capacity();
+        int c;
 
 	hp = Upolyd ? u.mh : u.uhp;
 	hpmax = Upolyd ? u.mhmax : u.uhpmax;
@@ -341,12 +353,7 @@ bot2()
 	    } else if(hp <= (hpmax*3/4)) {
 		hpcolor = CLR_BRIGHT_GREEN;
 	    }
-	    if (hpcolor != NO_COLOR) {
-		term_start_color(hpcolor);
-		putstr(WIN_STATUS, 0, newbot2);
-		term_end_color();
-		newbot2[0] = 0;
-	    }
+            nb = maybe_putstr(&hpcolor, newbot2, nb);
 	}
 #endif /* TEXTCOLOR */
 	Sprintf(nb = eos(newbot2), "Pw:%d(%d) AC:%-2d",
@@ -357,7 +364,15 @@ bot2()
 		Sprintf(nb = eos(nb), " HD:%d", mons[u.umonnum].mlevel);
 #ifdef EXP_ON_BOTL
 	else if(flags.showexp || flags.showrexp) {
+#ifdef HPMON
+	    Sprintf(nb = eos(nb), " Xp:");
+            c = (u.ulevel < u.ulevelmax) ? CLR_YELLOW : NO_COLOR;
+            nb = maybe_flush(c, newbot2, nb);
+	    Sprintf(nb = eos(nb), "%u", u.ulevel);
+            nb = maybe_putstr(&c, newbot2, nb);
+#else
 	    Sprintf(nb = eos(nb), " Xp:%u", u.ulevel);
+#endif /* HPMON */
  	    if(flags.showexp)
 		Sprintf(nb = eos(nb), "/%-1ld", u.uexp);
 	    if(flags.showrexp) {
@@ -368,7 +383,6 @@ bot2()
 #endif
 	else
 		Sprintf(nb = eos(nb), " Exp:%u", u.ulevel);
-// Sprintf(nb = eos(nb), " Dir:%d", (1-u.dy)*3+(u.dx+1)+1); /*test*/
 	if(flags.showweight)
 	    Sprintf(nb = eos(nb), " Wt:%ld/%ld", inv_weight()+weight_cap(), weight_cap() );
 	if(flags.time)
@@ -378,12 +392,9 @@ bot2()
 		if (u.uhs > 2) {
 		    putstr(WIN_STATUS, 0, newbot2);
 		    Sprintf(newbot2, " %s", hu_stat[u.uhs]);
-		    term_start_color(u.uhs == 3 ? CLR_YELLOW :
-				     u.uhs == 4 ? CLR_ORANGE : CLR_RED);
-		    putstr(WIN_STATUS, 0, newbot2);
-		    term_end_color();
-		    newbot2[0] = 0;
-		    nb = newbot2;
+                    c = (u.uhs == 3 ? CLR_YELLOW :
+			 u.uhs == 4 ? CLR_ORANGE : CLR_RED);
+                    nb = maybe_putstr(&c, newbot2, nb);
 		} else
 		    Sprintf(nb = eos(nb), " %s", hu_stat[u.uhs]);
 #else
@@ -391,6 +402,34 @@ bot2()
 		Strcat(newbot2, hu_stat[u.uhs]);
 #endif /*HPMON*/
 	}
+#ifdef HPMON
+	putstr(WIN_STATUS, 0, newbot2);
+        newbot2[0] = 0;
+        nb = newbot2;
+	if(Confusion)	   colored_putstr(CLR_YELLOW, E_J(" Conf"," 混乱"));
+	if(Sick) {
+		if (u.usick_type & SICK_VOMITABLE)
+			   colored_putstr(CLR_BRIGHT_MAGENTA, E_J(" FoodPois"," 食中毒"));
+		if (u.usick_type & SICK_NONVOMITABLE)
+			   colored_putstr(CLR_BRIGHT_MAGENTA, E_J(" Ill"," 病気"));
+	}
+	if(Blind)	   colored_putstr(Blinded ? CLR_YELLOW : CLR_GRAY, E_J(" Blind"," 盲目"));
+	if(Stunned)	   colored_putstr(CLR_YELLOW, E_J(" Stun"," よろめき"));
+	if(Hallucination)  colored_putstr(CLR_YELLOW, E_J(" Hallu"," 幻覚"));
+	if(Stoned)         colored_putstr(CLR_BRIGHT_MAGENTA, E_J(" Stone"," 石化"));
+	if(Slimed)         colored_putstr(CLR_BRIGHT_MAGENTA, E_J(" Slime"," スライム化"));
+	if(Strangled)      colored_putstr(CLR_BRIGHT_MAGENTA, E_J(" Choke"," 窒息"));
+	if(cap > UNENCUMBERED)
+		Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
+	if(Levitation) {
+	        long i = (HLevitation & TIMEOUT);
+                c = (i <= 7L && !ELevitation && (i == HLevitation) && !BLevAtWill &&
+                     !can_transit_levitation()) ? CLR_YELLOW : NO_COLOR;
+                nb = maybe_flush(c, newbot2, nb);
+                Sprintf(nb = eos(nb), E_J(" Levitate"," 浮遊"));
+                nb = maybe_putstr(&c, newbot2, nb);
+        }
+#else
 	if(Confusion)	   Sprintf(nb = eos(nb), E_J(" Conf"," 混乱"));
 	if(Sick) {
 		if (u.usick_type & SICK_VOMITABLE)
@@ -401,10 +440,13 @@ bot2()
 	if(Blind)	   Sprintf(nb = eos(nb), E_J(" Blind"," 盲目"));
 	if(Stunned)	   Sprintf(nb = eos(nb), E_J(" Stun"," よろめき"));
 	if(Hallucination)  Sprintf(nb = eos(nb), E_J(" Hallu"," 幻覚"));
+	if(Stoned)         Sprintf(nb = eos(nb), E_J(" Slime"," 石化"));
 	if(Slimed)         Sprintf(nb = eos(nb), E_J(" Slime"," スライム化"));
+	if(Strangled)      Sprintf(nb = eos(nb), E_J(" Choke"," 窒息"));
 	if(cap > UNENCUMBERED)
 		Sprintf(nb = eos(nb), " %s", enc_stat[cap]);
 	if(Levitation)     Sprintf(nb = eos(nb), E_J(" Levitate"," 浮遊"));
+#endif /*HPMON*/
 #ifndef HPMON
 	curs(WIN_STATUS, 1, 1);
 #endif /* HPMON */
@@ -547,6 +589,5 @@ found:
 }
 #endif
 
-#endif /* OVL0 */
 
 /*botl.c*/

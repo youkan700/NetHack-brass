@@ -582,13 +582,16 @@ uchar hflg;
 	if(!*mhit) {
 	    missum(mon, uattk, misstyp);
 	} else {
+	    struct attack tmpattk;
 	    int oldhp = mon->mhp,
 		x = u.ux + u.dx, y = u.uy + u.dy;
 
+	    tmpattk.aatyp = wep ? AT_WEAP : AT_CLAW;
+	    tmpattk.adtyp = get_artifact_adtyp(wep);
 	    if ((!wep ||
 		 (objects[wep->otyp].oc_skill != P_FLAIL_GROUP &&
 		  !is_bane(wep, mon))) &&
-		parry_with_shield(&youmonst, mon, uattk)) return (malive);
+		parry_with_shield(&youmonst, mon, &tmpattk)) return (malive);
 
 	    /* KMH, conduct */
 	    if (wep && (wep->oclass == WEAPON_CLASS || is_weptool(wep)))

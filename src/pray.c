@@ -61,7 +61,9 @@ static const char *bogusgods[] = {
 	"Aslan", "Tash",	/* Narnia */
 	"Bel-Shamharoth",	/* Discworld */
 	"Deep Thought",		/* The Hitchhiker's Guide to the Galaxy */
+	"The Childlike Empress",/* The Neverending Story */
 	"Kadorto",		/* Wizardry */
+	"Lord British",		/* Ultima */
 	"Galsis",		/* XANADU */
 	"Gayzac",		/* Hydlide 3 */
 	"Rubiss",		/* Dragon Quest */
@@ -74,7 +76,9 @@ static const char *bogusgods[] = {
 	"アスラン", "タシ",
 	"ベル=シャムァロス",
 	"ディープ・ソート",
+	"幼ごころの君",
 	"カドルト",
+	"ロード・ブリティッシュ",
 	"ガルシス",
 	"ガイザック",
 	"ルビス",

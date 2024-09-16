@@ -2324,12 +2324,16 @@ boolean ordinary;
 			You(E_J("shudder in dread.","‹°•|‚É‚¨‚Ì‚Ì‚¢‚½B"));
 		    break;
 		case SPE_HEALING:
-		case SPE_EXTRA_HEALING:
+		case SPE_EXTRA_HEALING: {
+		    int oldhp;
+		    oldhp = u.uhp;
 		    healup(d(6, obj->otyp == SPE_EXTRA_HEALING ? 8 : 4),
 			   0, FALSE, (obj->otyp == SPE_EXTRA_HEALING));
 		    You_feel(E_J("%sbetter.","%sŒ³‹C‚É‚È‚Á‚½B"),
 			obj->otyp == SPE_EXTRA_HEALING ? E_J("much ","‚Æ‚Ä‚à") : "");
+		    if (u.uhp > oldhp) morehungry(u.uhp - oldhp);
 		    break;
+		}
 		case WAN_LIGHT:	/* (broken wand) */
 		 /* assert( !ordinary ); */
 		    damage = d(obj->spe, 25);
@@ -2558,7 +2562,10 @@ struct obj *obj;	/* wand or spell */
 	    } else {
 		ptmp += bhitpile(obj, bhito, x, y);
 		You(E_J("probe beneath the %s.","%s‚Ì‰º‚ð’T¸‚µ‚½B"), surface(x,y));
-		ptmp += display_binventory(x, y, TRUE);
+		if (covers_objects(x,y))
+		    ptmp += display_underwater(x, y, TRUE);
+		else
+		    ptmp += display_binventory(x, y, TRUE);
 	    }
 	    if (!ptmp) Your(E_J("probe reveals nothing.","’T¸‚É‚Í‰½‚àˆø‚Á‚©‚©‚ç‚È‚©‚Á‚½B"));
 	    return TRUE;	/* we've done our own bhitpile */
@@ -4219,6 +4226,12 @@ skip_hit:
 		newsym(sx,sy);
 	    }
 	    range = 0;
+	} else if (lev->typ == IRONBARS && ztmp->adtyp == AD_ACID) {
+	    lev->typ = ROOM;
+	    if (cansee(sx,sy)) {
+		pline(E_J("The set of iron bars dissolves!","“SŠiŽq‚Í—n‚¯‚½I"));
+		newsym(sx,sy);
+	    }
 	}
 
 	if(range > 0 && (!ZAP_POS(lev->typ) || closed_door(sx, sy))) {

@@ -420,12 +420,14 @@ still_chewing(x,y)
 	You("start chewing %s %s.",
 	    (boulder || IS_TREES(lev->typ)) ? "on a" : "a hole in the",
 	    boulder ? "boulder" :
+	    lev->typ == IRONBARS ? "set of iron bars" :
 	    IS_TREES(lev->typ) ? "tree" : IS_ROCK(lev->typ) ? "rock" : "door");
 #else
 	You("%s%sÇÍñÇËÇÕÇ∂ÇﬂÇΩÅB",
 	    boulder ? "ëÂä‚" :
+	    lev->typ == IRONBARS ? "ìSäiéq" :
 	    IS_TREES(lev->typ) ? "ñÿ" : IS_ROCK(lev->typ) ? "ä‚" : "î‡",
-	    (boulder || IS_TREES(lev->typ)) ? "" : "ÇÃåä");
+	    (boulder || IS_TREES(lev->typ) || lev->typ == IRONBARS) ? "" : "ÇÃåä");
 #endif /*JP*/
 	watch_dig((struct monst *)0, x, y, FALSE);
 	return 1;
@@ -435,12 +437,14 @@ still_chewing(x,y)
 	    You("%s chewing on the %s.",
 		digging.chew ? "continue" : "begin",
 		boulder ? "boulder" :
+		lev->typ == IRONBARS ? "set of iron bars" :
 		IS_TREES(lev->typ) ? "tree" :
 		IS_ROCK(lev->typ) ? "rock" : "door");
 #else
 	    You("%s%sÇÍñÇËÇÕÇ∂ÇﬂÇΩÅB",
 		digging.chew ? "çƒÇ—" : "",
 		boulder ? "ëÂä‚" :
+		lev->typ == IRONBARS ? "ìSäiéq" :
 		IS_TREES(lev->typ) ? "ñÿ" :
 		IS_ROCK(lev->typ) ? "ä‚" : "î‡");
 #endif /*JP*/
@@ -489,6 +493,10 @@ still_chewing(x,y)
     } else if (IS_TREE(lev->typ)) {
 	digtxt = E_J("chew through the tree.",
 		     "ñÿÇÍñÇ¡Çƒì|ÇµÇΩÅB");
+	lev->typ = ROOM;
+    } else if (lev->typ == IRONBARS) {
+	digtxt = E_J("chew through the iron bars.",
+		     "ìSäiéqÇÍñÇ¡ÇƒâÛÇµÇΩÅB");
 	lev->typ = ROOM;
     } else if (lev->typ == SDOOR) {
 	if (lev->doormask & D_TRAPPED) {
@@ -667,7 +675,9 @@ int mode;
 	if (Passes_walls && may_passwall(x,y)) {
 	    ;	/* do nothing */
 	} else if (tmpr->typ == IRONBARS) {
-	    if (!(Passes_walls || passes_bars(youmonst.data)))
+	    if (metallivorous(youmonst.data) &&	mode == DO_MOVE) {
+		if (still_chewing(x,y)) return FALSE;
+	    } else if (!(Passes_walls || passes_bars(youmonst.data)))
 		return FALSE;
 	} else if (tunnels(youmonst.data) && !needspick(youmonst.data)) {
 	    /* Eat the rock. */
@@ -1886,6 +1896,12 @@ stillinswamp:
 	if(IS_SINK(levl[u.ux][u.uy].typ) && Levitation)
 		dosinkfall();
 #endif
+	if (levl[u.ux][u.uy].typ == IRONBARS &&
+	    (youmonst.mnum == PM_OCHRE_JELLY || youmonst.mnum == PM_BLACK_PUDDING)) {
+	    You(E_J("dissolves the iron bars!","ìSäiéqÇónÇ©ÇµÇΩÅI"));
+	    levl[u.ux][u.uy].typ = ROOM;
+	    newsym(u.ux, u.uy);
+	}
 	if (!in_steed_dismounting) { /* if dismounting, we'll check again later */
 		struct trap *trap = t_at(u.ux, u.uy);
 		boolean pit;

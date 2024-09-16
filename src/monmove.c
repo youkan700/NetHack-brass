@@ -1006,7 +1006,7 @@ goal_is_set:
 	/* unicorn may not be able to avoid hero on a noteleport level */
 	if (is_unicorn(ptr) && !level.flags.noteleport) flag |= NOTONL;
 	if (passes_walls(ptr)) flag |= (ALLOW_WALL | ALLOW_ROCK);
-	if (passes_bars(ptr)) flag |= ALLOW_BARS;
+	if (passes_bars(ptr) || metallivorous(ptr)) flag |= ALLOW_BARS;
 	if (can_tunnel) flag |= ALLOW_DIG;
 	if (is_human(ptr) || mtmp->mnum == PM_MINOTAUR) flag |= ALLOW_SSM;
 	if (is_undead(ptr) && ptr->mlet != S_GHOST) flag |= NOGARLIC;
@@ -1247,7 +1247,20 @@ postmov:
 			    add_damage(mtmp->mx, mtmp->my, 0L);
 		    }
 		} else if (levl[mtmp->mx][mtmp->my].typ == IRONBARS) {
-			if (flags.verbose && canseemon(mtmp))
+		    if (metallivorous(ptr)) {
+			if (cansee(mtmp->mx, mtmp->my) && flags.verbose) {
+#ifndef JP
+			    Norep("%s eats iron bars!", Monnam(mtmp));
+#else
+			    Norep("%s‚Í“SŠiŽq‚ðH‚×‚½I", Monnam(mtmp));
+#endif /*JP*/
+			} else if (flags.soundok && flags.verbose) {
+			    You_hear(E_J("a crunching sound.","‹à‘®‚ÌÓ‚¯‚é‰¹‚ð"));
+			}
+			mtmp->meating = 50;
+			levl[mtmp->mx][mtmp->my].typ = ROOM;
+		    } else {
+			if (flags.verbose && canseemon(mtmp)) {
 #ifndef JP
 			    Norep("%s %s %s the iron bars.", Monnam(mtmp),
 				  /* pluralization fakes verb conjugation */
@@ -1257,6 +1270,16 @@ postmov:
 			    Norep("%s‚Í“SŠiŽq%s‚ð’Ê‚è”²‚¯‚½B", Monnam(mtmp),
 				  passes_walls(ptr) ? "" : "‚ÌŠÔ");
 #endif /*JP*/
+			}
+			if (mtmp->mnum == PM_OCHRE_JELLY ||
+			    mtmp->mnum == PM_BLACK_PUDDING) {
+			    if (flags.verbose && cansee(mtmp->mx, mtmp->my)) {
+				Norep(E_J("%s dissolves the iron bars!",
+				          "%s‚Í“SŠiŽq‚ð—n‚©‚µ‚½I"), Monnam(mtmp));
+			    }
+			    levl[mtmp->mx][mtmp->my].typ = ROOM;
+			}
+		    }
 		}
 
 		/* possibly dig */

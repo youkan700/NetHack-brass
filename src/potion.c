@@ -93,6 +93,10 @@ boolean talk;
 #endif /*JP*/
 	}
 	if (xtime && !old) {
+//		if (Free_action) {
+//		    if (talk) You(E_J("momentaly stagger.","ˆêu‚Ó‚ç‚Â‚¢‚½‚ªA“¥‚Ý‚Æ‚Ç‚Ü‚Á‚½B"));
+//		    xtime = 0;
+//		} else
 		if (talk) {
 #ifdef STEED
 			if (u.usteed)
@@ -847,9 +851,28 @@ peffects(otmp)
 		    nothing++;
 		} else {      /* If blessed, increase all; if not, try up to */
 		    if (otmp->blessed) {
-			for (i = 0; i < A_MAX; i++)
-			    if (!otmp->odiluted || (rn2(100) < 50))
+			if (!otmp->odiluted)
+			    for (i = 0; i < A_MAX; i++)
 				adjattrib(i, 1, 0);
+			else {
+			    /* diluted potion: gain 3 attribs */
+			    int a[A_MAX], n;
+			    for (i=0, n=0; i<A_MAX; i++) {
+				if ((AMAX(i) < ATTRMAX(i)) || (ACURR(i) < AMAX(i))) {
+				    a[n++] = i;
+				}
+			    }
+			    if (!n) {
+				adjattrib(rn2(A_MAX), 1, 0);
+				break;
+			    }
+			    while (n > 3) {
+				for (i = rn2(n); i<A_MAX-1; i++) a[i] = a[i+1];
+				n--;
+			    }
+			    for (i=0; i<n; i++)
+				adjattrib(a[i], 1, 0);
+			}
 		    } else { /* 6 times to find one which can be increased. */
 			for (i = ((otmp->odiluted) ? 1 : A_MAX); i > 0; i--) {
 			    /* only give "your X is already as high as it can get"

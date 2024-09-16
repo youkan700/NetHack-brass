@@ -365,7 +365,7 @@ dig()
 			if (IS_TREES(lev->typ)) {
 			    digtxt = E_J("You cut down the tree.","‚ ‚È‚½‚Í–Ø‚ğØ‚è“|‚µ‚½B");
 			    lev->typ = GROUND/*ROOM*/;
-			    if (!rn2(5)) (void) rnd_treefruit_at(dpx, dpy);
+			    if (IS_TREE(lev->typ) && !rn2(5)) (void) rnd_treefruit_at(dpx, dpy);
 			} else {
 			    digtxt = E_J("You succeed in cutting away some rock.",
 					 "‚ ‚È‚½‚ÍŠâ‚ğŒ@‚è”²‚¢‚½B");
