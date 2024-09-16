@@ -2399,10 +2399,15 @@ doeat()		/* generic "eat" command funtion (see cmd.c) */
 		    losehp(rnd(15), xname(otmp), KILLED_BY_AN);
 		} else
 		    You(E_J("seem unaffected by the poison.","“Å‚Ì‰e‹¿‚ğó‚¯‚È‚¢‚æ‚¤‚¾B"));
-	    } else if (!otmp->cursed)
-		pline(E_J("This %s is delicious!","‚±‚Ì%s‚Í‚¤‚Ü‚¢I"),
-		      otmp->oclass == COIN_CLASS ? foodword(otmp) :
-		      singular(otmp, xname));
+	    } else if (!otmp->cursed) {
+		if (otmp->otyp == IRON_CHAIN && otmp->spe == 1) {
+		    pline(E_J("This iron bars are delicious!","‚±‚Ì“SŠiq‚Í‚¤‚Ü‚¢I"));
+		} else {
+		    pline(E_J("This %s is delicious!","‚±‚Ì%s‚Í‚¤‚Ü‚¢I"),
+			  otmp->oclass == COIN_CLASS ? foodword(otmp) :
+			  singular(otmp, xname));
+		}
+	    }
 
 	    eatspecial();
 	    return 1;
@@ -2894,6 +2899,17 @@ floorfood(verb,corpsecheck)	/* get food from floor or pack */
 		    u.utrap = u.utraptype = 0;
 		    cnv_trap_obj(BEARTRAP, 1, ttmp);
 		    return sobj_at(BEARTRAP, u.ux, u.uy);
+		} else if (c == 'q') {
+		    return (struct obj *)0;
+		}
+	    } else if (levl[u.ux][u.uy].typ == IRONBARS) {
+		Sprintf(qbuf, E_J("There is a set of iron bars here; eat it?",
+				  "‚±‚±‚É‚Í“SŠiq‚ª‚ ‚éBH‚×‚Ü‚·‚©H"));
+		if ((c = yn_function(qbuf, ynqchars, 'n')) == 'y') {
+		    levl[u.ux][u.uy].typ = ROOM;
+		    otmp = mksobj_at(IRON_CHAIN, u.ux, u.uy, FALSE, FALSE); /* arbitrary */
+		    otmp->spe = 1;
+		    return otmp;
 		} else if (c == 'q') {
 		    return (struct obj *)0;
 		}

@@ -364,6 +364,17 @@ struct obj *obj;
 //	return FALSE;
 //}
 
+int
+get_artifact_adtyp(otmp)
+struct obj *otmp;
+{
+	const struct artifact *weap;
+
+	if ((weap = get_artifact(otmp)) != 0)
+		return (weap->attk.adtyp);
+	return AD_PHYS;
+}
+
 STATIC_OVL boolean
 attacks(adtyp, otmp)
 register int adtyp;
