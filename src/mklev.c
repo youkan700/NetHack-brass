@@ -2151,6 +2151,7 @@ int xlimit;
 {
 	int i;
 	int x, y;
+	int bx, by;
 	struct mkroom *croom, *troom;
 
 	XMIN = 2;
@@ -2182,6 +2183,16 @@ int xlimit;
 	gtwn_path();
 	gtwn_adddoor();
 	gtwn_cleanup();
+
+	bx = 0;
+	if (!xlimit && On_W_tower_portal_level(&u.uz)) {
+	    int bx, by;
+	    bx = rn1(COLNO-5, 4);
+	    by = rn1(ROWNO-4, 2);
+	    mk_yendor_entrance(bx, by);
+	    place_branch(Is_branchlev(&u.uz), bx, by);
+	}
+
 	wallification(XMIN, YMIN, XMAX-1, YMAX-1);
 
 	/* break some part of wall */
@@ -2217,7 +2228,7 @@ int xlimit;
 	mkstairs(x, y, 1, croom);	/* up */
 
 	/* Place multi-dungeon branch. */
-	place_branch(Is_branchlev(&u.uz), 0, 0);
+	if (!bx) place_branch(Is_branchlev(&u.uz), 0, 0);
 
 	/* place morgue */
 	for (i = rn2(3); i; i--) mkroom(MORGUE);
@@ -2325,7 +2336,7 @@ char field, stain;
 int xlimit;
 {
 	int i,j;
-	int x,y, sx,sy, bx,by;
+	int x,y, sx,sy, bx=0,by;
 	int count = 0;
 
 	mkmap_sub(field, stain, 1, 4, 0);
@@ -2359,26 +2370,33 @@ int xlimit;
 
 	if (xlimit) return;
 
-	if (IS_STWALL(field) || IS_STWALL(stain))
+	if (On_W_tower_portal_level(&u.uz)) {
+	    bx = rn1(COLNO-5, 4);
+	    by = rn1(ROWNO-4, 2);
+	    mk_yendor_entrance(bx, by);
+	    place_branch(Is_branchlev(&u.uz), bx, by);
+	}
+
+	if (bx || IS_STWALL(field) || IS_STWALL(stain))
 		wallification(2,1,COLNO-2,ROWNO-2);
 
 	/* make stairs */
 	if (!selloc_init()) panic("mkbaallev: cannot place stairs");
 
-	for (i=0; i<ROWNO; i++) {
-	    for (j=1; j<COLNO-1; j++) {
+	for (i=0; i<ROWNO-1; i++) {
+	    for (j=1; j<COLNO-2; j++) {
 		if (levl[j][i].typ == ROOM)
 			selloc_store(j,i);
 	    }
 	}
-	selloc_pickrndloc(&bx,&by);
+//	selloc_pickrndloc(&bx,&by);
 	selloc_pickrndloc(&sx,&sy);
 	mkstairs(sx, sy, 1, 0); /* up */
 	while (selloc_pickrndloc(&x,&y) && distmin(x,y, sx,sy) < 20);
 	mkstairs(x, y, 0, 0);	/* down */
 
 	/* Place multi-dungeon branch. */
-	place_branch(Is_branchlev(&u.uz), bx, by);
+//	place_branch(Is_branchlev(&u.uz), bx, by);
 
 	selloc_tini();
 
@@ -2472,23 +2490,32 @@ mkasmolev()
 
 	mk_ice_cavern(ICE, ROOM, 0, 1);
 
+	if (On_W_tower_portal_level(&u.uz)) {
+	    bx = rn1(COLNO-5, 4);
+	    by = rn1(ROWNO-4, 2);
+	    mk_yendor_entrance(bx, by);
+	    wallify_map();
+	    wallification(1,0,COLNO-1,ROWNO-1);
+	    place_branch(Is_branchlev(&u.uz), bx, by);
+	}
+
 	/* make stairs */
 	if (!selloc_init()) panic("mk_ice_cavern: cannot place stairs");
 
-	for (i=0; i<ROWNO; i++) {
-	    for (j=1; j<COLNO-1; j++) {
+	for (i=0; i<ROWNO-1; i++) {
+	    for (j=1; j<COLNO-2; j++) {
 		if (levl[j][i].typ == ROOM)
 			selloc_store(j,i);
 	    }
 	}
-	selloc_pickrndloc(&bx,&by);
+//	selloc_pickrndloc(&bx,&by);
 	selloc_pickrndloc(&sx,&sy);
 	mkstairs(sx, sy, 1, 0); /* up */
 	while (selloc_pickrndloc(&x,&y) && distmin(x,y, sx,sy) < 20);
 	mkstairs(x, y, 0, 0);	/* down */
 
 	/* Place multi-dungeon branch. */
-	place_branch(Is_branchlev(&u.uz), bx, by);
+//	place_branch(Is_branchlev(&u.uz), bx, by);
 
 	selloc_tini();
 
@@ -2603,6 +2630,14 @@ mkjuiblev()
 
 	remove_thinwalls(INVALID_TYPE);
 
+	if (On_W_tower_portal_level(&u.uz)) {
+	    int bx, by;
+	    bx = rn1(COLNO-5, 4);
+	    by = rn1(ROWNO-4, 2);
+	    mk_yendor_entrance(bx, by);
+	    place_branch(Is_branchlev(&u.uz), bx, by);
+	}
+
 	wallify_map();
 	wallification(1,0,COLNO-1,ROWNO-1);
 
@@ -2611,20 +2646,20 @@ mkjuiblev()
 	/* make stairs */
 	if (!selloc_init()) panic("mkjuiblev: cannot place stairs");
 
-	for (i=0; i<ROWNO; i++) {
-	    for (j=1; j<COLNO-1; j++) {
+	for (i=0; i<ROWNO-1; i++) {
+	    for (j=1; j<COLNO-2; j++) {
 		if (levl[j][i].typ == ROOM)
 			selloc_store(j,i);
 	    }
 	}
-	selloc_pickrndloc(&bx,&by);
+//	selloc_pickrndloc(&bx,&by);
 	selloc_pickrndloc(&sx,&sy);
 	mkstairs(sx, sy, 1, 0); /* up */
 	while (selloc_pickrndloc(&x,&y) && distmin(x,y, sx,sy) < 20);
 	mkstairs(x, y, 0, 0);	/* down */
 
 	/* Place multi-dungeon branch. */
-	place_branch(Is_branchlev(&u.uz), bx, by);
+//	place_branch(Is_branchlev(&u.uz), bx, by);
 
 	selloc_tini();
 
@@ -2779,6 +2814,72 @@ schar totyp;
 		}
 	    }
 	}
+}
+
+/*****************************************************************
+   Entrance to Yendor's tower
+ *****************************************************************/
+void
+mk_yendor_entrance(sx, sy)
+xchar sx;
+xchar sy;
+{
+  int x, y, vx, vy, d;
+  schar inner, mid, outer;
+  struct obj *otmp;
+  struct trap *ttmp;
+
+  switch (In_which_hell(&u.uz)) {
+  case INHELL_ASMODEUS:
+    inner = HWALL;
+    mid   = LAVAPOOL;
+    outer = MOAT;
+    break;
+  case INHELL_JUIBLEX:
+    inner = HWALL;
+    mid   = MOAT;
+    outer = BOG;
+    break;
+  case INHELL_BAALZEBUB:
+    inner = HWALL;
+    mid   = TREE;
+    outer = BOG;
+    break;
+  case INHELL_ORCUS:
+    inner = HWALL;
+    mid   = LAVAPOOL;
+    outer = MOAT;
+    break;
+  default:
+    return;
+  }
+
+  for (vy = -3; vy <= 3; vy++) {
+    y = sy + vy;
+    if (!isok(sx, y) ||
+        (IS_STWALL(levl[sx][y].typ) && (levl[sx][y].flags & (W_NONDIGGABLE|W_NONPASSWALL)))) continue;
+    for (vx = -3; vx <= 3; vx++) {
+      x = sx + vx;
+      if (!isok(x, y) ||
+          (IS_STWALL(levl[x][y].typ) && (levl[x][y].flags & (W_NONDIGGABLE|W_NONPASSWALL)))) continue;
+
+      /* if mon/obj/trap is here, remove it */
+      if (MON_AT(x, y)) rloc(m_at(x, y), FALSE);
+      while (OBJ_AT(x, y)) {
+        otmp = level.objects[x][y];
+	obj_extract_self(otmp);
+	obfree(otmp, (struct obj *) 0);	/* frees contents also */
+      }
+      if ((ttmp = t_at(x,y)) != 0) deltrap(ttmp);
+
+      /* draw terrain */
+      d = vx*vx + vy*vy;
+      if      (d ==  0) levl[x][y].typ = ROOM;
+      else if (d <=  2) levl[x][y].typ = inner;
+      else if (d <=  5) levl[x][y].typ = mid;
+      else if (d <= 10) levl[x][y].typ = outer;
+    }
+  }
 }
 
 /*****************************************************************

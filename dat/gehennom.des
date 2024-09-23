@@ -208,7 +208,7 @@ MAZEWALK:(00,09),west
 MAZEWALK:(50,08),east
 STAIR:levregion(01,00,11,20),(0,0,50,17),down
 STAIR:levregion(69,00,79,20),(0,0,50,17),up
-BRANCH:levregion(01,00,11,20),(0,0,50,17)
+BRANCH:levregion(03,02,11,18),(0,0,50,17)
 TELEPORT_REGION:levregion(01,00,11,20),(0,0,50,17),up
 TELEPORT_REGION:levregion(69,00,79,20),(0,0,50,17),down
 FOUNTAIN:place[0]
@@ -300,7 +300,7 @@ ENDMAP
 REGION:(01,00,44,16),unlit,"ordinary"
 STAIR:(33,15),down
 STAIR:levregion(01,00,12,20),levregion(20,01,70,20),up
-BRANCH:levregion(01,00,12,20),levregion(20,01,70,20)
+BRANCH:levregion(03,02,12,18),levregion(20,01,70,20)
 TELEPORT_REGION:levregion(01,00,12,20),levregion(20,01,70,20)
 # Wall "ruins"
 OBJECT:'`',"boulder",(19,02)
@@ -439,7 +439,7 @@ ENDMAP
 RANDOM_PLACES: (28,07),(28,09),(33,07),(33,09),(38,07),(38,09),(43,07),(43,09),(48,07),(48,09)
 
 TELEPORT_REGION: levregion(01,00,79,20),(04,02,53,14)
-BRANCH: levregion(01,00,79,20),(00,00,57,16)
+BRANCH: levregion(03,02,79,18),(00,00,57,16)
 STAIR: levregion(01,00,10,20),(0,0,0,0),up
 STAIR: (21,08),down
 
@@ -547,7 +547,7 @@ M///MMMMtttttttttt|tttt|------tttttttttt/t///////
 ENDMAP
 
 TELEPORT_REGION: levregion(01,00,15,20),(0,0,0,0)
-BRANCH: levregion(01,00,15,20),(0,0,0,0)
+BRANCH: levregion(03,02,15,18),(0,0,0,0)
 STAIR: levregion(01,00,15,20),(0,0,0,0),up
 STAIR: (46,07),down
 

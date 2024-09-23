@@ -2206,6 +2206,7 @@ dlb *fd;
     struct trap *badtrap;
     boolean has_bounds;
     boolean has_transparent;
+    int yendor_branch = -1;
     struct mkroom *croom, *proom;
 
     (void) memset((genericptr_t)&Map[0][0], 0, sizeof Map);
@@ -2379,6 +2380,9 @@ dlb *fd;
 								DRY|WET);
 	    }
 	    lregions[(int)n] = tmplregion;
+	    if (tmplregion.rtype == LR_BRANCH && On_W_tower_portal_level(&u.uz)) {
+		yendor_branch = n;
+            }
 	}
 
 	Fread((genericptr_t) &n, 1, sizeof(n), fd);
@@ -2779,6 +2783,23 @@ dlb *fd;
 	    }
 
 	    walkfrom(x, y);
+    }
+
+    if (yendor_branch >= 0) {
+	int bx, by, trycnt;
+	lev_region *l = &lregions[yendor_branch];
+
+	for (trycnt = 0; trycnt < 200; trycnt++) {
+	    bx = rn1((l->inarea.x2 - l->inarea.x1) + 1, l->inarea.x1);
+	    by = rn1((l->inarea.y2 - l->inarea.y1) + 1, l->inarea.y1);
+	    if (!within_bounded_area(bx,by, l->delarea.x1,l->delarea.y1, l->delarea.x2,l->delarea.y2)) {
+		mk_yendor_entrance(bx, by);
+		l->inarea.x1 = l->inarea.x2 = bx;
+		l->inarea.y1 = l->inarea.y2 = by;
+		l->delarea.x1 = l->delarea.x2 = 0;
+		l->delarea.y1 = l->delarea.y2 = 0;
+	    }
+	}
     }
     if (has_transparent && level.flags.is_cavernous_lev) wallify_map();
     wallification(1, 0, COLNO-1, ROWNO-1);

@@ -561,7 +561,12 @@ struct obj *instr;
 		if (*s == 'H') *s = 'B';
 	    }
 	}
+#ifndef JP
 	You("extract a strange sound from %s!", the(xname(instr)));
+#else
+	You("%s‚ğ%s•sv‹c‚È’²‚×‚ğ‰‰‘t‚µ‚½I", xname(instr),
+	    (instr->otyp == WOODEN_HARP || instr->otyp == MAGIC_HARP) ? "’Ü’e‚¢‚Ä" : "‚¢‚Ä");
+#endif
 #ifdef UNIX386MUSIC
 	/* if user is at the console, play through the console speaker */
 	if (atconsole())

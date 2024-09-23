@@ -1419,6 +1419,16 @@ d_level	*lev;
 	return FALSE;
 }
 
+boolean
+On_W_tower_portal_level(lev)
+d_level	*lev;
+{
+	branch *br;
+	if (!In_hell(lev)) return FALSE;
+	br = Is_branchlev(lev);
+	return (boolean)(br && (On_W_tower_level(&br->end1) || On_W_tower_level(&br->end2)));
+}
+
 #endif /* OVL1 */
 #ifdef OVL0
 
