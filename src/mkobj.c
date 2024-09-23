@@ -558,7 +558,7 @@ boolean artif;
 					otmp->lamplit = 0;
 					blessorcurse(otmp, 5);
 					break;
-		case MAGIC_CANDLE:	otmp->age = 1; /* dummy */
+		case MAGIC_CANDLE:	otmp->age = 1000; /* dummy */
 		case MAGIC_LAMP:	otmp->spe = 1;
 					otmp->lamplit = 0;
 					blessorcurse(otmp, 2);

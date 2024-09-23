@@ -71,7 +71,11 @@ doread()
 	if (IS_GRAVE(levl[u.ux][u.uy].typ))
 	    if (yn(E_J("Do you want to read an epitaph on the grave?",
 		       "•æ”è‚Ì–Á‚ğ“Ç‚İ‚Ü‚·‚©H")) == 'y') {
-		read_engr_at(u.ux, u.uy);
+		if (engr_at(u.ux,u.uy))
+		    read_engr_at(u.ux, u.uy);
+		else
+		    pline(E_J("The epitaph is too faded to read.",
+			      "–Á‚Í•—‰»‚µ‚«‚Á‚Ä‚¢‚ÄA‰½‚à“Ç‚İæ‚ê‚È‚¢B"));
 		return (0);
 	    }
 

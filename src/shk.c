@@ -5154,6 +5154,8 @@ shk_charge(slang, shkp)
 				       "[b]基本サービス または [p]特別サービス"),
 			ident_chars, '\0');
 		if (!type) return;
+	} else if (obj->oclass==TOOL_CLASS) {
+		type = 'p';
 	} else {
 		type = 'b';
 	}

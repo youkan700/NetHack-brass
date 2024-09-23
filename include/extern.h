@@ -90,6 +90,7 @@ E boolean FDECL(artifact_has_invprop, (struct obj *,UCHAR_P));
 E long FDECL(arti_cost, (struct obj *));
 E boolean FDECL(vorpalize_weapon, (struct obj *, struct obj *));
 E void FDECL(know_enchantment_artifact_worker, (struct obj *, winid));
+E int FDECL(get_artifact_adtyp, (struct obj *));
 
 /* ### attrib.c ### */
 
@@ -526,6 +527,7 @@ E int FDECL(In_which_hell, (d_level *));
 E boolean FDECL(In_V_tower, (d_level *));
 E boolean FDECL(On_W_tower_level, (d_level *));
 E boolean FDECL(In_W_tower, (int,int,d_level *));
+E boolean FDECL(On_W_tower_portal_level, (d_level *));
 E void FDECL(find_hell, (d_level *));
 E void FDECL(goto_hell, (BOOLEAN_P,BOOLEAN_P));
 E void FDECL(assign_level, (d_level *,d_level *));
@@ -851,6 +853,7 @@ E char *FDECL(xprname, (struct obj *,const char *,CHAR_P,BOOLEAN_P,long,long));
 E int NDECL(ddoinv);
 E char FDECL(display_inventory, (const char *,BOOLEAN_P));
 E int FDECL(display_binventory, (int,int,BOOLEAN_P));
+E int FDECL(display_underwater, (int,int,BOOLEAN_P));
 E struct obj *FDECL(display_cinventory,(struct obj *));
 E boolean FDECL(worn_wield_only, (struct obj *));
 E boolean FDECL(mon_has_worn_wield_items, (struct monst *));
@@ -1119,9 +1122,10 @@ E void FDECL(mktrap, (int,int,struct mkroom *,coord*));
 E void FDECL(mkstairs, (XCHAR_P,XCHAR_P,CHAR_P,struct mkroom *));
 E void NDECL(mkinvokearea);
 E void FDECL(mk_ice_cavern, (char,char,BOOLEAN_P,BOOLEAN_P));
-E void FDECL (mkghosttown, (int));
-E void FDECL (mkbaallev, (char,char,int));
+E void FDECL(mkghosttown, (int));
+E void FDECL(mkbaallev, (char,char,int));
 E void NDECL(mkhelllev);
+E void FDECL(mk_yendor_entrance, (XCHAR_P,XCHAR_P));
 
 /* ### mkmap.c ### */
 

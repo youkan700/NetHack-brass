@@ -441,6 +441,32 @@ dodrink()
 
 	otmp = getobj(beverages, E_J("drink",&drinkw), 0);
 	if(!otmp) return(0);
+
+	/*
+	 * 3.6:  quan > 1 used to be left to useup(), but we need to
+	 * force the current potion to be unworn, and don't want to do
+	 * that for the entire stack when starting with more than 1.
+	 * [Drinking a wielded potion of polymorph can trigger a shape
+	 * change which causes hero's weapon to be dropped.  In 3.4.x,
+	 * that led to an "object lost" panic since subsequent useup()
+	 * was no longer dealing with an inventory item.  Unwearing
+	 * the current potion is intended to keep it in inventory.]
+	 *
+	 * 3.7: switch back to relying on useup() unless the object is
+	 * actually worn.  Otherwise drinking a stack of unpaid potions
+	 * one by one in a shop makes each one a separate used-up item
+	 * for 'Ix' invent display and for itemized shop billing instead
+	 * of having a single stack with quantity greater than 1.
+	 */
+	if (otmp->owornmask) {
+	    if (otmp->quan > 1L) {
+		otmp = splitobj(otmp, 1L);
+		otmp->owornmask = 0L; /* rest of original stack is unaffected */
+	    } else {
+		remove_worn_item(otmp, FALSE);
+	    }
+	}
+
 	otmp->in_use = TRUE;		/* you've opened the stopper */
 
 #define POTION_OCCUPANT_CHANCE(n) (13 + 2*(n))	/* also in muse.c */
@@ -467,11 +493,13 @@ register struct obj *otmp;
 {
 	int retval;
 
-	if (otmp->quan > 1) otmp = splitobj(otmp, 1);
-	obj_extract_self(otmp);
 	otmp->in_use = TRUE;
 	nothing = unkn = 0;
-	if((retval = peffects(otmp)) >= 0) return(retval);
+
+	/* monster_detect() and object_detect() may call
+	   strange_feeling() which may call docall() and useup() */
+	if((retval = peffects(otmp)) >= 0)
+	    return(retval);
 
 	if(nothing) {
 	    unkn++;
@@ -490,7 +518,7 @@ register struct obj *otmp;
 		} else if(!objects[otmp->otyp].oc_uname)
 			docall(otmp);
 	}
-	obfree(otmp, (struct obj *)0);
+	useup(otmp);
 	return(1);
 }
 

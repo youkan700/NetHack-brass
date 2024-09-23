@@ -494,14 +494,14 @@ struct obj *obj;
 			 "自分の意思で浮遊を制御することはできない。"));
 	    return 0;
 	}
-	if (!obj->owornmask) {
+	if (!obj->owornmask && !obj->oartifact) {
 	    E_J(You("must put it on to invoke its power."),
 		pline("身につけていなければ、浮遊の魔力を引き出すことはできない。"));
 		return 0;
 	}
 	if (Perm_Lev) {
 	    /* permanent levitation source: just toggle levitation  */
-	    if (obj->otyp == LEVITATION_BOOTS) {
+	    if (obj->otyp == LEVITATION_BOOTS || obj->oartifact) {
 		if (Levitation) return stop_levitation();
 		return start_levitation();
 	    }

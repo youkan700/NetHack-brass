@@ -1090,12 +1090,15 @@ register struct obj *obj;
 #endif /*JP*/
 	}
 	if (!invocation_pos(u.ux, u.uy)) {
+	    if (!obj->mcandles7 || obj->spe < 7) {
 #ifndef JP
 		pline_The("%s %s being rapidly consumed!", s, vtense(s, "are"));
 #else
 		pline("%s‚Í‹}‘¬‚É”R‚¦s‚«‚æ‚¤‚Æ‚µ‚Ä‚¢‚éI", s);
 #endif /*JP*/
 		obj->age /= 2;
+		obj->mcandles7 = 0;
+	    }
 	} else {
 		if(obj->spe == 7) {
 		    if (Blind)
@@ -1180,6 +1183,12 @@ struct obj **optr;
 #endif /*JP*/
 		if (!otmp->spe || otmp->age > obj->age)
 		    otmp->age = obj->age;
+		if (obj->otyp == MAGIC_CANDLE &&
+		    (otmp->spe == 0 || otmp->mcandles7)) {
+		    otmp->mcandles7 = 1;
+		} else {
+		    otmp->mcandles7 = 0;
+		}
 		otmp->spe += (int)obj->quan;
 		if (otmp->lamplit && !obj->lamplit)
 #ifndef JP
