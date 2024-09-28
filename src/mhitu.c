@@ -2385,7 +2385,7 @@ gazemu(mtmp, mattk)	/* monster gazes at you */
 		    pline("%s‚Í%sB", Monnam(mtmp),
 			  (mtmp->mnum == PM_MEDUSA && mtmp->mcan) ?
 				"‚Í‚»‚ê‚Ù‚ÇX‚­‚ÍŒ©‚¦‚È‚¢" :
-				"‚ ‚È‚½‚ð—Í‚È‚­‚É‚ç‚Ý‚Â‚¯‚½B");
+				"‚ ‚È‚½‚ð—Í‚È‚­‚É‚ç‚Ý‚Â‚¯‚½");
 #endif /*JP*/
 		    break;
 		}

@@ -593,19 +593,31 @@ dosinkfall()
 	if(uleft && uleft->otyp == RIN_LEVITATION) {
 	    obj = uleft;
 	    Ring_off(obj);
+#ifndef JP
 	    off_msg(obj);
+#else
+	    pline("%sがあなたの左%sから外れた。", doname(obj), body_part(FINGER));
+#endif
 	}
 	if(uright && uright->otyp == RIN_LEVITATION) {
 	    obj = uright;
 	    Ring_off(obj);
+#ifndef JP
 	    off_msg(obj);
+#else
+	    pline("%sがあなたの右%sから外れた。", doname(obj), body_part(FINGER));
+#endif
 	}
 	if(uarmf && uarmf->otyp == LEVITATION_BOOTS) {
 	    obj = uarmf;
 	    (void)Boots_off();
+#ifndef JP
 	    off_msg(obj);
+#else
+	    pline("%sがあなたの%sから脱げた。", doname(obj), body_part(FOOT));
+#endif
 	}
-	HLevitation--;
+	HLevitation &= ~(I_SPECIAL|TIMEOUT);
 }
 #endif
 

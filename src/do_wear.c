@@ -196,7 +196,7 @@ Boots_on()
 //			spoteffects(FALSE);
 //		}
 		if (levitation_on(oldprop, !uarmf->cursed))
-			makeknown(uarmf->otyp);
+			makeknown(LEVITATION_BOOTS);
 		break;
 	default: impossible(unknown_type, c_boots, uarmf->otyp);
     }
@@ -2066,6 +2066,10 @@ dowear()
 		nomul(delay);
 		if (onfunc) (void) onfunc();
 		nomovemsg = onmsg;
+		if (!otmp->owornmask) {
+		    /* maybe levitation boots are removed by a sink */
+		    cancel_don();
+		}
 	} else {
 		if (onfunc) (void) onfunc();
 		on_msg(otmp);

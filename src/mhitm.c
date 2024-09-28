@@ -243,6 +243,7 @@ mattackm(magr, mdef)
 		    strike,	/* hit this attack */
 		    attk,	/* attack attempted this time */
 		    struck = 0,	/* hit at least once */
+		    dmin,       /* distmin() */
 		    res[NATTK];	/* results of all attacks */
     struct attack   *mattk, alt_attk;
     struct permonst *pa, *pd;
@@ -296,6 +297,8 @@ mattackm(magr, mdef)
      */
     magr->mlstmv = monstermoves;
 
+    dmin = distmin(magr->mx,magr->my,mdef->mx,mdef->my);
+
     /* Now perform all attacks for the monster. */
     for (i = 0; i < NATTK; i++) {
 	res[i] = MM_MISS;
@@ -304,6 +307,24 @@ mattackm(magr, mdef)
 	attk = 1;
 	switch (mattk->aatyp) {
 	    case AT_WEAP:		/* "hand to hand" attacks */
+		if (dmin > 1) {
+		    /* D: Do a ranged attack here! */
+		    if (thrwmx(magr, mdef)) {
+			/* polearms */
+			int hitv;
+			hitv = 1 - dmin;
+			if (hitv < -4) hitv = -4;
+			tmp += hitv;
+			goto weaponhit;
+		    }
+		    if (DEADMONSTER(mdef))
+			res[i] = MM_DEF_DIED;
+
+		    if (DEADMONSTER(magr))
+			res[i] |= MM_AGR_DIED;
+
+		    break;
+		}
 		if (magr->weapon_check == NEED_WEAPON || !MON_WEP(magr)) {
 		    magr->weapon_check = NEED_HTH_WEAPON;
 		    if (mon_wield_item(magr) != 0) return 0;
@@ -326,7 +347,9 @@ mattackm(magr, mdef)
 	    case AT_TENT:
 		/* Nymph that teleported away on first attack? */
 		if (distmin(magr->mx,magr->my,mdef->mx,mdef->my) > 1)
-		    return MM_MISS;
+		    /* Continue because the monster may have a ranged
+		     * attack */
+		    continue;  
 		/* Monsters won't attack cockatrices physically if they
 		 * have a weapon instead.  This instinct doesn't work for
 		 * players, or under conflict or confusion. 
@@ -336,6 +359,7 @@ mattackm(magr, mdef)
 		    strike = 0;
 		    break;
 		}
+weaponhit:
 		dieroll = rnd(20 + i);
 		strike = (tmp > dieroll);
 		/* KMH -- don't accumulate to-hit bonuses */
@@ -377,6 +401,10 @@ mattackm(magr, mdef)
 		break;
 
 	    case AT_EXPL:
+		/* D: Prevent explosions from a distance */
+		if (distmin(magr->mx,magr->my,mdef->mx,mdef->my) > 1)
+		    continue;
+
 		res[i] = explmm(magr, mdef, mattk);
 		if (res[i] == MM_MISS) { /* cancelled--no attack */
 		    strike = 0;
@@ -386,6 +414,9 @@ mattackm(magr, mdef)
 		break;
 
 	    case AT_ENGL:
+                /* D: Prevent engulf from a distance */
+		if (distmin(magr->mx,magr->my,mdef->mx,mdef->my) > 1)
+		    continue;
 #ifdef STEED
 		if (u.usteed && (mdef == u.usteed)) {
 		    strike = 0;
@@ -410,13 +441,48 @@ mattackm(magr, mdef)
 		}
 		break;
 
+            case AT_BREA:
+                if (!monnear(magr, mdef->mx, mdef->my)) {
+                    strike = breamm(magr, mattk, mdef);
+		
+		    /* We don't really know if we hit or not, but pretend 
+		     * we did */
+		    if (strike) res[i] |= MM_HIT;
+		    if (DEADMONSTER(mdef)) res[i] = MM_DEF_DIED;
+                    if (DEADMONSTER(magr)) res[i] |= MM_AGR_DIED;
+                }
+                else
+                    strike = 0;
+                break;
+
+            case AT_SPIT:
+                if (!monnear(magr, mdef->mx, mdef->my)) {
+                    strike = spitmx(magr, mattk, mdef);
+
+		    /* We don't really know if we hit or not, but pretend 
+		     * we did */
+		    if (strike) res[i] |= MM_HIT;
+                    if (DEADMONSTER(mdef)) res[i] = MM_DEF_DIED;
+                    if (DEADMONSTER(magr)) res[i] |= MM_AGR_DIED;
+                }
+                break;
+
+//            case AT_MAGC:
+//		/* Tame spellcasters get their day in the sun! */
+//		strike = castmm(magr, mattk, mdef);
+//		if (strike) res[i] |= MM_HIT;
+//		if (DEADMONSTER(mdef)) res[i] = MM_DEF_DIED;
+//		if (DEADMONSTER(magr)) res[i] |= MM_AGR_DIED;
+//		break;
+
 	    default:		/* no attack */
 		strike = 0;
 		attk = 0;
 		break;
 	}
 
-	if (attk && !(res[i] & MM_AGR_DIED))
+	if (attk && !(res[i] & MM_AGR_DIED) && 
+		distmin(magr->mx,magr->my,mdef->mx,mdef->my) <= 1)
 	    res[i] = passivemm(magr, mdef, strike, res[i] & MM_DEF_DIED);
 
 	if (res[i] & MM_DEF_DIED) return res[i];

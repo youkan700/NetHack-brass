@@ -5135,6 +5135,8 @@ shk_charge(slang, shkp)
 	static const struct getobj_words shkchrgw = { 0, 0, "充填してもらう", "充填してもらい" };
 #endif /*JP*/
 
+	charge = 300;
+
 	/* What type of shop are we? */
 	if (shk_class_match(WAND_CLASS, shkp) == SHK_MATCH)
 		obj = getobj(wand_types, E_J("charge",&shkchrgw), getobj_filter_shk_charge_wand);
@@ -5154,17 +5156,13 @@ shk_charge(slang, shkp)
 				       "[b]基本サービス または [p]特別サービス"),
 			ident_chars, '\0');
 		if (!type) return;
+		if (type == 'p')
+			charge = 1000;
 	} else if (obj->oclass==TOOL_CLASS) {
 		type = 'p';
 	} else {
 		type = 'b';
 	}
-
-	/* Compute charge */
-	if (type == 'b')
-		charge = 300;
-	else
-		charge = 1000;
 
 	/* oil lamp and brass lantern is cheaper to charge */
 	if (obj->oclass==TOOL_CLASS &&

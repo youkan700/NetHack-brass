@@ -849,6 +849,8 @@ char *corpse_name;
 short corpse_mnum;
 {
 	struct obj *otmp;
+	struct monst *mtmp;
+	int roll, zmnum;
 
 	/* Grave-robbing is frowned upon... */
 	exercise(A_WIS, FALSE);
@@ -882,9 +884,14 @@ short corpse_mnum;
 	    return;
 	}
 
-	switch (rn2(5)) {
+	roll = rn2(5);
+	if (corpse_name && corpse_mnum == NON_PM)
+	    roll = 4; /* intentionally empty */
+
+	switch (roll) {
 	case 0:
 	case 1:
+no_undead:
 	    You(E_J("unearth a corpse.","死体を掘り出した。"));
 
 	    // named and type-specified epitaph
@@ -904,14 +911,30 @@ short corpse_mnum;
 	    	otmp->age -= 100;		/* this is an *OLD* corpse */;
 	    break;
 	case 2:
+	    zmnum = pm_to_undead(corpse_mnum, S_ZOMBIE);
+	    if (corpse_mnum != NON_PM && zmnum == NON_PM)
+		goto no_undead;
 	    if (!Blind) pline(Hallucination ? E_J("Dude!  The living dead!","見ろよ！ ゾンビだ！") :
  			E_J("The grave's owner is very upset!","墓の主はとても腹を立てた！"));
- 	    (void) makemon(mkclass(S_ZOMBIE,0), u.ux, u.uy, NO_MM_FLAGS);
+	    if (corpse_mnum != NON_PM && zmnum != NON_PM) {
+		mtmp = makemon(&mons[zmnum], u.ux, u.uy, NO_MM_FLAGS);
+		if (mtmp && corpse_name)
+		    (void) christen_monst(mtmp, corpse_name);
+	    } else
+		(void) makemon(mkclass(S_ZOMBIE,0), u.ux, u.uy, NO_MM_FLAGS);
 	    break;
 	case 3:
+	    zmnum = pm_to_undead(corpse_mnum, S_MUMMY);
+	    if (corpse_mnum != NON_PM && zmnum == NON_PM)
+		goto no_undead;
 	    if (!Blind) pline(Hallucination ? E_J("I want my mummy!","見ーられてた！") :
  			E_J("You've disturbed a tomb!","あなたは墓所を騒がせた！"));
- 	    (void) makemon(mkclass(S_MUMMY,0), u.ux, u.uy, NO_MM_FLAGS);
+	    if (corpse_mnum != NON_PM && zmnum != NON_PM) {
+		mtmp = makemon(&mons[zmnum], u.ux, u.uy, NO_MM_FLAGS);
+		if (mtmp && corpse_name)
+		    (void) christen_monst(mtmp, corpse_name);
+	    } else
+		(void) makemon(mkclass(S_MUMMY,0), u.ux, u.uy, NO_MM_FLAGS);
 	    break;
 	default:
 	    /* No corpse */

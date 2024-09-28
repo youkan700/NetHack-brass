@@ -1992,7 +1992,7 @@ struct ext_func_tab extcmdlist[] = {
 	{(char *)0, (char *)0, donull, TRUE},	/* wizdebug */
 #endif
 	{(char *)0, (char *)0, donull, TRUE},	/* wmode */
-	{(char *)0, (char *)0, donull, TRUE},	/* rrllududab */
+	{(char *)0, (char *)0, donull, TRUE},	/* uuddlrlrba */
 	{(char *)0, (char *)0, donull, TRUE},	/* roomlist */
 	{(char *)0, (char *)0, donull, TRUE},	/* cloudlist */
 	{(char *)0, (char *)0, donull, TRUE},	/* objdesc */

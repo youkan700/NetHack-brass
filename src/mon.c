@@ -94,6 +94,38 @@ int mndx;
 	return mndx;
 }
 
+int
+pm_to_undead(mndx, mlet)
+int mndx;
+char mlet;
+{
+	struct permonst *ptr;
+
+	if (mndx == NON_PM) return NON_PM;
+	ptr = &mons[mndx];
+
+	if (mlet == S_ZOMBIE) {
+	    if (is_human(ptr)) return PM_HUMAN_ZOMBIE;
+	    if (is_elf(ptr))   return PM_ELF_ZOMBIE;
+	    if (is_dwarf(ptr)) return PM_DWARF_ZOMBIE;
+	    if (is_gnome(ptr)) return PM_GNOME_ZOMBIE;
+	    if (is_orc(ptr))   return PM_ORC_ZOMBIE;
+	    if (is_giant(ptr)) return PM_GIANT_ZOMBIE;
+	    if (ptr->mlet == S_KOBOLD) return PM_KOBOLD_ZOMBIE;
+	    if (mndx == PM_ETTIN) return PM_ETTIN_ZOMBIE;
+	} else if (mlet == S_MUMMY) {
+	    if (is_human(ptr)) return PM_HUMAN_MUMMY;
+	    if (is_elf(ptr))   return PM_ELF_MUMMY;
+	    if (is_dwarf(ptr)) return PM_DWARF_MUMMY;
+	    if (is_gnome(ptr)) return PM_GNOME_MUMMY;
+	    if (is_orc(ptr))   return PM_ORC_MUMMY;
+	    if (is_giant(ptr)) return PM_GIANT_MUMMY;
+	    if (ptr->mlet == S_KOBOLD) return PM_KOBOLD_MUMMY;
+	    if (mndx == PM_ETTIN) return PM_ETTIN_MUMMY;
+	}
+	return NON_PM;
+}
+
 /* Convert the monster index of some monsters (such as quest guardians)
  * to their generic species type.
  *

@@ -443,6 +443,10 @@ E void FDECL(wary_dog, (struct monst *, BOOLEAN_P));
 E int FDECL(dog_nutrition, (struct monst *,struct obj *));
 E int FDECL(dog_eat, (struct monst *,struct obj *,int,int,BOOLEAN_P));
 E int FDECL(dog_move, (struct monst *,int));
+E struct monst *FDECL(adjacent_enemy, (struct monst *, int, int, BOOLEAN_P));
+E boolean FDECL(has_adjacent_enemy, (struct monst *, int, int, BOOLEAN_P));
+E boolean FDECL(region_has_friendly, (struct monst *, int, int, int));
+E long FDECL(find_friends, (struct monst *, struct monst *, int));
 #ifdef USE_TRAMPOLI
 E void FDECL(wantdoor, (int,int,genericptr_t));
 #endif
@@ -1241,6 +1245,7 @@ E struct permonst * NDECL(morguemon);
 /* ### mon.c ### */
 
 E int FDECL(undead_to_corpse, (int));
+E int FDECL(pm_to_undead, (int,char));
 E int FDECL(genus, (int,int));
 E int FDECL(pm_to_cham, (int));
 E int FDECL(get_true_pm, (struct monst *));
@@ -1443,6 +1448,9 @@ E int FDECL(elem_hits_shield, (struct monst *, int, const char *));
 #ifdef JP
 E void FDECL(bullet_killername,(struct monst *, struct obj *, const char *));
 #endif /*JP*/
+E int FDECL(thrwmx, (struct monst *, struct monst *));
+E int FDECL(spitmx, (struct monst *,struct attack *, struct monst *));
+E int FDECL(breamm, (struct monst *,struct attack *, struct monst *));
 
 /* ### muse.c ### */
 

@@ -1415,6 +1415,7 @@ static const char *epitaphs[] = {
 	"Here lies Ezekiel, age 102.  The good die young.",
 	"Here lies Johnny Yeast. Pardon me for not rising.",
 	"Here lies the body of Jonathan Blake. Stepped on the gas instead of the brake.",
+	"JOSEPH JOESTAR 1920-1939",
 	//--- Generic
 	"Rest in peace",
 	"R.I.P.",
@@ -1440,7 +1441,8 @@ static const char *epitaphs[] = {
 	"Soon ripe. Soon rotten. Soon gone. But not forgotten.",
 	"Go away!",
 	"Their entire party had been slaughtered. Press Enter to leave the cemetery!", /* Wizardry */
-	"It's a sad thing that my adventures had ended here!!"		/* Shadowgate */
+	"It's a sad thing that my adventures had ended here!!",		/* Shadowgate */
+	"I used to be an adventurer like you. then I took an arrow in the knee..." /* Skyrim */
 #else
 	//--- 墓の住人が指定されているもの
 	"スパーキー ── 素晴らしい犬だった",
@@ -1449,6 +1451,7 @@ static const char *epitaphs[] = {
 	"エゼキエルここに眠る。享年102歳。いい奴ほど早く死ぬ",
 	"ジョニー・イーストここに眠る。寝たままで失礼します", /* 実在のおもしろ碑文 */
 	"ジョナサン・ブレーキここに眠る。ブレーキとアクセルを間違えた",
+	"JOSEPH JOESTAR 1920-1939",
 	//--- 一般
 	"安らかに眠れ",
 	"R.I.P.",
@@ -1475,11 +1478,13 @@ static const char *epitaphs[] = {
 	"立ち去れ！",
 	"パーティは全滅した. 墓地を出るにはリターンキーを押してください",	/* Wizardry */
 	"ざんねん!! わたしの ぼうけんは これで おわってしまった!!",		/* シャドウゲイト */
+	"昔はお前のような冒険者だったのだが、膝に矢を受けてしまってな…",	/* Skyrim */
+	"ヘルメットがなかったので即死だった",
 	"何を見て「ヨシ！」って言ったんですか？"
 #endif /*JP*/
 };
 
-#define NUM_NAMED_DEADMEN 6
+#define NUM_NAMED_DEADMEN 7
 static struct {
 
 	char *name;	// name of the resident in this grave
@@ -1492,7 +1497,8 @@ static struct {
 	{ E_J("Mary",           "メリー"),               PM_HUMAN },
 	{ E_J("Ezekiel",        "エゼキエル"),           PM_ELF },
 	{ E_J("Johnny Yeast",   "ジョニー・イースト"),   PM_HUMAN },
-	{ E_J("Jonathan Blake", "ジョナサン・ブレーキ"), PM_HUMAN }
+	{ E_J("Jonathan Blake", "ジョナサン・ブレーキ"), PM_HUMAN },
+	{ "JOJO",					 NON_PM } /* empty grave */
 };
 
 boolean

@@ -9,18 +9,16 @@
 
 extern boolean notonhead;
 
-#ifdef OVL0
+static boolean FDECL(dog_hunger,(struct monst *,struct edog *));
+static int FDECL(dog_invent,(struct monst *,struct edog *,int));
+static int FDECL(dog_goal,(struct monst *,struct edog *,int,int,int));
 
-STATIC_DCL boolean FDECL(dog_hunger,(struct monst *,struct edog *));
-STATIC_DCL int FDECL(dog_invent,(struct monst *,struct edog *,int));
-STATIC_DCL int FDECL(dog_goal,(struct monst *,struct edog *,int,int,int));
-
-STATIC_DCL struct obj *FDECL(DROPPABLES, (struct monst *));
-STATIC_DCL boolean FDECL(can_reach_location,(struct monst *,XCHAR_P,XCHAR_P,
+static struct obj *FDECL(DROPPABLES, (struct monst *));
+static boolean FDECL(can_reach_location,(struct monst *,XCHAR_P,XCHAR_P,
     XCHAR_P,XCHAR_P));
-STATIC_DCL boolean FDECL(could_reach_item,(struct monst *, XCHAR_P,XCHAR_P));
+static boolean FDECL(could_reach_item,(struct monst *, XCHAR_P,XCHAR_P));
 
-STATIC_OVL struct obj *
+static struct obj *
 DROPPABLES(mon)
 register struct monst *mon;
 {
@@ -49,16 +47,15 @@ register struct monst *mon;
 
 static NEARDATA const char nofetch[] = { BALL_CLASS, CHAIN_CLASS, ROCK_CLASS, 0 };
 
-#endif /* OVL0 */
+static boolean FDECL(cursed_object_at, (int, int));
 
-STATIC_OVL boolean FDECL(cursed_object_at, (int, int));
+static xchar gtyp, gx, gy;	/* type and position of dog's current goal */
 
-STATIC_VAR xchar gtyp, gx, gy;	/* type and position of dog's current goal */
+static void FDECL(wantdoor, (int, int, genericptr_t));
+static struct monst* FDECL(best_target, (struct monst *));
+static long FDECL(score_targ, (struct monst *, struct monst *));
 
-STATIC_PTR void FDECL(wantdoor, (int, int, genericptr_t));
-
-#ifdef OVLB
-STATIC_OVL boolean
+static boolean
 cursed_object_at(x, y)
 int x, y;
 {
@@ -212,11 +209,8 @@ boolean devour;
 	return 1;
 }
 
-#endif /* OVLB */
-#ifdef OVL0
-
 /* hunger effects -- returns TRUE on starvation */
-STATIC_OVL boolean
+static boolean
 dog_hunger(mtmp, edog)
 register struct monst *mtmp;
 register struct edog *edog;
@@ -271,7 +265,7 @@ register struct edog *edog;
 /* do something with object (drop, pick up, eat) at current position
  * returns 1 if object eaten (since that counts as dog's move), 2 if died
  */
-STATIC_OVL int
+static int
 dog_invent(mtmp, edog, udist)
 register struct monst *mtmp;
 register struct edog *edog;
@@ -344,7 +338,7 @@ int udist;
 /* set dog's goal -- gtyp, gx, gy
  * returns -1/0/1 (dog's desire to approach player) or -2 (abort move)
  */
-STATIC_OVL int
+static int
 dog_goal(mtmp, edog, after, udist, whappr)
 register struct monst *mtmp;
 struct edog *edog;
@@ -730,6 +724,65 @@ register int after;	/* this is extra fast monster movement */
 		}
 	nxti:	;
 	}
+
+        /* Pet hasn't attacked anything but is considering moving -
+         * now's the time for ranged attacks. Note that the pet can
+         * move after it performs its ranged attack. Should this be
+         * changed?
+         */
+
+        /* Pet may decide not to use ranged attack when confused */
+        if ((!mtmp->mconf || rn2(3)) &&
+	    (attacktype(mtmp->data, AT_WEAP) || ranged_attk(mtmp->data))) {
+                struct monst *mtarg;
+                int hungry = 0;
+                
+                /* How hungry is the pet? */
+                if (!mtmp->isminion) {
+                    struct edog *dog = EDOG(mtmp);
+                    hungry = (monstermoves > (dog->hungrytime + 300));
+                }
+                
+                /* Identify the best target in a straight line from the pet;
+                 * if there is such a target, we'll let the pet attempt an
+                 * attack.
+                 */
+                mtarg = best_target(mtmp);
+
+                /* Hungry pets are unlikely to use breath/spit attacks */
+                if (mtarg && (!hungry || !rn2(5))) {
+                    int mstatus;
+
+                    if (mtarg == &youmonst) {
+                        if (mattacku(mtmp))
+                            return 2;
+                    } else {
+                        mstatus = mattackm(mtmp, mtarg);
+
+                        /* Shouldn't happen, really */
+			if (mstatus & MM_AGR_DIED) return 2;
+
+			/* Allow the targeted nasty to strike back - if
+			 * the targeted beast doesn't have a ranged attack, 
+			 * nothing will happen.
+			 */
+			if ((mstatus & MM_HIT) && !(mstatus & MM_DEF_DIED) &&
+			    rn2(4) && mtarg != &youmonst) {
+
+			    /* Can monster see? If it can, it can retaliate
+			     * even if the pet is invisible, since it'll see
+			     * the direction from which the ranged attack came;
+			     * if it's blind or unseeing, it can't retaliate
+			     */
+			    if (mtarg->mcansee && haseyes(mtarg->data)) {
+			        mstatus = mattackm(mtarg, mtmp); 
+			        if (mstatus & MM_DEF_DIED) return 2;
+			    }
+			}
+		    }
+		}
+        }
+
 newdogpos:
 	if (nix != omx || niy != omy) {
 		struct obj *mw_tmp;
@@ -815,7 +868,7 @@ dognext:
 }
 
 /* check if a monster could pick up objects from a location */
-STATIC_OVL boolean
+static boolean
 could_reach_item(mon, nx, ny)
 struct monst *mon;
 xchar nx, ny;
@@ -834,7 +887,7 @@ xchar nx, ny;
  * Since the maximum food distance is 5, this should never be more than 5 calls
  * deep.
  */
-STATIC_OVL boolean
+static boolean
 can_reach_location(mon, mx, my, fx, fy)
 struct monst *mon;
 xchar mx, my, fx, fy;
@@ -867,11 +920,8 @@ xchar mx, my, fx, fy;
     return FALSE;
 }
 
-#endif /* OVL0 */
-#ifdef OVLB
-
 /*ARGSUSED*/	/* do_clear_area client */
-STATIC_PTR void
+static void
 wantdoor(x, y, distance)
 int x, y;
 genericptr_t distance;
@@ -885,6 +935,274 @@ genericptr_t distance;
     }
 }
 
-#endif /* OVLB */
+static struct monst*
+best_target(mtmp)
+struct monst *mtmp;   /* Pet */
+{
+    int dx, dy;
+    long bestscore = -40000L, currscore;
+    struct monst *best_targ = 0, *temp_targ = 0;
+    struct obj *otmp;
+    boolean is_pole;
+
+    /* Help! */
+    if (!mtmp)
+        return 0;
+
+    /* If the pet is blind, it's not going to see any target */
+    if (!mtmp->mcansee)
+        return 0;
+
+    otmp = MON_WEP(mtmp);
+    is_pole = (otmp && is_ranged(otmp));
+
+    /* Search for any monsters lined up with the pet, within an arbitrary
+     * distance from the pet (7 squares, even along diagonals). Monsters
+     * are assigned scores and the best score is chosen.
+     */
+    for(temp_targ=fmon; temp_targ; temp_targ=temp_targ->nmon) {
+
+	if (DEADMONSTER(temp_targ))
+	    continue;
+
+	if (distmin(mtmp->mx, mtmp->my, temp_targ->mx, temp_targ->my) > BOLT_LIM)
+	    continue;
+
+	if (!m_cansee(mtmp, temp_targ->mx, temp_targ->my))
+	    continue;
+
+	/* Decide how attractive the target is */
+	currscore = score_targ(mtmp, temp_targ);
+	if (currscore < 0) continue;
+
+	/* Is master/pet behind monster? Check up to 15 squares beyond 
+	 * pet.
+	 */
+	if (!is_pole)
+	    currscore += find_friends(mtmp, temp_targ, 15);
+
+	if (currscore > bestscore) {
+	    bestscore = currscore;
+	    best_targ = temp_targ;
+	}
+    }
+
+    /* Filter out targets the pet doesn't like */
+    if (bestscore < 0L)
+        best_targ = 0;
+if (best_targ) {
+    char buf[BUFSZ];
+    sprintf(buf, "%s", noit_mon_nam(mtmp));
+    pline("%s¨%s", buf, noit_mon_nam(best_targ));
+}
+    return best_targ;
+}
+
+static long
+score_targ(mtmp, mtarg)
+struct monst *mtmp, *mtarg;
+{
+        long score = 0L;
+
+        /* If the monster is confused, normal scoring is disrupted -
+         * anything may happen
+         */
+
+	/* Give 1 in 3 chance of safe breathing even if pet is confused or
+	 * if you're on the quest start level */
+        if (!mtmp->mconf || !rn2(3) || Is_qstart(&u.uz)) {
+	    aligntyp align1, align2; /* For priests,  minions */
+	    boolean faith1 = TRUE,  faith2 = TRUE;
+
+	    if (mtmp->isminion) align1 = getmaligntyp(mtmp);
+	    else if (mtmp->ispriest) align1 = getmaligntyp(mtmp);
+	    else faith1 = FALSE;
+	    if (mtarg->isminion) align2 = getmaligntyp(mtarg); /* MAR */
+	    else if (mtarg->ispriest) align2 = getmaligntyp(mtarg); /* MAR */
+	    else faith2 = FALSE;
+
+	    /* Never target quest friendlies */
+	    if (mtarg->data->msound == MS_LEADER 
+			|| mtarg->data->msound == MS_GUARDIAN)
+		return -5000L;
+	    
+            /* D: Fixed angelic beings using gaze attacks on coaligned priests */
+            if (faith1 && faith2 && align1 == align2 && mtarg->mpeaceful) {
+		score -= 5000L;
+		return score;
+            }
+
+            /* Is monster adjacent? */
+            if (distmin(mtmp->mx, mtmp->my, mtarg->mx, mtarg->my) <= 1) {
+                score -= 3000L;
+                return score;
+            }
+
+            /* Is the monster peaceful or tame? */
+            if (/*mtarg->mpeaceful ||*/ mtarg->mtame || mtarg == &youmonst) {
+                 /* Pets will never be targeted */
+                score -= 3000L;
+                return score;
+            }
+
+            /* Target hostile monsters in preference to peaceful ones */
+            if (!mtarg->mpeaceful)
+              score += 10;
+
+            /* Is the monster passive? Don't waste energy on it, if so */
+            if (mtarg->data->mattk[0].aatyp == AT_NONE)
+              score -= 1000;
+
+            /* Even weak pets with breath attacks shouldn't take on very 
+             * low-level monsters. Wasting breath on lichens is ridiculous.
+             */
+            if ((mtarg->m_lev < 2 && mtmp->m_lev > 5) || 
+                            (mtmp->m_lev > 12 && mtarg->m_lev < mtmp->m_lev - 9
+                             && u.ulevel > 8 && mtarg->m_lev < u.ulevel - 7))
+              score -= 25;
+
+            /* And pets will hesitate to attack vastly stronger foes.
+             * This penalty will be discarded if master's in trouble.
+             */
+            if (mtarg->m_lev > mtmp->m_lev + 4L)
+              score -= (mtarg->m_lev - mtmp->m_lev) * 20L;
+
+            /* All things being the same, go for the beefiest monster. This
+             * bonus should not be large enough to override the pet's aversion
+             * to attacking much stronger monsters.
+             */
+            score += mtarg->m_lev * 2 + mtarg->mhp / 3;
+        }
+        
+        /* Fuzz factor to make things less predictable when very
+         * similar targets are abundant
+         */
+        score += rnd(5);
+
+        return score;
+}
+
+long
+find_friends(mtmp, mtarg, maxdist)
+struct monst *mtmp, *mtarg;
+int    maxdist;
+{
+        struct monst *mon;
+	struct bresenham bp;
+        int curx, cury;
+        int dist;
+	long score;
+
+	score = 0;
+	bresenham_init(&bp, mtmp->mx, mtmp->my, mtarg->mx, mtarg->my);
+
+	for (dist = 0; dist <= maxdist; ++dist) {
+	    bresenham_step(&bp);
+	    curx = bp.x;
+	    cury = bp.y;
+
+	    if (!isok(curx, cury))
+		break;
+
+	    if (!ZAP_POS(levl[curx][cury].typ) || closed_door(curx, cury))
+		break;
+
+	    /* If the pet can't see beyond this point, don't
+	     * check any farther
+	     */
+	    if (!m_cansee(mtmp, curx, cury))
+		break;
+
+	    /* Does pet think you're here? */
+	    if (mtmp->mux == curx && mtmp->muy == cury) {
+		score -= 5000;
+		continue;
+	    }
+
+	    mon = m_at(curx, cury);
+
+	    if (!mon || mon == mtarg) continue;
+
+	    if (DEADMONSTER(mon))
+		continue;
+
+	    score += score_targ(mtmp, mon);
+	}
+	return score;
+}
+
+/* Find the first hostile monster adjacent to the location */
+struct monst *
+adjacent_enemy(mtmp, x, y, enemy)
+struct monst *mtmp;
+int x, y;
+boolean enemy;   /* true for enemies, false for friends */
+{
+        int nx, ny, curx, cury;
+        for (ny = -1; ny < 2; ++ny) {
+            for (nx = -1; nx < 2; ++nx) {
+                if (!nx && !ny)
+                    continue;
+                curx = nx + x;
+                cury = ny + y;
+                if (isok(curx, cury)) {
+                    struct monst *mx;
+
+                    if (!enemy && curx == mtmp->mux && cury == mtmp->muy)
+                        return &youmonst;
+                    
+                    mx = m_at(curx, cury);
+
+                    /* D: D'oh missed this null check before */
+                    if (!mx) continue ;
+                    
+                    if (((!enemy && mx->mtame) || 
+                                   (enemy && !mx->mtame && !mx->mpeaceful))
+                          && (!mx->minvis || perceives(mtmp->data)))
+                        return mx;
+                }
+            }
+        }
+        return 0;
+}
+
+/* Returns true if there's a hostile monster adjacent to the location */
+boolean
+has_adjacent_enemy(mtmp, x, y, enemy)
+struct monst *mtmp;   /* Pet */
+int x, y;
+boolean enemy;        /* true for enemies, false for friends */
+{
+        return !!adjacent_enemy(mtmp, x, y, enemy);
+}
+
+/* Returns true if there's a monster friendly to mtmp in the specified region */
+boolean
+region_has_friendly(mtmp, x, y, radius)
+struct monst *mtmp;   /* Monster, probably pet */
+int x, y, radius;
+{
+    int lx = x, rx = x, wy, iy, rad;
+
+    /* Hostile monsters have no friends */
+    if (!mtmp || !mtmp->mtame) return FALSE;
+
+    /* Check for player, other pets or quest friendlies inside region, and
+     * abort if necessary */
+    for (rad = radius - 1; rad >= 0; --rad, --lx, ++rx) {
+	for (iy = -rad, wy = y + iy; iy <= rad; ++iy, wy = y + iy) {
+	    struct monst *m1 = isok(lx, wy)? m_at(lx, wy) : 0,
+	    *m2 = rx != lx && isok(rx, wy)? m_at(lx, wy) : 0;
+#define is_friendly(m1) (m1 && (m1->mtame || m1->data->msound == MS_LEADER || \
+	    m1->data->msound == MS_GUARDIAN))
+
+    	    if (is_friendly(m1) || is_friendly(m2) ||
+	    		((u.ux == lx || u.ux == rx) && u.uy == wy))
+		return TRUE;
+	}
+    }
+    /* Ok to proceed, nobody worthwhile is in here :-) */
+    return FALSE;
+}
 
 /*dogmove.c*/

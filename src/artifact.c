@@ -1341,7 +1341,8 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	    }
 	}
 	if (attacks(AD_DRLI, otmp)) {
-		if (otmp->oartifact == ART_STORMBRINGER && otmp->blessed) {
+		boolean is_sb = (otmp->oartifact == ART_STORMBRINGER);
+		if (is_sb && otmp->blessed) {
 			if (!rn2(50)) {
 				pline_The(E_J("blade glows %s!",
 					      "%sn‚ª‰ĞX‚µ‚¢ƒI[ƒ‰‚ğ•ú‚Á‚½I"),
@@ -1352,7 +1353,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		}
 		if (!youdefend) {
 			if (vis) {
-			    if(otmp->oartifact == ART_STORMBRINGER)
+			    if(is_sb)
 				pline_The(E_J("%s blade draws the life from %s!",
 					      "%sn‚ª%s‚Ì¶–½—Í‚ğ‹z‚¢æ‚Á‚½I"),
 				      hcolor(NH_BLACK),
@@ -1372,7 +1373,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			    *dmgptr = 2 * mdef->mhp + FATAL_DAMAGE_MODIFIER;
 			} else {
 			    int drain = rnd(m_hd(mdef)/*8*/);
-			    if (otmp->cursed) drain += rnd(12);
+			    if (is_sb && otmp->cursed) drain += rnd(12);
 			    *dmgptr += drain;
 			    mdef->mhpmax -= drain;
 			    mdef->m_lev--;
@@ -1385,9 +1386,9 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 			if (Blind)
 				You_feel(E_J("an %s drain your life!","%s‚ª‚ ‚È‚½‚Ì¶–½—Í‚ğ’D‚¤‚Ì‚ğŠ´‚¶‚½I"),
-				    otmp->oartifact == ART_STORMBRINGER ?
+				    is_sb ?
 				    E_J("unholy blade","•sò‚Èn") : E_J("object","•¨‘Ì"));
-			else if (otmp->oartifact == ART_STORMBRINGER)
+			else if (is_sb)
 				pline_The(E_J("%s blade drains your life!","%sn‚ª‚ ‚È‚½‚Ì¶–½—Í‚ğ’D‚Á‚½I"),
 				      hcolor(NH_BLACK));
 			else

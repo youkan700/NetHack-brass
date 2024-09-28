@@ -168,6 +168,8 @@ long hmask, emask;     /* might cancel timeout */
 			(void) swamp_effects();
 			no_msg = TRUE;
 		}
+		if(IS_SINK(levl[u.ux][u.uy].typ))
+			no_msg = TRUE;
 	}
 	if (!trap) {
 	    trap = t_at(u.ux,u.uy);
