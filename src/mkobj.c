@@ -704,7 +704,9 @@ boolean artif;
 		otmp->recharged = 0; /* used to control recharging */
 		break;
 	case RING_CLASS:
-		if(objects[otmp->otyp].oc_charged) {
+		if (otmp->otyp == RIN_PORTAL) {
+		    init_portal_ring(otmp);
+		} else if(objects[otmp->otyp].oc_charged) {
 		    blessorcurse(otmp, 3);
 		    if(rn2(10)) {
 			if(rn2(10) && bcsign(otmp))
@@ -720,8 +722,6 @@ boolean artif;
 			  otmp->otyp == RIN_AGGRAVATE_MONSTER ||
 			  otmp->otyp == RIN_HUNGER || !rn2(9))) {
 			curse(otmp);
-		} else if (otmp->otyp == RIN_PORTAL) {
-		    init_portal_ring(otmp);
 		}
 		break;
 	case ROCK_CLASS:

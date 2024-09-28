@@ -3,24 +3,25 @@
 /* NetHack may be freely redistributed.  See license for details. */
 
 #include "hack.h"
+#include "edog.h"
 
-STATIC_DCL int FDECL(drop_throw,(struct obj *,BOOLEAN_P,int,int));
-STATIC_DCL boolean FDECL(firemu,(struct monst *,struct obj *));
+static int FDECL(drop_throw,(struct obj *,BOOLEAN_P,int,int));
+static boolean FDECL(firemu,(struct monst *,struct obj *));
+static boolean FDECL(m_lined_up, (struct monst *, struct monst *));
 
 #define URETREATING(x,y) (distmin(u.ux,u.uy,x,y) > distmin(u.ux0,u.uy0,x,y))
 
 #define POLE_LIM 5	/* How far monsters can use pole-weapons */
 
-#ifndef OVLB
+#define PET_MISSILE_RANGE2 36 /* Square of distance within which pets shoot */
 
-STATIC_DCL const char *breathwep[];
-
-#else /* OVLB */
+struct monst *target = 0;
+struct monst *archer = 0;
 
 /*
  * Keep consistent with breath weapons in zap.c, and AD_* in monattk.h.
  */
-STATIC_OVL NEARDATA const char *breathwep[] = {
+static const char *breathwep[] = {
 	E_J(	"fragments",			"–‚—Í‚ÌŽU’e"),
 	E_J(	"fire",				"‰Š"),
 	E_J(	"frost",			"“€‹C"),
@@ -314,7 +315,7 @@ const char *nam;
  * Returns 0 if object still exists (not destroyed).
  */
 
-STATIC_OVL int
+static int
 drop_throw(obj, ohit, x, y)
 register struct obj *obj;
 boolean ohit;
@@ -358,9 +359,6 @@ int x,y;
 	} else obfree(obj, (struct obj*) 0);
 	return retvalu;
 }
-
-#endif /* OVLB */
-#ifdef OVL1
 
 /* an object launched by someone/thing other than player attacks a monster;
    return 1 if the object has stopped moving (hit or its range used up) */
@@ -738,9 +736,6 @@ m_throw(mon, x, y, dx, dy, range, obj)
 	}
 }
 
-#endif /* OVL1 */
-#ifdef OVLB
-
 /* Remove an item from the monster's inventory and destroy it. */
 void
 m_useup(mon, obj)
@@ -761,20 +756,40 @@ struct obj *obj;
 	}
 }
 
-#endif /* OVLB */
-#ifdef OVL1
-
 /* monster attempts ranged weapon attack against player */
 /* Return value --> 0:normal  1:polearms(caller should process it) */
 int
 thrwmu(mtmp)
 struct monst *mtmp;
 {
+	return thrwmx(mtmp, &youmonst);
+}
+
+/* monster attempts ranged weapon attack against player or monster */
+/* Return value --> 0:normal  1:polearms(caller should process it) */
+int
+thrwmx(mtmp, mtarg)
+struct monst *mtmp;
+struct monst *mtarg;
+{
 	struct obj *otmp, *mwep;
 	xchar x, y;
 	schar skill;
 	int multishot;
 	const char *onm;
+	xchar tx, ty;
+	boolean at_u, linedup;
+
+	at_u = (mtarg == &youmonst);
+	if (at_u) {
+	    tx = mtmp->mux;
+	    ty = mtmp->muy;
+	    linedup = lined_up2(mtmp);
+	} else {
+	    tx = mtarg->mx;
+	    ty = mtarg->my;
+	    linedup = m_lined_up(mtarg, mtmp);
+	}
 
 	/* Avoid an animated object throwing itself */
 	if (is_animobj(mtmp->data)) return 0;
@@ -792,8 +807,8 @@ struct monst *mtmp;
 
 	/* polearms */
 	if (is_ranged(otmp)) {
-	    if (dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy) > POLE_LIM ||
-		    !couldsee(mtmp->mx, mtmp->my))
+	    if (dist2(mtmp->mx, mtmp->my, tx, ty) > POLE_LIM ||
+		    !(at_u ? couldsee(mtmp->mx, mtmp->my) : m_cansee(mtmp, tx, ty)))
 		return 0;	/* Out of range, or intervening wall */
 	    return 1;
 	}
@@ -805,10 +820,12 @@ struct monst *mtmp;
 	 * going away, you are probably hurt or running.  Give
 	 * chase, but if you are getting too far away, throw.
 	 */
-	if (!lined_up2(mtmp) ||
+	if (at_u) {
+	    if (!linedup ||
 		(URETREATING(x,y) &&
 			rn2(BOLT_LIM - distmin(x,y,mtmp->mux,mtmp->muy))))
-	    return 0;
+		return 0;
+	}
 
 	skill = objects[otmp->otyp].oc_skill;
 	mwep = MON_WEP(mtmp);		/* wielded weapon */
@@ -895,7 +912,7 @@ struct monst *mtmp;
 	m_shot.n = multishot;
 	for (m_shot.i = 1; m_shot.i <= m_shot.n; m_shot.i++)
 	    m_throw(mtmp, mtmp->mx, mtmp->my, tbx/*sgn(tbx)*/, tby/*sgn(tby)*/,
-		    dist2(mtmp->mx, mtmp->my, mtmp->mux, mtmp->muy), otmp);
+		    dist2(mtmp->mx, mtmp->my, tx, ty), otmp);
 	m_shot.n = m_shot.i = 0;
 	m_shot.o = STRANGE_OBJECT;
 	m_shot.s = FALSE;
@@ -904,15 +921,23 @@ struct monst *mtmp;
 	return 0;
 }
 
-#endif /* OVL1 */
-#ifdef OVLB
-
 int
 spitmu(mtmp, mattk)		/* monster spits substance at you */
-register struct monst *mtmp;
-register struct attack *mattk;
+struct monst *mtmp;
+struct attack *mattk;
 {
-	register struct obj *otmp;
+	return spitmx(mtmp, mattk, &youmonst);
+}
+
+int
+spitmx(mtmp, mattk, mtarg)	/* monster spits substance at you or monster */
+struct monst *mtmp;
+struct attack *mattk;
+struct monst *mtarg;
+{
+	struct obj *otmp;
+	xchar tx, ty;
+	boolean at_u, linedup;
 
 	if(mtmp->mcan) {
 
@@ -922,7 +947,19 @@ register struct attack *mattk;
 		                      s_suffix(mon_nam(mtmp)));
 	    return 0;
 	}
-	if(lined_up(mtmp)) {
+
+	at_u = (mtarg == &youmonst);
+	if (at_u) {
+	    tx = mtmp->mux;
+	    ty = mtmp->muy;
+	    linedup = lined_up2(mtmp);
+	} else {
+	    tx = mtarg->mx;
+	    ty = mtarg->my;
+	    linedup = m_lined_up(mtarg, mtmp);
+	}
+
+	if(linedup) {
 		switch (mattk->adtyp) {
 		    case AD_BLND:
 		    case AD_DRST:
@@ -935,20 +972,17 @@ register struct attack *mattk;
 			otmp = mksobj(ACID_VENOM, TRUE, FALSE);
 			break;
 		}
-		if(!rn2(BOLT_LIM-distmin(mtmp->mx,mtmp->my,mtmp->mux,mtmp->muy))) {
+		if(!rn2(BOLT_LIM-distmin(mtmp->mx,mtmp->my,tx,ty))) {
 		    if (canseemon(mtmp))
 			pline(E_J("%s spits venom!","%s‚Í“Å‰t‚ð“f‚«‚©‚¯‚½I"), Monnam(mtmp));
-		    m_throw(mtmp, mtmp->mx, mtmp->my, tbx/*sgn(tbx)*/, tby/*sgn(tby)*/,
-			dist2(mtmp->mx,mtmp->my,mtmp->mux,mtmp->muy), otmp);
+		    m_throw(mtmp, mtmp->mx, mtmp->my, tbx, tby,
+			dist2(mtmp->mx,mtmp->my,tx,ty), otmp);
 		    nomul(0);
 		    return 0;
 		}
 	}
 	return 0;
 }
-
-#endif /* OVLB */
-#ifdef OVL1
 
 int
 breamu(mtmp, mattk)			/* monster breathes at you (ranged) */
@@ -1044,6 +1078,20 @@ struct monst *mtmp;
 	return (boolean)(clear_path(bx,by,ax,ay));
 }
 
+boolean
+m_lined_up(mtarg, mtmp)
+register struct monst *mtarg, *mtmp;
+{
+//        return (linedup(mtarg->mx, mtarg->my, mtmp->mx, mtmp->my));
+	int ax, ay, bx, by;
+	ax = mtarg->mx;	ay = mtarg->my;
+	bx = mtmp->mx;	by = mtmp->my;
+	tbx = ax - bx;	/* These two values are set for use */
+	tby = ay - by;	/* after successful return.	    */
+	if (!tbx && !tby) return FALSE;
+	return (boolean)(clear_path(bx,by,ax,ay));
+}
+
 boolean			/* TRUE: mon did something  FALSE: mon did nothing */
 firemu(mtmp, ogun)
 struct monst *mtmp;
@@ -1103,9 +1151,6 @@ struct obj *ogun;
 	nomul(0);
 	return TRUE;
 }
-
-#endif /* OVL1 */
-#ifdef OVL0
 
 /* Check if a monster is carrying a particular item.
  */
@@ -1203,7 +1248,59 @@ int whodidit;	/* 1==hero, 0=other, -1==just check whether it'll pass thru */
     return hits;
 }
 
-#endif /* OVL0 */
+int
+breamm(mtmp, mattk, mtarg)        /* monster breathes at monster (ranged) */
+register struct monst *mtmp, *mtarg;
+register struct attack  *mattk;
+{
+	struct zapinfo zi;
+
+        int typ = mattk->adtyp;
+
+	if(m_lined_up(mtarg, mtmp)) {
+          pline("breamm[%c]: %d,%d",mtmp->mspec_used ? 'x' : 'o', tbx,tby);
+	    if(mtmp->mcan) {
+		if(flags.soundok) {
+		    if(canseemon(mtmp))
+			pline(E_J("%s coughs.","%s‚ÍŠP‚«‚±‚ñ‚¾B"), Monnam(mtmp));
+		    else
+			You_hear(E_J("a cough.","ŠP‚ð"));
+		}
+		return(0);
+	    }
+	    if(!mtmp->mspec_used && rn2(3)) {
+
+		if((typ >= AD_MAGM) && (typ <= AD_DETH)) {
+
+		    if(canseemon(mtmp))
+			pline(E_J("%s breathes %s!","%s‚Í%s‚ð“f‚¢‚½I"), Monnam(mtmp),
+			      breathwep[typ-1]);
+		    setup_zapinfo(&zi, AT_BREA, typ, mattk->damn, 6,
+				       (const char *)0, (const char *)0, /* use default names */
+				       mtmp);
+		    buzz(&zi, mtmp->mx, mtmp->my, /*sgn*/(tbx), /*sgn*/(tby));
+		    nomul(0);
+		    /* breath runs out sometimes. Also, give monster some
+		     * cunning; don't breath if the target fell asleep.
+		     */
+		    mtmp->mspec_used = 6+rn2(18);
+
+                    /* If this is a pet, it'll get hungry. Minions and
+                     * spell beings won't hunger */
+                    if (mtmp->mtame && !mtmp->isminion) {
+                        struct edog *dog = EDOG(mtmp);
+                        
+                        /* Hunger effects will catch up next move */
+                        if (dog->hungrytime >= 10)
+                            dog->hungrytime -= 10;
+                    }
+		} else impossible("Breath weapon %d used", typ-1);
+	    } else
+                return (0);
+	}
+	return(1);
+}
+
 
 /*DUMMY*/
 
