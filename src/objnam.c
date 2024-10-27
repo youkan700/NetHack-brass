@@ -987,6 +987,8 @@ register struct obj *obj;
 			Strcat(prefix, E_J("poisoned ","“Å‚Ì“h‚ç‚ê‚½"));
 plus:
 		add_erosion_words(obj, prefix);
+		if (Know_enchantment && !Blind)
+		    obj->known = 1;
 		if(obj->known) {
 #ifdef JP
 			if (*prefix) Strcat(prefix, " ");

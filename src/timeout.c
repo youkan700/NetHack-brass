@@ -516,6 +516,11 @@ nh_timeout()
 				spoteffects(TRUE);
 			}
 			break;
+		case KNOW_ENCHANTMENT:
+			if (!Know_enchantment)
+			    You(E_J("are no longer able to know enchantment of weapons and armor.",
+				    "•‹ï‚ÉŠÖ‚·‚éŠÓ’èŠá‚ğ¸‚Á‚½B"));
+			break;
 		}
 	}
 

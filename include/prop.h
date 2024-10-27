@@ -74,7 +74,8 @@
 #define WARN_OF_MON		65
 #define DETECT_MONSTERS		66
 #define LEVATWILL		67
-#define LAST_PROP		(LEVATWILL)
+#define KNOW_ENCHANTMENT	68
+#define LAST_PROP		(KNOW_ENCHANTMENT)
 
 /*** Where the properties come from ***/
 /* Definitions were moved here from obj.h and you.h */

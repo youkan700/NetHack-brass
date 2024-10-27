@@ -3297,6 +3297,9 @@ register boolean force, here;
 				obj->odiluted = 0;
 			} else if (obj->otyp != POT_WATER)
 				obj->odiluted++;
+		} else if (obj->oclass == AMULET_CLASS) {
+			/* amulets somehow don't rust */
+			continue;
 		} else if (is_rustprone(obj) && obj->oeroded < MAX_ERODE &&
 			  !(obj->oerodeproof || (obj->blessed && !rnl(4)))) {
 			/* all metal stuff and armor except (body armor

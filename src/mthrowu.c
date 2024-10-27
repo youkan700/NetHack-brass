@@ -1258,7 +1258,7 @@ register struct attack  *mattk;
         int typ = mattk->adtyp;
 
 	if(m_lined_up(mtarg, mtmp)) {
-          pline("breamm[%c]: %d,%d",mtmp->mspec_used ? 'x' : 'o', tbx,tby);
+//          pline("breamm[%c]: %d,%d",mtmp->mspec_used ? 'x' : 'o', tbx,tby);
 	    if(mtmp->mcan) {
 		if(flags.soundok) {
 		    if(canseemon(mtmp))

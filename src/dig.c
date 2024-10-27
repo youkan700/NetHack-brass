@@ -1523,6 +1523,7 @@ bury_an_obj(otmp)
 {
 	struct obj *otmp2;
 	boolean under_ice;
+	boolean is_bones;
 
 #ifdef DEBUG
 	pline("bury_an_obj: %s", xname(otmp));
@@ -1556,11 +1557,16 @@ bury_an_obj(otmp)
 		obfree(otmp, (struct obj *)0);
 		return(otmp2);
 	}
+
+	/* bones? */
+	is_bones = (IS_GRAVE(levl[otmp->ox][otmp->oy].typ) &&
+		    (levl[otmp->ox][otmp->oy].gravemask & GRV_BONES));
+
 	/*
 	 * Start a rot on organic material.  Not corpses -- they
 	 * are already handled.
 	 */
-	if (otmp->otyp == CORPSE ||
+	if (otmp->otyp == CORPSE || is_bones ||
 	    (otmp->otyp == STATUE && get_material(otmp) == LIQUID)) {
 	    ;		/* should cancel timer if under_ice */
 	} else if ((under_ice ? otmp->oclass == POTION_CLASS : is_organic(otmp))
