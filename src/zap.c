@@ -1974,7 +1974,8 @@ register struct obj *obj;
 			    (!otmp->oeroded && !otmp->oeroded2) ||
 			    otmp->oclass == FOOD_CLASS || otmp->oclass == POTION_CLASS ||
 			    otmp->oclass == SCROLL_CLASS || otmp->oclass == SPBOOK_CLASS ||
-			    otmp->oclass == GEM_CLASS || otmp->oclass == ROCK_CLASS) {
+			    otmp->oclass == GEM_CLASS || otmp->oclass == ROCK_CLASS ||
+			    otmp->oclass == AMULET_CLASS) {
 			    pline(nothing_happens);
 			    break;
 			}

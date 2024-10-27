@@ -1025,6 +1025,8 @@ int final;	/* 0 => still in progress; 1 => over, survived; 2 => dead */
 	if (Invulnerable) you_are("invulnerable");
 	if (u.uedibility || (uarmc && uarmc->otyp == KITCHEN_APRON && !uarmc->cursed))
 		you_can("recognize detrimental food");
+	if (Know_enchantment)
+		you_can("know enchantment of weapons and armor");
 #else /*JP*/
 	if (Fire_resistance)
 	    if (is_full_resist(FIRE_RES)) you_have("火から完全に守られて");
@@ -1051,6 +1053,8 @@ int final;	/* 0 => still in progress; 1 => over, survived; 2 => dead */
 	if (Invulnerable) you_are("無敵");
 	if (u.uedibility || (uarmc && uarmc->otyp == KITCHEN_APRON && !uarmc->cursed))
 		you_can("有害な食物を見分けることが");
+	if (Know_enchantment)
+		you_can("武具の強化度を見分けることが");
 #endif /*JP*/
 
 	/*** Troubles ***/

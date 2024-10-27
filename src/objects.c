@@ -671,9 +671,9 @@ TOOL("magic lamp", "lamp",      0, 0, 1, 0,   2, 20,1000, COPPER, CLR_YELLOW, SU
 TOOL("expensive camera", (char *)0,
 				1, 0, 0, 1,  15, 12, 200, PLASTIC, CLR_BLACK, COMMON),
 #ifndef JP
-TOOL("mirror", "looking glass",   0, 0, 0, 0,  30, 13,  10, GLASS, HI_SILVER, COMMON),
+TOOL("mirror", "looking glass",   0, 0, 0, 0,  25, 13,  10, GLASS, HI_SILVER, COMMON),
 #else /*JP*/
-TOOL("mirror", (char *)0,         1, 0, 0, 0,  30, 13,  10, GLASS, HI_SILVER, COMMON),
+TOOL("mirror", (char *)0,         1, 0, 0, 0,  25, 13,  10, GLASS, HI_SILVER, COMMON),
 #endif /*JP*/
 TOOL("crystal ball", "glass orb",
 				0, 0, 1, 1,  15, 75,  60, GLASS, HI_GLASS, FINE),
@@ -687,11 +687,11 @@ TOOL("orb of destruction", "glass orb",
 #ifndef MAGIC_GLASSES
 TOOL("lenses", (char *)0,	1, 0, 0, 0,  15,  3,  80, GLASS, HI_GLASS, FINE),
 #else
-GLASSES("glasses of magic reading",   "wire-rimmed glasses",   1, 0,	      10, 3, 80, FINE),
-GLASSES("glasses of gaze protection", "rimless glasses",       1, 0,	       2, 3, 80, EXCELLENT),
-GLASSES("glasses of infravision",     "silver-rimmed glasses", 1, INFRAVISION, 1, 3, 80, FINE),
-GLASSES("glasses of true sight",      "thick glasses",	       1, SEE_INVIS,   1, 3, 80, EXCELLENT),
-GLASSES("glasses of phantasmagoria",  "gold-rimmed glasses",   1, HALLUC,      1, 3, 80, COMMON),
+GLASSES("glasses of magic reading",   "wire-rimmed glasses",   1, 0,	            10, 3, 80, FINE),
+GLASSES("glasses of gaze protection", "rimless glasses",       1, 0,	             3, 3, 80, EXCELLENT),
+GLASSES("glasses of know enchantment","silver-rimmed glasses", 1, KNOW_ENCHANTMENT,  3, 3, 80, FINE),
+GLASSES("glasses of true sight",      "thick glasses",	       1, SEE_INVIS,         2, 3, 80, EXCELLENT),
+GLASSES("glasses of phantasmagoria",  "gold-rimmed glasses",   1, HALLUC,            2, 3, 80, COMMON),
 #endif
 TOOL("blindfold", (char *)0,    1, 0, 0, 0,  50,  2,  20, CLOTH, CLR_BLACK, COMMON),
 TOOL("towel", (char *)0,        1, 0, 0, 0,  50,  2,  50, CLOTH, CLR_MAGENTA, COMMON),

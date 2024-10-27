@@ -343,6 +343,10 @@
 #define EUnchanging		u.uprops[UNCHANGING].extrinsic
 #define Unchanging		(HUnchanging || EUnchanging)	/* KMH */
 
+#define HKnow_enchantment	u.uprops[KNOW_ENCHANTMENT].intrinsic
+#define EKnow_enchantment	u.uprops[KNOW_ENCHANTMENT].extrinsic
+#define Know_enchantment	(HKnow_enchantment || EKnow_enchantment)
+
 #define HFast			u.uprops[FAST].intrinsic
 #define EFast			u.uprops[FAST].extrinsic
 #define TFast			(HFast & TIMEOUT)

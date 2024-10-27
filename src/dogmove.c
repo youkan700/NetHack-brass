@@ -990,11 +990,11 @@ struct monst *mtmp;   /* Pet */
     /* Filter out targets the pet doesn't like */
     if (bestscore < 0L)
         best_targ = 0;
-if (best_targ) {
-    char buf[BUFSZ];
-    sprintf(buf, "%s", noit_mon_nam(mtmp));
-    pline("%s¨%s", buf, noit_mon_nam(best_targ));
-}
+//if (best_targ) {
+//    char buf[BUFSZ];
+//    sprintf(buf, "%s", noit_mon_nam(mtmp));
+//    pline("%s¨%s", buf, noit_mon_nam(best_targ));
+//}
     return best_targ;
 }
 

@@ -1041,11 +1041,12 @@ boolean atme;
 			pline(nothing_happens);
 		break;
 	case SPE_KNOW_ENCHANTMENT:
-		if (!uwep || (uwep && !(uwep->oclass == WEAPON_CLASS || is_weptool(uwep))))
-			You(E_J("don't wield any weapons.","•Ší‚ğ‘•”õ‚µ‚Ä‚¢‚È‚¢B"));
-		else {
-			know_enchantment(uwep);
-			if (not_fully_identified(uwep)) identify(uwep);
+		if (!Know_enchantment) {
+		    You(E_J("can know enchantment of weapons and armor.",
+			    "•‹ï‚É‘Î‚·‚éŠÓ’èŠá‚ğ“¾‚½B"));
+		}
+		if ((HKnow_enchantment & TIMEOUT) < 100) {
+		    HKnow_enchantment += (role_skill >= P_SKILLED) ? 50 : 20;
 		}
 		break;
 	case SPE_TORCH:

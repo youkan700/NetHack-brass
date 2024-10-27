@@ -323,6 +323,10 @@
 [plain dragon scale mail
 	ドラゴンの鱗鎧が魔力を消耗し尽くし、色を失ったものだ。
 	いまだ強力な鎧ではあるが、特別な効果はない。
+[Chromatic Dragon scale mail
+	クロマティック・ドラゴンの鱗を綴って作り上げられた、恐るべき魔法の鎧だ。
+	この鎧は、全てのドラゴン鎧の能力を兼ね備えており、着用者に強力な耐性を
+	もたらす。だが、この品物からは不吉なオーラが感じられる…。
 [gray dragon scales
 [silver dragon scales
 [red dragon scales
@@ -335,6 +339,9 @@
 [deep dragon scales
 [plain dragon scales
 	%dだ。
+[Chromatic Dragon scales
+	クロマティック・ドラゴンの死体から剥ぎ取った万色の鱗だ。
+	恐るべき力の片鱗と、不吉なオーラが感じられる…。
 [plate mail
 	全身を厚い板金で覆う、頑丈な鎧だ。
 [splint mail
@@ -843,8 +850,8 @@
 	少しばかりの助けをもたらしてくれる。
 (glasses of gaze protection
 	この眼鏡は、魔力を帯びた眼光や閃光からあなたを保護してくれる。
-(glasses of infravision
-	この眼鏡は、あなたに赤外線視の能力をもたらしてくれる。
+(glasses of know enchantment
+	この眼鏡は、武具の強化値を知る能力をもたらしてくれる。
 (glasses of true sight
 	この眼鏡をかけていると、怪物の真の姿を見破ることができ、
 	また透明な怪物を視認することもできる。
