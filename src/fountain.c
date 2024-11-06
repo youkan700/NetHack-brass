@@ -399,6 +399,7 @@ register struct obj *obj;
 			obj->oerodeproof = FALSE;
 			exercise(A_WIS, FALSE);
 		} else {
+			int oldmat;
 			/* The lady of the lake acts! - Eric Backus */
 			/* Be *REAL* nice */
 	  pline(E_J("From the murky depths, a hand reaches up to bless the sword.",
@@ -406,7 +407,9 @@ register struct obj *obj;
 			pline(E_J("As the hand retreats, the fountain disappears!",
 				  "Žè‚ª‘Þ‚­‚ÆAò‚ÍÁ‚¦Ž¸‚¹‚½I"));
 			/*obj = oname(obj, artiname(ART_EXCALIBUR));*/
+			oldmat = obj->madeof;
 			create_artifact(obj, ART_EXCALIBUR);
+			if (oldmat) change_material(obj, oldmat);
 			discover_artifact(ART_EXCALIBUR);
 			bless(obj);
 			obj->oeroded = obj->oeroded2 = 0;

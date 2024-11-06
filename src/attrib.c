@@ -43,6 +43,7 @@ const struct innate {
 
 	bar_abil[] = { {	 1, &(HPoison_resistance), "", "" },
 		     {   7, &(HFast), E_J("quick","r•q‚É‚È‚Á‚½"), E_J("slow","r•q‚³‚ğ¸‚Á‚½") },
+		     {  10, &(HKnow_enchantment), E_J("discerning","–Ú—˜‚«‚É‚È‚Á‚½"), E_J("unselective","ŠÓ’èŠá‚ğ¸‚Á‚½") },
 		     {  15, &(HStealth), E_J("stealthy","r‰B–§«‚Í‚‚Ü‚Á‚½"), E_J("","r‰B–§«‚Í’á‚­‚È‚Á‚½") },
 		     {	 0, 0, 0, 0 } },
 

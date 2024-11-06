@@ -1141,6 +1141,20 @@ struct obj **optr;
 			  "ごめんなさい、水と火は相容れないんです。"));
 		return;
 	}
+	if(obj->oerodeproof) {
+#ifndef JP
+		pline_The("%s %sn't ignite.", s, (obj->quan > 1) ? "do" : "does");
+#else
+		pline("%sこのろうそくには火がつかない%s",
+			(obj->rknown) ? "" : "どういうわけか、",
+			(obj->rknown) ? "。" : "！");
+#endif /*JP*/
+		if (!obj->rknown) {
+		    obj->rknown = 1;
+		    update_inventory();
+		}
+		return;
+	}
 
 	otmp = carrying(CANDELABRUM_OF_INVOCATION);
 	if(!otmp || otmp->spe == 7) {

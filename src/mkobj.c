@@ -1055,6 +1055,7 @@ const struct probmat primitive_weapon_probs1[] = {
 const struct probmat silver_weapon_probs0[] = {
 { 900, SILVER	},
 { 100, IRON	},
+{   0, MITHRIL	},
 {   0, 0	} /* terminator */
 };
 
@@ -1063,22 +1064,25 @@ const struct probmat silver_weapon_probs1[] = {
 { 810, IRON	},
 { 180, SILVER	},
 {  10, METAL	},
+{   0, MITHRIL	},
 {   0, 0	} /* terminator */
 };
 
 /* silver weapon(middle prob) */
 const struct probmat silver_weapon_probs2[] = {
-{ 900, IRON	},
+{ 899, IRON	},
 {  90, SILVER	},
 {  10, METAL	},
+{   1, MITHRIL	},
 {   0, 0	} /* terminator */
 };
 
 /* silver weapon(low prob) */
 const struct probmat silver_weapon_probs3[] = {
-{ 960, IRON	},
+{ 959, IRON	},
 {  35, SILVER	},
 {   5, METAL	},
+{   1, MITHRIL	},
 {   0, 0	} /* terminator */
 };
 

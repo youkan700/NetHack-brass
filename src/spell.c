@@ -1319,7 +1319,9 @@ int spell;
 	 * in that spell type.
 	 */
 	skill = P_SKILL(spell_skilltype(spellid(spell)));
-	difficulty= (spellev(spell)-1) * 4 - ((skill / 10) + (u.ulevel/10/*3*/) + 1);
+	difficulty = (spellev(spell)-1) * 4 - ((u.ulevel/3) + 1);
+	difficulty -= (skill >= 50) ? ((skill - 50) * 12 / 50 + 6) :
+				      (skill * 6 / 50);
 
 	if (difficulty > 0) {
 		/* Player is too low level or unskilled. */

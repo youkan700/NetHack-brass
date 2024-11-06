@@ -1067,6 +1067,7 @@ h_filter(line)
 }
 
 static const char *special_oracle[] = {
+#ifndef JP
 	"\"...it is rather disconcerting to be confronted with the",
 	"following theorem from [Baker, Gill, and Solovay, 1975].",
 	"",
@@ -1077,6 +1078,18 @@ static const char *special_oracle[] = {
 	"This provides impressive evidence that the techniques that are",
 	"currently available will not suffice for proving that P != NP or          ",
 	"that P == NP.\"  [Garey and Johnson, p. 185.]"
+#else
+	"「次の定理[Baker, Gill, and Solovay, 1975]に直面することは",
+	"　むしろ困惑することである．",
+	"",
+	"　定理 7.18 次のような再帰的言語 A，Bが存在する",
+	"　　(1)  P(A) == NP(A)，かつ",
+	"　　(2)  P(B) != NP(B)",
+	"",
+	"　これは現在 P != NPであるかまたは P == NPであるかを証明する",
+	"　有効な手法がないことを強く示している．」",
+	"[Garey and Johnson, p. 185.]"
+#endif
 };
 
 /*

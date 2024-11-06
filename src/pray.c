@@ -911,10 +911,13 @@ gcrownu()
 	if (class_gift != STRANGE_OBJECT) {
 	    ;		/* already got bonus above */
 	} else if (obj && obj->otyp == LONG_SWORD && !obj->oartifact) {
+	    int oldmat;
 	    if (!Blind)
 		Your(E_J("sword shines brightly for a moment.",
 			 "Œ•‚Íˆêu‚Ü‚Ô‚µ‚­‹P‚¢‚½B"));
+	    oldmat = obj->madeof;
 	    create_artifact(obj, ART_EXCALIBUR);
+	    if (oldmat) change_material(obj, oldmat);
 	    if (obj && obj->oartifact == ART_EXCALIBUR) u.ugifts++;
 	}
 	/* acquire Excalibur's skill regardless of weapon or gift */
