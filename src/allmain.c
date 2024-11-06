@@ -424,8 +424,8 @@ once_per_player_input_things()
 	    if(!is_lava(u.ux,u.uy))
 		u.utrap = 0;
 	    else if (!u.uinvulnerable) {
-		u.utrap -= 1<<8;
-		if(u.utrap < 1<<8) {
+		u.utrap -= (1<<8);
+		if(u.utrap < (1<<8)) {
 		    killer_format = KILLED_BY;
 		    killer = E_J("molten lava","Ï‚¦‚½‚¬‚é—nŠâ‚É’¾‚İ");
 		    You(E_J("sink below the surface and die.",

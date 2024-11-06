@@ -283,7 +283,7 @@ const struct Role roles[] = {
 	/* Init   Lower  Higher */
 	{ 13, 0,  0, 8,  1, 0 },        /* Hit points */
 	{  4, 3,  0, 2,  0, 2 },10,     /* Energy */
-	10, 9, 2, 1, 10, A_DEX, SPE_REMOVE_CURSE,   -4
+	10, 7, -2, 2, 10, A_INT, SPE_REMOVE_CURSE,   -4
 },
 /*	ローマ・カトリック教会の階層組織
 	教皇 > 枢機卿 > 大司教 > 司教 > 司祭 > 助祭

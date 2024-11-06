@@ -233,15 +233,18 @@ const struct shassortment tailorshop_assortment[] = {
 	{ 6, -DUNCE_CAP			}, { 5, -KATYUSHA		},
 	{ 4, -NURSE_CAP			}, { 7, -LEATHER_JACKET		},
 	{ 4, -MAID_DRESS		}, { 4, -NURSE_UNIFORM		},
-	{10, -ROBE			}, { 2, -ROBE_OF_PROTECTION	},
+	{ 5, -ROBE			}, { 2, -ROBE_OF_PROTECTION	},
 	{ 2, -ROBE_OF_POWER		}, { 5, -ROBE_OF_WEAKNESS	},
-	{10, -HAWAIIAN_SHIRT		}, { 7, -T_SHIRT		},
-	{ 7, -ELVEN_CLOAK		}, { 5, -DWARVISH_CLOAK		},
+	{ 7, -HAWAIIAN_SHIRT		}, { 7, -T_SHIRT		},
+	{ 5, -ELVEN_CLOAK		}, { 5, -DWARVISH_CLOAK		},
 	{ 5, -OILSKIN_CLOAK		}, { 5, -KITCHEN_APRON		},
 	{ 5, -FRILLED_APRON		}, { 5, -ALCHEMY_SMOCK		},
 	{ 5, -LEATHER_CLOAK		}, { 3, -CLOAK_OF_PROTECTION	},
 	{ 4, -CLOAK_OF_INVISIBILITY	}, { 3, -CLOAK_OF_MAGIC_RESISTANCE },
-	{ 3, -CLOAK_OF_DISPLACEMENT	}, {0, 0}
+	{ 3, -CLOAK_OF_DISPLACEMENT	}, { 2, -GLASSES_OF_MAGIC_READING },
+	{ 2, -GLASSES_OF_GAZE_PROTECTION}, { 2, -GLASSES_OF_KNOW_ENCHANTMENT },
+	{ 2, -GLASSES_OF_TRUE_SIGHT	}, { 2, -GLASSES_OF_PHANTASMAGORIA },
+	{ 0, 0 }
 };
 
 const struct shclass shtypes[] = {

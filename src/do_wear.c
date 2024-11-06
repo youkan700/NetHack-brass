@@ -1132,17 +1132,6 @@ boolean gone;
 		/* Make invisible monsters go away */
 		if (see_invis_off())
 		    makeknown(RIN_SEE_INVISIBLE);
-//		if (!See_invisible) {
-//		    set_mimic_blocking(); /* do special mimic handling */
-//		    see_monsters();
-//		}
-//
-//		if (Invisible && !Blind) {
-//		    newsym(u.ux,u.uy);
-//		    pline(E_J("Suddenly you cannot see yourself.",
-//			      "ìÀëRÅAÇ†Ç»ÇΩÇÕé©ï™Ç™å©Ç¶Ç»Ç≠Ç»Ç¡ÇΩÅB"));
-//		    makeknown(RIN_SEE_INVISIBLE);
-//		}
 		break;
 	case RIN_INVISIBILITY:
 		if (!Invis && !BInvis && !Blind) {
@@ -1196,8 +1185,10 @@ boolean gone;
 		/* If you're no longer protected, let the chameleons
 		 * change shape again -dgk
 		 */
-		if (restartcham())
-		    makeknown(RIN_PROTECTION_FROM_SHAPE_CHAN);
+		if (!Protection_from_shape_changers) {
+		    if (restartcham())
+			makeknown(RIN_PROTECTION_FROM_SHAPE_CHAN);
+		}
 		break;
     }
 }
@@ -1310,8 +1301,10 @@ register struct obj *otmp;
 		    makeknown(GLASSES_OF_TRUE_SIGHT);
 		EProtection_from_shape_changers &= ~W_TOOL;
 		ESearching                      &= ~W_TOOL;
-		if (restartcham())
-		    makeknown(GLASSES_OF_TRUE_SIGHT);
+		if (!Protection_from_shape_changers) {
+		    if (restartcham())
+			makeknown(GLASSES_OF_TRUE_SIGHT);
+		}
 		return;
 	    } else
 		see_monsters();

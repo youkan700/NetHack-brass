@@ -2523,14 +2523,15 @@ restartcham()
 	int cnt = 0;
 
 	for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
-		if (DEADMONSTER(mtmp)) continue;
+	    if (DEADMONSTER(mtmp)) continue;
+	    if (!mtmp->mcan)
 		mtmp->cham = pm_to_cham(monsndx(mtmp->data));
-		if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping &&
-				cansee(mtmp->mx, mtmp->my)) {
-			set_mimic_sym(mtmp);
-			newsym(mtmp->mx,mtmp->my);
-			cnt++;
-		}
+	    if (mtmp->data->mlet == S_MIMIC && mtmp->msleeping &&
+		cansee(mtmp->mx, mtmp->my)) {
+		set_mimic_sym(mtmp);
+		newsym(mtmp->mx,mtmp->my);
+		cnt++;
+	    }
 	}
 	return cnt;
 }

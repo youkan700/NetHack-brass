@@ -258,6 +258,10 @@ boolean with_you;
 	    /* tail segs are not yet initialized or displayed */
 	} else mtmp->wormno = 0;
 
+	/* update shape-changers in case protection against
+	   them is different now than when the level was saved */
+	restore_cham(mtmp);
+
 	/* some monsters might need to do something special upon arrival
 	   _after_ the current level has been fully set up; see dochug() */
 	mtmp->mstrategy |= STRAT_ARRIVE;
