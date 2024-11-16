@@ -5480,7 +5480,7 @@ struct obj *obj;
 	ep->mstolen[i].m_id = mtmp->m_id;
 	ep->mstolen[i].o_id = (obj->oclass == COIN_CLASS) ? 0 : obj->o_id;
 	i++;
-	if (i > MSTOLENSZ) i = 0;
+	if (i >= MSTOLENSZ) i = 0;
 }
 
 /* Anti-pet-theft */

@@ -576,7 +576,10 @@ boolean ignore_oquan;
 			Sprintf(eos(buf), "%s‚Ì", JMONNAM(obj->corpsenm));
 			if (Role_if(PM_ARCHEOLOGIST) && (obj->spe & STATUE_HISTORIC))
 			    Strcat(buf, "—ðŽj“I‚È");
-			Strcat(buf, material_prefix(obj));
+			if (obj->spe & STATUE_ORACLE)
+			    Strcat(buf, "‘å—Î‚Ì");
+			else
+			    Strcat(buf, material_prefix(obj));
 			Strcat(buf, actualn);
 		    }
 		} else Strcpy(buf, actualn);
@@ -2261,7 +2264,7 @@ boolean from_user;
 	int eroded, eroded2, erodeproof;
 	int material;
 	int halfeaten, mntmp, contents;
-	int islit, unlabeled, ishistoric, isdiluted;
+	int islit, unlabeled, ishistoric, isdiluted, ismarble;
 	int parenthesis_done;
 	int isdancing, istrapped;
 #ifdef JP
@@ -2297,7 +2300,7 @@ boolean from_user;
 #ifdef JP
 		jmonnam =
 #endif /*JP*/
-		halfeaten = islit = unlabeled = ishistoric = isdiluted = 0;
+		halfeaten = islit = unlabeled = ishistoric = isdiluted = ismarble = 0;
 	mntmp = NON_PM;
 #define UNDEFINED 0
 #define EMPTY 1
@@ -2474,6 +2477,12 @@ prefixes:
 #endif /*JP*/
 			  ) {
 			isdiluted = 1;
+		} else if (!strncmpi(bp, "marble ", l=7)
+#ifdef JP
+			  || !strncmp(bp, "‘å—Î‚Ì", l=8)
+#endif /*JP*/
+			  ) {
+			ismarble = 1;
 		} else if(!strncmpi(bp, "empty ", l=6)
 #ifdef JP
 			  || !strncmp(bp, "‹ó‚Á‚Û‚Ì", l=8)
@@ -2635,6 +2644,11 @@ prefixes:
 	    if (!strcmpr(bp, "‚Ì")) {
 		p -= 2;
 		*p = 0;
+		if (!strcmpr(bp, "‚Ì‘å—Î")) {
+		    p -= 8;
+		    *p = 0;
+		    ismarble = 1;
+		}
 	    } else if (!strcmpr(bp, "‚ÌÎ")) {
 		p -= 4;
 		*p = 0;
@@ -3491,6 +3505,10 @@ typfnd:
 			if (Has_contents(otmp) && verysmall(&mons[mntmp]))
 			    delete_contents(otmp);	/* no spellbook */
 			otmp->spe = ishistoric ? STATUE_HISTORIC : 0;
+			if (ismarble) {
+			    otmp->spe |= STATUE_ORACLE;
+			    otmp->color = CLR_WHITE;
+			}
 			break;
 		case SCALE_MAIL:
 			/* Dragon mail - depends on the order of objects */

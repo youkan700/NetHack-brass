@@ -1008,6 +1008,9 @@ struct mkroom	*croom;
 	if (o->material != -127)	/* That means NOT RANDOM! */
 	    change_material(otmp, o->material);
 
+	if (otmp->otyp == STATUE && (otmp->spe & STATUE_ORACLE))
+	    otmp->color = CLR_WHITE;
+
 	switch (o->curse_state) {
 	      case 1:	bless(otmp); break; /* BLESSED */
 	      case 2:	unbless(otmp); uncurse(otmp); break; /* uncursed */
