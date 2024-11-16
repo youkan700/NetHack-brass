@@ -210,8 +210,8 @@ const struct shassortment liquorshop_assortment[] = {
 	{100, POTION_CLASS}, {0, 0}
 };
 const struct shassortment foodshop_assortment[] = {
-	{83, FOOD_CLASS}, {5, -POT_FRUIT_JUICE}, {4, -POT_BOOZE},
-	{5, -POT_WATER}, {3, -ICE_BOX}, {0, 0}
+	{80, FOOD_CLASS}, {5, -POT_FRUIT_JUICE}, {4, -POT_BOOZE},
+	{5, -POT_WATER}, {3, -ICE_BOX}, {3, -TINNING_KIT}, {0, 0}
 };
 const struct shassortment jewelers_assortment[] = {
 	{85, RING_CLASS}, {10, GEM_CLASS}, {5, AMULET_CLASS}, {0, 0}
@@ -481,6 +481,7 @@ struct mkroom	*sroom;
 	    ep->mstolen[i].m_id = 0;
 	    ep->mstolen[i].o_id = 0;
 	}
+	ep->mstolen_i = 0;
 	shk->mgold = 1000L + 30L*(long)rnd(100);	/* initial capital */
 	if (shp->shknms == shkrings)
 	    (void) mongets(shk, TOUCHSTONE);
