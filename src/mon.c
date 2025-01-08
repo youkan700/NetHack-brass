@@ -566,9 +566,7 @@ mcalcdistress()
 	    (mtmp->cham != CHAM_DOPPELGANGER || !is_mplayer(mtmp->data)) &&
 	    !rn2(6))
 	    (void) newcham(mtmp, (struct permonst *)0, FALSE,
-			   (mtmp->mnum == PM_DOPPELGANGER ||
-			    mtmp->cham == CHAM_DOPPELGANGER) &&
-			   !Upolyd && canseemon(mtmp) /*FALSE*/);
+			   (canspotmon(mtmp) || (u.uswallow && mtmp == u.ustuck)));
 	were_change(mtmp);
 
 	/* gradually time out temporary problems */
@@ -2682,6 +2680,10 @@ boolean msg;		/* "The oldmon turns into a newmon!" */
 	struct permonst *olddata = mtmp->data;
 	char oldname[BUFSZ];
 	boolean copyu;
+	boolean canspotm_old, canspotm_new, minvis_old;
+
+	canspotm_old = (canspotmon(mtmp) || (u.uswallow && mtmp == u.ustuck));
+	minvis_old = mtmp->minvis;
 
 	if (msg) {
 	    /* like Monnam() but never mention saddle */
@@ -2861,13 +2863,26 @@ boolean msg;		/* "The oldmon turns into a newmon!" */
 
 	newsym(mtmp->mx,mtmp->my);
 
+	canspotm_new = (canspotmon(mtmp) || (u.uswallow && mtmp == u.ustuck));
+
 	if (msg) {
 	    uchar save_hasname = mtmp->has_name;
 	    mtmp->has_name = 0;
-	    pline(E_J("%s turns into %s!","%sは%sに変化した！"), oldname,
-		  mtmp->mnum == PM_GREEN_SLIME ? E_J("slime","スライム") :
-		  copyu ? E_J("you","あなた") :
-		  x_monnam(mtmp, ARTICLE_A, (char*)0, SUPPRESS_SADDLE, FALSE));
+	    if (canspotm_old && canspotm_new) {
+		pline(E_J("%s turns into %s!","%sは%sに変化した！"), oldname,
+		      mtmp->mnum == PM_GREEN_SLIME ? E_J("slime","スライム") :
+		      copyu ? E_J("you","あなた") :
+		      x_monnam(mtmp, ARTICLE_A, (char*)0,
+			       SUPPRESS_SADDLE|(minvis_old ? SUPPRESS_INVISIBLE : 0), FALSE));
+	    } else if (canspotm_old) {
+		/* turned into stalker or black light */
+		pline(E_J("%s suddenly vanishes!","%sは突然消えた！"), oldname);
+	    } else if (canspotm_new) {
+		/* this may not happen? */
+		pline(E_J("%s suddenly appears!","%sが突然現れた！"),
+		      copyu ? E_J("you","あなた") :
+		      x_monnam(mtmp, ARTICLE_A, (char*)0, SUPPRESS_SADDLE, FALSE));
+	    }
 	    mtmp->has_name = save_hasname;
 	}
 

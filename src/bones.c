@@ -178,7 +178,8 @@ struct obj *cont;
 		    otmp->oeroded = rnd(MAX_ERODE);
 		} else if (is_corrodeable(otmp)) {
 		    otmp->oeroded2 = rnd(MAX_ERODE);
-		} else if (is_rottable(otmp) && otmp->oclass != FOOD_CLASS) {
+		} else if (is_rottable(otmp) &&
+			   otmp->oclass != FOOD_CLASS && otmp->oclass != SCROLL_CLASS) {
 		    otmp->oeroded2 = rnd(MAX_ERODE);
 		}
 

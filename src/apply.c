@@ -85,7 +85,7 @@ use_camera(obj)
 		return(0);
 	}
 //	if(!getdir((char *)0)) return(0);
-	if(!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("take a picture","Ê^‚ğB‚é"))) return 0;
+	if(!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("take a picture","Ê^‚ğB‚é‘ÎÛ"))) return 0;
 
 	if (obj->spe <= 0) {
 		pline(nothing_happens);
@@ -750,7 +750,7 @@ struct obj *obj;
 	boolean vis;
 
 //	if(!getdir((char *)0)) return 0;
-	if(!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("reflect","‰f‚·"))) return 0;
+	if(!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("reflect","‹¾‚É‰f‚·‘Šè"))) return 0;
 	if(obj->cursed && !rn2(2)) {
 		if (!Blind)
 			pline_The(E_J("mirror fogs up and doesn't reflect!",
@@ -3600,6 +3600,7 @@ do_break_wand(obj)
     register int i, x, y;
     register struct monst *mon;
     int dmg, damage;
+    int otyp;
     boolean affects_objects;
     boolean shop_damage = FALSE;
     int expltype = EXPL_MAGICAL;
@@ -3643,6 +3644,23 @@ do_break_wand(obj)
     freeinv(obj);		/* hide it from destroy_item instead... */
     /*setnotworn(obj);*/	/* so we need to do this ourselves */
 
+    otyp = obj->otyp;
+    if (otyp == WAN_NOTHING && obj->corpsenm) {
+	switch (obj->corpsenm) {
+	    case AD_DRST: expltype = EXPL_NOXIOUS; break;
+	    case AD_ACID: expltype = EXPL_NOXIOUS; break;
+	    case AD_DISN: expltype = EXPL_DARK; break;
+	    case AD_PLYS: expltype = EXPL_NOXIOUS; break;
+	    case AD_MAGM: otyp = WAN_MAGIC_MISSILE; break;
+	    case AD_FIRE: otyp = WAN_FIRE; break;
+	    case AD_COLD: otyp = WAN_COLD; break;
+	    case AD_SLEE: otyp = WAN_SLEEP; break;
+	    case AD_ELEC: otyp = WAN_LIGHTNING; break;
+	    case AD_DETH: otyp = WAN_DEATH; break;
+	    default:	  otyp = WAN_LOCKING; break; /* let nothing happen */
+	}
+    }
+
     if (obj->spe <= 0) {
 	pline(nothing_else_happens);
 	goto discard_broken_wand;
@@ -3652,9 +3670,8 @@ do_break_wand(obj)
     dmg = obj->spe * 4;
     affects_objects = FALSE;
 
-    switch (obj->otyp) {
+    switch (otyp) {
     case WAN_WISHING:
-    case WAN_NOTHING:
     case WAN_LOCKING:
     case WAN_PROBING:
     case WAN_ENLIGHTENMENT:
@@ -3674,10 +3691,14 @@ do_break_wand(obj)
     case WAN_MAGIC_MISSILE:
     wanexpl:
 	setup_zapinfo(&zi, AT_EXPL,
-		      (obj->otyp == WAN_DEATH) ? AD_DETH : (obj->otyp - WAN_MAGIC_MISSILE + 1),
+		      (otyp == WAN_DEATH) ? AD_DETH : (otyp - WAN_MAGIC_MISSILE + 1),
 		      1, 1, 0, 0, &youmonst);
 	explode(u.ux, u.uy, &zi, dmg, expltype);
 	makeknown(obj->otyp);	/* explode described the effect */
+	goto discard_broken_wand;
+    case WAN_NOTHING:
+	setup_zapinfo(&zi, AT_EXPL, obj->corpsenm, 1, 1, 0, 0, &youmonst);
+	explode(u.ux, u.uy, &zi, dmg, expltype);
 	goto discard_broken_wand;
     case WAN_STRIKING:
 	/* we want this before the explosion instead of at the very end */
@@ -3712,7 +3733,7 @@ do_break_wand(obj)
 		     * do if it's a wall or door that's being dug */
 		    watch_dig((struct monst *)0, x, y, TRUE);
 		    if (*in_rooms(x,y,SHOPBASE)) shop_damage = TRUE;
-		}		    
+		}
 		digactualhole(x, y, BY_OBJECT,
 			      (rn2(obj->spe) < 3 || !Can_dig_down(&u.uz)) ?
 			       PIT : HOLE);

@@ -770,7 +770,7 @@ dokick()
 
 	if (no_kick) {
 		/* ignore direction typed before player notices kick failed */
-		display_nhwindow(WIN_MESSAGE, TRUE);	/* --More-- */
+		force_more();
 		return 0;
 	}
 

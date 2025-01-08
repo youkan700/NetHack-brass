@@ -423,11 +423,11 @@ MAP
 II}}--............|.....--}}}}}}}II}}}}}}}}}}}}}}}}}}III//
 I}}}|.............S......|}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}I/
 I}}}|---+--------------..|---------------------------}}}}I
-I}}}|.....|.........| -+--..........................--}}}I
-I}}}|..---|.........|-|..............................|}}}I
-I}}}|..|..S.........S.|..............................+IIII
-I}}}|..|..|.........|-|..............................|}}}I
-I}}}|..|..|.........| -+--..........................--}}}I
+I}}}|.....|.........|.-+--..........................--}}}I
+I}}}|..---|ccccccccc|S|..............................|}}}I
+I}}}|..|..ScccccccccS.|..............................+IIII
+I}}}|..|..|ccccccccc|S|..............................|}}}I
+I}}}|..|..|.........|.-+--..........................--}}}I
 I}}}|..|..-------------..|---------------------------}}}}I
 I}}}|..S.....|.....|.....|}}}}}}}}}}}II}}}}}}}}}}}}}}}}}I/
 II}}--.|.....+.....|....--}}}}}}}}}}}}}}}}}I}}}}}}}}}}II//
@@ -494,6 +494,18 @@ CONTAINER: '`',"statue:liquid",place[6],"mountain nymph",0
 CONTAINER: '`',"statue:liquid",place[7],"mountain nymph",0
 CONTAINER: '`',"statue:liquid",place[8],"succubus",0
 CONTAINER: '`',"statue:liquid",place[9],"succubus",0
+CONTAINER:'(',"chest",(21,06)
+OBJECT[75%]:'!',random,contained
+OBJECT[50%]:'?',random,contained
+OBJECT[25%]:'+',random,contained
+OBJECT[25%]:'/',random,contained
+OBJECT[25%]:'"',random,contained
+CONTAINER:'(',"chest",(21,10)
+OBJECT[75%]:'!',random,contained
+OBJECT[50%]:'?',random,contained
+OBJECT[25%]:'+',random,contained
+OBJECT[25%]:'/',random,contained
+OBJECT[25%]:'"',random,contained
 
 TRAP: "spiked pit",(09,04)
 TRAP: "anti magic",random
@@ -669,12 +681,12 @@ MONSTER: random,random,(19,02)
 MONSTER: random,random,(23,02)
 MONSTER: random,random,(34,02)
 
-OBJECT: '!',random,(10,04)
-OBJECT: '?',random,(32,04)
-OBJECT: '!',random,(10,05)
-OBJECT: '?',random,(32,05)
-OBJECT: '!',random,(10,06)
-OBJECT: '?',random,(32,06)
+OBJECT: '!',fine,(10,04)
+OBJECT: '!',fine,(10,05)
+OBJECT: '!',fine,(10,06)
+OBJECT: '?',fine,(32,04)
+OBJECT: '?',fine,(32,05)
+OBJECT: '?',fine,(32,06)
 
 TRAP: random,random
 TRAP: random,random

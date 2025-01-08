@@ -208,7 +208,7 @@
 [coarse mantelet:	粗末なマント
 [dwarvish cloak:	ドワーフのクローク
 [hooded cloak:		フードつきのクローク
-[oilskin cloak:		防水クローク
+[oilskin cloak:		油布のクローク
 [slippery cloak:	つるつるしたクローク
 [cloak of protection:	守りのクローク
 [tattered cape:		ぼろぼろのケープ
@@ -595,48 +595,48 @@
 #
 #	spellbooks
 #
-+dig:			穴掘りの
-+magic missile:		魔法の矢の
-+fireball:		火球の
-+cone of cold:		冷気の
-+sleep:			眠りの
-+finger of death:	死の指の
-+light:			灯りの
-+detect monsters:	怪物探知の
-+healing:		回復の
-+knock:			開錠の
-+force bolt:		衝撃の
-+confuse monster:	混乱の
-+cure blindness:	盲目治癒の
-+drain life:		脱力の
-+slow monster:		鈍足化の
-+wizard lock:		施錠の
-+create monster:	怪物を造る
-+detect food:		食料を探す
-+cause fear:		恐怖喚起の
-+clairvoyance:		千里眼の
-+cure sickness:		病気を癒す
-+charm monster:		魅了の
-+haste self:		俊足の
-+detect unseen:		霊感の
-+levitation:		浮遊の
-+extra healing:		超回復の
-+restore ability:	能力回復の
-+invisibility:		透明化の
-+detect treasure:	財宝感知の
-+remove curse:		解呪の
-+magic mapping:		地図の
-+identify:		識別の
-+turn undead:		蘇生の
-+polymorph:		変化の
-+teleport away:		テレポートの
-+create familiar:	造魔の
-+cancellation:		無力化の
-+protection:		守りの
-+jumping:		跳躍の
-+stone to flesh:	軟化の
-+know enchantment:	武具鑑定の
-+torch:			松明の
++dig:			穴掘り
++magic missile:		魔法の矢
++fireball:		火球
++cone of cold:		冷気
++sleep:			眠り
++finger of death:	死の指
++light:			灯り
++detect monsters:	怪物探知
++healing:		回復
++knock:			開錠
++force bolt:		衝撃
++confuse monster:	混乱
++cure blindness:	盲目治癒
++drain life:		脱力
++slow monster:		鈍足化
++wizard lock:		施錠
++create monster:	怪物の召喚
++detect food:		食料探知
++cause fear:		恐怖喚起
++clairvoyance:		千里眼
++cure sickness:		病気の治癒
++charm monster:		魅了
++haste self:		俊足
++detect unseen:		霊感
++levitation:		浮遊
++extra healing:		超回復
++restore ability:	能力回復
++invisibility:		透明化
++detect treasure:	財宝感知
++remove curse:		解呪
++magic mapping:		地図
++identify:		識別
++turn undead:		蘇生
++polymorph:		変化
++teleport away:		テレポート
++create familiar:	造魔
++cancellation:		無力化
++protection:		守り
++jumping:		跳躍
++stone to flesh:	軟化
++know enchantment:	武具鑑定
++torch:			松明
 #
 +parchment:	羊皮紙の
 +vellum:	子牛皮の

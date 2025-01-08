@@ -55,7 +55,7 @@ int shotlimit;
 	    if (!getdir((char *)0)) return 0;
 	} else {
 	    struct monst *mtmp;
-	    if (!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("aim","‘_‚¤"))) {
+	    if (!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("aim","‘_‚¤‘ÎÛ"))) {
 		if (obj->oclass == COIN_CLASS) {
 		    u.ugold += obj->quan;
 		    flags.botl = 1;
@@ -1579,14 +1579,20 @@ register struct obj   *obj;
 		     * we still don't want anything to survive unconditionally,
 		     * but we need ammo to stay around longer on average.
 		     */
-		    int broken, chance;
-		    chance = 3 + greatest_erosion(obj) - obj->spe;
-		    if (chance > 1)
-			broken = rn2(chance);
-		    else
-			broken = !rn2(4);
-		    if (obj->blessed && !rnl(4))
-			broken = 0;
+		    int broken;
+		    if (obj->otyp == BULLET && obj->oshot) {
+			/* a shot bullet always disappears */
+			broken = 1;
+		    } else {
+			int chance;
+			chance = 3 + greatest_erosion(obj) - obj->spe;
+			if (chance > 1)
+			    broken = rn2(chance);
+			else
+			    broken = !rn2(4);
+			if (obj->blessed && !rnl(4))
+			    broken = 0;
+		    }
 
 		    if (broken) {
 			if (*u.ushops)
@@ -2127,7 +2133,7 @@ boolean quick;	/* u.dx/u.dy has been already set */
 	}
 
 	if (!quick) {
-	    if (!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("shoot","Œ‚‚Â")))
+	    if (!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("shoot","Œ‚‚Â–Ú•W")))
 		return 0;
 	    if ((mtmp = m_at(u.ux+u.dx, u.uy+u.dy)) != 0 &&
 		(mtmp->mx == (u.ux+u.dx) && mtmp->my == (u.uy+u.dy)))

@@ -728,12 +728,14 @@ int tech_no;
 		if (!getdir((char *)0)) return(0);
 		if (!u.dx && !u.dy) {
 		    /* Hopefully a mistake ;B */
-		    You("decide against that idea.");
+		    You(E_J("decide against that idea.",
+			    "‚»‚ÌŽv‚¢‚Â‚«‚ðŽÀs‚µ‚È‚¢‚±‚Æ‚É‚µ‚½B"));
 		    return(0);
 		}
 		mtmp = m_at(u.ux + u.dx, u.uy + u.dy);
 		if (!mtmp) {
-		    You("perform a flashy twirl!");
+		    You(E_J("perform a flashy twirl!",
+			    "–Ú‚É‚à—¯‚Ü‚ç‚Ê‰ñ“]‚ðŒˆ‚ß‚½I"));
 		    return (0);
 		} else {
 		    int oldhp = mtmp->mhp;
@@ -742,7 +744,8 @@ int tech_no;
 		    if (!attack(mtmp)) return(0);
 		    if (!DEADMONSTER(mtmp) && mtmp->mhp < oldhp &&
 			    !noncorporeal(mtmp->data) && !unsolid(mtmp->data)) {
-			You("strike %s vital organs!", s_suffix(mon_nam(mtmp)));
+			You(E_J("strike %s vital organs!",
+				"%s‚Ì‹}Š‚ÉˆêŒ‚‚ð’@‚«ž‚ñ‚¾I"), s_suffix(mon_nam(mtmp)));
 			/* Base damage is always something, though it may be
 			 * reduced to zero if the hero is hampered. However,
 			 * since techlev will never be zero, stiking vital
@@ -751,7 +754,11 @@ int tech_no;
 			tmp = mtmp->mhp > 1 ? mtmp->mhp / 2 : 1;
 			if (!humanoid(mtmp->data) || is_golem(mtmp->data) ||
 				mtmp->data->mlet == S_CENTAUR) {
+#ifndef JP
 			    You("are hampered by the differences in anatomy.");
+#else
+			    pline("‰ð–UŠwã‚Ì·ˆÙ‚É‚æ‚èA‚ ‚È‚½‚ÌˆêŒ‚‚Í’v–½‚É‚È‚ç‚È‚©‚Á‚½B");
+#endif
 			    tmp /= 2;
 			}
 			tmp += techlev(tech_no);
@@ -1170,8 +1177,8 @@ int tmp;
 {
 	mtmp->mhp -= tmp;
 	if (mtmp->mhp < 1) killed (mtmp);
-#ifdef SHOW_DMG
-	else showdmg(tmp);
+#ifdef SHOWDMG
+	else printdmg(tmp);
 #endif
 }
 

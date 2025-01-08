@@ -625,7 +625,7 @@ attack:
 	    if(mtmp->wormno) wormhitu(mtmp);
 	}
 	/* special speeches for quest monsters */
-	if (!mtmp->msleeping && mtmp->mcanmove && nearby)
+	if (!mtmp->msleeping && mtmp->mcanmove && inrange/*nearby*/)
 	    quest_talk(mtmp);
 	/* extra emotional attack for vile monsters */
 	if (inrange && mtmp->data->msound == MS_CUSS && !mtmp->mpeaceful &&

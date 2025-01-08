@@ -1650,6 +1650,7 @@ arti_invoke(obj)
 		    if (lblt) lblt->nobj = otmp;
 		    else obj->cobj = otmp;
 		}
+		obj->owt = weight(obj);
 		obj->age += (long) rn1(100,50) * cnt / 6;
 		break;
 	    }

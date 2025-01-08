@@ -2491,6 +2491,7 @@ mergable(otmp, obj)	/* returns TRUE if obj  & otmp can be merged */
 	    obj->oeroded2 != otmp->oeroded2 ||
 	    get_material(obj) != get_material(otmp) ||
 	    obj->etherial != otmp->etherial ||
+	    obj->color != otmp->color ||
 	    obj->bypass != otmp->bypass)
 	    return(FALSE);
 
