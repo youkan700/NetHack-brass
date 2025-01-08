@@ -1936,7 +1936,7 @@ stillinswamp:
 			else if(uarmh && is_metallic(uarmh))
 			    pline(E_J("Its blow glances off your helmet.",
 				      "ピアサーの一撃はあなたの兜に逸らされた。"));
-			else if (u.uac + 3 <= rnd(20))
+			else if (u.uac + 13 <= rnd(20))
 #ifndef JP
 			    You("are almost hit by %s!",
 				x_monnam(mtmp, ARTICLE_A, "falling", 0, TRUE));

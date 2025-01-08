@@ -433,7 +433,7 @@ mattacku(mtmp)
 				 "突撃は%s兜に逸らされた。"),
 			               s_suffix(mon_nam(mtmp)));
 		    } else {
-			if (3 + find_mac(mtmp) <= rnd(20)) {
+			if (13 + find_mac(mtmp) <= rnd(20)) {
 			    pline(E_J("%s is hit by a falling piercer (you)!",
 				      "%sは降ってきたピアサー(あなた)に打たれた！"),
 								Monnam(mtmp));

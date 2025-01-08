@@ -165,7 +165,7 @@ STATIC_DCL struct monst* FDECL(autotarget_near, (int));	/* autothrust */
 STATIC_PTR int NDECL(playersteal);
 #ifdef OVLB
 STATIC_DCL void FDECL(enlght_line, (const char *,const char *,const char *));
-STATIC_DCL char *FDECL(enlght_combatinc, (const char *,int,int,char *));
+STATIC_DCL char *FDECL(enlght_combatinc, (int,int,int,char *));
 #ifdef UNIX
 static void NDECL(end_of_input);
 #endif
@@ -177,6 +177,12 @@ STATIC_DCL char *NDECL(parse);
 STATIC_DCL boolean FDECL(help_dir, (CHAR_P,const char *));
 
 #ifdef OVL1
+
+void
+force_more()
+{
+	display_nhwindow(WIN_MESSAGE, TRUE);    /* --More-- */
+}
 
 STATIC_PTR int
 doprev_message()
@@ -238,6 +244,7 @@ int xtime;
 #ifdef REDO
 
 static char NDECL(popch);
+static char NDECL(peekch);
 
 /* Provide a means to redo the last command.  The flag `in_doagain' is set
  * to true while redoing the command.  This flag is tested in commands that
@@ -268,6 +275,12 @@ pgetchar() {		/* curtesy of aeb@cwi.nl */
 	if(!(ch = popch()))
 		ch = nhgetch();
 	return((char)ch);
+}
+
+static char
+peekch() {
+	if (in_doagain) return(char)((shead != stail) ? saveq[stail] : '\0');
+	else		return '\0';
 }
 
 /* A ch == 0 resets the pushq */
@@ -911,23 +924,32 @@ const char *start, *middle, *end;
 	putstr(en_win, 0, buf);
 }
 
+#define ENLGHT_COMBATINC_DAMAGE 0
+#define ENLGHT_COMBATINC_TOHIT  1
 /* format increased damage or chance to hit */
 static char *
 enlght_combatinc(inctyp, incamt, final, outbuf)
-const char *inctyp;
+int inctyp;
 int incamt, final;
 char *outbuf;
 {
 	char numbuf[24];
-	const char *modif, *bonus;
+	const char *incstr, *modif, *bonus;
 
+	incstr = (inctyp == ENLGHT_COMBATINC_DAMAGE) ? E_J("damage","攻撃力") :
+		 (inctyp == ENLGHT_COMBATINC_TOHIT)  ? E_J("to hit","命中率") :
+						       "???";
 	if (final
 #ifdef WIZARD
 		|| wizard
 #endif
 	  ) {
-	    Sprintf(numbuf, E_J("%s%d","%s%dの"),
-		    (incamt > 0) ? "+" : "", incamt);
+	    if (inctyp == ENLGHT_COMBATINC_DAMAGE && incamt > 0) {
+		Sprintf(numbuf, E_J("+%dd3","+%dd3の"), incamt);
+	    } else {
+		Sprintf(numbuf, E_J("%s%d","%s%dの"),
+			(incamt > 0) ? "+" : "", incamt);
+	    }
 	    modif = (const char *) numbuf;
 	} else {
 	    int absamt = abs(incamt);
@@ -940,14 +962,14 @@ char *outbuf;
 	bonus = (incamt > 0) ? E_J("bonus","ボーナスを得て") : E_J("penalty","不利を被って");
 #ifndef JP
 	/* "bonus to hit" vs "damage bonus" */
-	if (!strcmp(inctyp, "damage")) {
-	    const char *ctmp = inctyp;
-	    inctyp = bonus;
+	if (inctyp == ENLGHT_COMBATINC_DAMAGE) {
+	    const char *ctmp = incstr;
+	    incstr = bonus;
 	    bonus = ctmp;
 	}
-	Sprintf(outbuf, "%s %s %s", an(modif), bonus, inctyp);
+	Sprintf(outbuf, "%s %s %s", an(modif), bonus, incstr);
 #else
-	Sprintf(outbuf, "%sに%s%s", inctyp, modif, bonus);
+	Sprintf(outbuf, "%sに%s%s", incstr, modif, bonus);
 #endif /*JP*/
 	return outbuf;
 }
@@ -1269,9 +1291,9 @@ int final;	/* 0 => still in progress; 1 => over, survived; 2 => dead */
 
 	/*** Physical attributes ***/
 	if (u.uhitinc)
-	    you_have(enlght_combatinc(E_J("to hit","命中率"), u.uhitinc, final, buf));
+	    you_have(enlght_combatinc(ENLGHT_COMBATINC_TOHIT, u.uhitinc, final, buf));
 	if (u.udaminc)
-	    you_have(enlght_combatinc(E_J("damage","攻撃力"), u.udaminc, final, buf));
+	    you_have(enlght_combatinc(ENLGHT_COMBATINC_DAMAGE, u.udaminc, final, buf));
 	if (Slow_digestion) E_J(you_have("slower digestion"),enl_msg(You_,"する","していた","食物をゆっくりと消化"));
 	if (Regeneration) E_J(enl_msg("You regenerate", "", "d", ""),you_have("再生能力を持って"));
 	if (u.uspellprot || Protection) {
@@ -2607,19 +2629,25 @@ int range, tgt;
 const char *s, *goal;
 {
 	char dirsym;
+	boolean need_ui = TRUE;
 
 #ifdef REDO
 	if(in_doagain || *readchar_queue) {
-	    dirsym = readchar();
-	    /* you may get DOAGAIN if a hero tried to wrest the last charge from a wand by repeating Ctrl-A */
-	    if (dirsym == DOAGAIN) goto force_ui;
-	} else
+	    /* If you repeat zapping an empty wand, no direction key is stored in 
+	       the command queue. In that case we need a prompt for direction input */
+	    if (!in_doagain || peekch()) {
+		dirsym = readchar();
+		/* you may get DOAGAIN if a hero tried to wrest the last charge from a wand by repeating Ctrl-A */
+		if (dirsym != DOAGAIN) need_ui = FALSE;
+	    }
+	}
 #endif
-	force_ui:
+	if (need_ui) {
 	    dirsym = yn_function ((s && *s != '^') ? s :
 					E_J("In what direction (or position)?",
 					    "どの方向(または位置)に？"),
 					(char *)0, '\0');
+	}
 #ifdef REDO
 	savech(dirsym);
 #endif
@@ -2629,11 +2657,13 @@ const char *s, *goal;
 	    coord cc;
 	    cc.x = u.ux;
 	    cc.y = u.uy;
-	    if (range) mark_goodpos(&cc, range, GOODPOS_CANSEE|GOODPOS_COULDSEE|GOODPOS_NOWALL);
-	    if (getpos2(&cc, (range) ? range*range+1 : 0, tgt, goal) < 0)
-		return 0;
-	    u.dx = cc.x - u.ux;
-	    u.dy = cc.y - u.uy;
+	    if (need_ui) {
+		if (range) mark_goodpos(&cc, range, GOODPOS_CANSEE|GOODPOS_COULDSEE|GOODPOS_NOWALL);
+		if (getpos2(&cc, (range) ? range*range+1 : 0, tgt, goal) < 0)
+		    return 0;
+		u.dx = cc.x - u.ux;
+		u.dy = cc.y - u.uy;
+	    }
 	} else if(!movecmd(dirsym) && !u.dz) {
 	    boolean did_help = FALSE;
 	    if(!index(quitchars, dirsym)) {
@@ -3360,7 +3390,7 @@ playersteal()
 	}
 	if (no_steal) {
 	    /* discard direction typeahead, if any */
-	    display_nhwindow(WIN_MESSAGE, TRUE);    /* --More-- */
+	    force_more();
 	    return 0;
 	}
 
@@ -3469,6 +3499,27 @@ playersteal()
 		    if (ch < owt) failed = TRUE;
 		    if (failed) {
 			You(E_J("fail to %s it.","%sのに失敗した。"), verb);
+		    } else if (otmp->owornmask && otmp->cursed) {
+			if (otmp->owornmask & W_WEP) {
+#ifndef JP
+			    pline("%s %s to %s %s!",
+				Tobjnam(otmp, "weld"),
+				s_suffix(mon_nam(mtmp)), mbodypart(mtmp,HAND));
+#else
+			    pline("%sは%sの%sに貼りついている！",
+				    xname(otmp), mon_nam(mtmp), mbodypart(mtmp,HAND));
+#endif /*JP*/
+			} else {
+#ifndef JP
+			    pline("%s %s to %s!",
+				Tobjnam(otmp, "weld"), mon_nam(mtmp));
+#else
+			    pline("%sは%sに貼りついている！",
+				    xname(otmp), mon_nam(mtmp));
+#endif /*JP*/
+			}
+			otmp->bknown = 1;
+			found = TRUE;
 		    } else {
 			obj_extract_self(otmp);
 			if (otmp->owornmask) {
@@ -3660,10 +3711,54 @@ wiz_roomlist()
 	return 0;
 }
 
+struct {
+	int adtyp;
+	char *nam;
+} wan_n_info[] = {
+	{ AD_DRST, "poison" },
+	{ AD_ACID, "acid" },
+	{ AD_DISN, "disintegration" },
+	{ AD_PLYS, "paralysis" },
+	{ 0, NULL }
+};
+
+static int
+wiz_select_wan_n()
+{
+	char buf[BUFSZ];
+	anything any;
+	winid win;
+	menu_item *selected;
+	int i, n;
+
+	any.a_void = 0;
+	win = create_nhwindow(NHW_MENU);
+	start_menu(win);
+	for (i=0; wan_n_info[i].adtyp; i++) {
+	    any.a_int = wan_n_info[i].adtyp;
+	    Sprintf(buf, wan_n_info[i].nam);
+	    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
+		     buf, MENU_UNSELECTED);
+	}
+	end_menu(win, "Which type do you want?");
+	n = select_menu(win, PICK_ONE, &selected);
+	destroy_nhwindow(win);
+	if (n > 0) {
+	    n = selected[0].item.a_int;
+	    free((genericptr_t) selected);
+	}
+	return n;
+}
+
 STATIC_OVL int
 wiz_objdesc()
 {
-pline("%s (%d,%d) %s", get_level_desc(&u.uz), u.ux, u.uy, level.flags.noteleport ? "noteleport" : "can_tele");
+    struct obj *otmp;
+    otmp = mksobj(WAN_NOTHING, FALSE, FALSE);
+    otmp->corpsenm = wiz_select_wan_n();
+    otmp->spe = 8;
+    otmp = hold_another_object(otmp, (const char *)0,
+		    (const char *)0, (const char *)0);
 return 0;
 
 #if 0

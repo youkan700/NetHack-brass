@@ -11,12 +11,12 @@ static NEARDATA struct obj *book;	/* last/current book being xscribed */
 #define SPELLMENU_CAST (-2)
 #define SPELLMENU_VIEW (-1)
 
-#define KEEN 20000
+//#define KEEN 20000
 #define MAX_SPELL_STUDY 3
-#define incrnknow(spell)        spl_book[spell].sp_know = KEEN
+//#define incrnknow(spell)        spl_book[spell].sp_know = KEEN
 
-#define spellev(spell)		spl_book[spell].sp_lev
-#define spellname(spell)	OBJ_NAME(objects[spellid(spell)])
+#define spellev(spell)		objects[spellid(spell)].oc_level
+//#define spellname(spell)	OBJ_NAME(objects[spellid(spell)])
 #define spellet(spell)	\
 	((char)((spell < 26) ? ('a' + spell) : ('A' + spell - 26)))
 
@@ -150,7 +150,7 @@ cursed_book(bp)
 		losestr(Poison_resistance ? rn1(2,1) : rn1(4,3));
 		losehp(rnd(Poison_resistance ? 6 : 10),
 		       E_J("contact-poisoned spellbook",
-			   "魔法書に塗られた接触性の毒で"), KILLED_BY_AN);
+			   "呪文書に塗られた接触性の毒で"), KILLED_BY_AN);
 		bp->in_use = TRUE;
 		break;
 	case 6:
@@ -190,7 +190,7 @@ struct obj *spellbook;
 	    "混乱しているため、あなたは自分の行動を制御することが困難だ。"));
 	    display_nhwindow(WIN_MESSAGE, FALSE);
 	    You(E_J("accidentally tear the spellbook to pieces.",
-		    "誤って魔法書をずたずたに裂いてしまった。"));
+		    "誤って呪文書をずたずたに裂いてしまった。"));
 	    if (!objects[spellbook->otyp].oc_name_known &&
 		!objects[spellbook->otyp].oc_uname)
 		docall(spellbook);
@@ -358,26 +358,26 @@ learn()
 			"\"%s\"" : "the \"%s\" spell",
 		OBJ_NAME(objects[booktype]));
 #else
-	Sprintf(splname, "%s呪文", JOBJ_NAME(objects[booktype]));
+	Sprintf(splname, "%sの呪文", JOBJ_NAME(objects[booktype]));
 #endif /*JP*/
 	for (i = 0; i < MAXSPELL; i++)  {
 		if (spellid(i) == booktype)  {
-			if (book->spestudied > MAX_SPELL_STUDY) {
-			    pline(E_J("This spellbook is too faint to be read any more.",
-				      "この魔法書は文字がかすれすぎて、もう読めない。"));
-			    booktype = SPE_BLANK_PAPER;
-			    set_otyp(book, SPE_BLANK_PAPER);
-			} else if (spellknow(i) <= 1000) {
-			    Your(E_J("knowledge of %s is keener.",
-				     "%sに関する知識は研ぎ澄まされた。"), splname);
-			    incrnknow(i);
-			    book->spestudied++;
-			    exercise(A_WIS,TRUE);       /* extra study */
-			} else { /* 1000 < spellknow(i) <= MAX_SPELL_STUDY */
+//			if (book->spestudied > MAX_SPELL_STUDY) {
+//			    pline(E_J("This spellbook is too faint to be read any more.",
+//				      "この呪文書は文字がかすれすぎて、もう読めない。"));
+//			    booktype = SPE_BLANK_PAPER;
+//			    set_otyp(book, SPE_BLANK_PAPER);
+//			} else if (spellknow(i) <= 1000) {
+//			    Your(E_J("knowledge of %s is keener.",
+//				     "%sに関する知識は研ぎ澄まされた。"), splname);
+//			    incrnknow(i);
+//			    book->spestudied++;
+//			    exercise(A_WIS,TRUE);       /* extra study */
+//			} else { /* 1000 < spellknow(i) <= MAX_SPELL_STUDY */
 			    You(E_J("know %s quite well already.",
 				    "%sをすでに十分良く知っている。"), splname);
 			    costly = FALSE;
-			}
+//			}
 			/* make book become known even when spell is already
 			   known, in case amnesia made you forget the book */
 			makeknown((int)booktype);
@@ -395,14 +395,14 @@ learn()
 			    }
 			}
 			spl_book[i].sp_id = booktype;
-			spl_book[i].sp_lev = objects[booktype].oc_level;
-			incrnknow(i);
+//			spl_book[i].sp_lev = objects[booktype].oc_level;
+//			incrnknow(i);
 			You(i > 0 ? E_J("add %s to your repertoire.",
 					"%sをレパートリーに加えた。") :
 				    E_J("learn %s.", "%sを憶えた。"),
 			    splname);
 do_not_add:
-			book->spestudied++;
+//			book->spestudied++;
 			makeknown((int)booktype);
 			break;
 		}
@@ -440,7 +440,7 @@ register struct obj *spellbook;
 		/* KMH -- Simplified this code */
 		if (booktype == SPE_BLANK_PAPER) {
 			pline(E_J("This spellbook is all blank.",
-				  "この魔法書のページはすべて白紙だ。"));
+				  "この呪文書のページはすべて白紙だ。"));
 			makeknown(booktype);
 			return(1);
 		}
@@ -485,7 +485,7 @@ register struct obj *spellbook;
 			    char qbuf[QBUFSZ];
 			    Sprintf(qbuf,
 		E_J("This spellbook is %sdifficult to comprehend. Continue?",
-		    "この魔法書は理解するのが%s難しい。続けますか？"),
+		    "この呪文書は理解するのが%s難しい。続けますか？"),
 				    (read_ability < 12 ? E_J("very ","とても") : ""));
 			    if (yn(qbuf) != 'y') {
 				spellbook->in_use = FALSE;
@@ -506,7 +506,7 @@ register struct obj *spellbook;
 		    delay = 0;
 		    if(gone || !rn2(3)) {
 			if (!gone) pline_The(E_J("spellbook crumbles to dust!",
-						 "魔法書は粉々になって崩れ落ちた！"));
+						 "呪文書は粉々になって崩れ落ちた！"));
 			if (!objects[spellbook->otyp].oc_name_known &&
 				!objects[spellbook->otyp].oc_uname)
 			    docall(spellbook);
@@ -564,9 +564,11 @@ age_spells()
 	 * The hero's speed, rest status, conscious status etc.
 	 * does not alter the loss of memory.
 	 */
-	for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
-	    if (spellknow(i))
-		decrnknow(i);
+	for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
+	    if (spl_book[i].sp_active & TIMEOUT) {
+		spl_book[i].sp_active--;
+	    }
+	}
 	return;
 }
 
@@ -773,26 +775,26 @@ boolean atme;
 	 * Spell casting no longer affects knowledge of the spell. A
 	 * decrement of spell knowledge is done every turn.
 	 */
-	if (spellknow(spell) <= 0) {
-#ifndef JP
-	    Your("knowledge of this spell is twisted.");
-	    pline("It invokes nightmarish images in your mind...");
-#else
-	    pline("この呪文に関するあなたの知識は捻じ曲がってしまっている。");
-	    pline("そのせいで、あなたの心に悪夢のような光景が浮かび上がった…。");
-#endif /*JP*/
-	    spell_backfire(spell);
-	    return(0);
-	} else if (spellknow(spell) <= 100) {
-	    You(E_J("strain to recall the spell.",
-		    "呪文を思い出すのに非常に苦労した。"));
-	} else if (spellknow(spell) <= 1000) {
-#ifndef JP
-	    Your("knowledge of this spell is growing faint.");
-#else
-	    pline("この呪文に関するあなたの知識は薄れつつある。");
-#endif /*JP*/
-	}
+//	if (spellknow(spell) <= 0) {
+//#ifndef JP
+//	    Your("knowledge of this spell is twisted.");
+//	    pline("It invokes nightmarish images in your mind...");
+//#else
+//	    pline("この呪文に関するあなたの知識は捻じ曲がってしまっている。");
+//	    pline("そのせいで、あなたの心に悪夢のような光景が浮かび上がった…。");
+//#endif /*JP*/
+//	    spell_backfire(spell);
+//	    return(0);
+//	} else if (spellknow(spell) <= 100) {
+//	    You(E_J("strain to recall the spell.",
+//		    "呪文を思い出すのに非常に苦労した。"));
+//	} else if (spellknow(spell) <= 1000) {
+//#ifndef JP
+//	    Your("knowledge of this spell is growing faint.");
+//#else
+//	    pline("この呪文に関するあなたの知識は薄れつつある。");
+//#endif /*JP*/
+//	}
 	energy = (spellev(spell) * 5);    /* 5 <= energy <= 35 */
 
 	if (u.uhunger <= 10 && spellid(spell) != SPE_DETECT_FOOD) {
@@ -878,8 +880,8 @@ boolean atme;
 
 	u.uen -= energy;
 	flags.botl = 1;
-	spl_book[spell].sp_know += 2500;
-	if (spl_book[spell].sp_know > KEEN) spl_book[spell].sp_know = KEEN;
+//	spl_book[spell].sp_know += 2500;
+//	if (spl_book[spell].sp_know > KEEN) spl_book[spell].sp_know = KEEN;
 	exercise(A_WIS, TRUE);
 	/* pseudo is a temporary "false" object containing the spell stats */
 	pseudo = mksobj(spellid(spell), FALSE, FALSE);
@@ -959,7 +961,7 @@ boolean atme;
 	case SPE_STONE_TO_FLESH:
 		if (!(objects[pseudo->otyp].oc_dir == NODIR)) {
 			if (atme) u.dx = u.dy = u.dz = 0;
-			else if (!/*getdir((char *)0)*/getdir_or_pos(0, GETPOS_MONTGT, (char *)0, "cast the spell at")) {
+			else if (!getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("cast the spell at","呪文の目標"))) {
 			    /* getdir cancelled, re-use previous direction */
 			    pline_The(E_J("magical energy is released!",
 					  "魔力が流出した！"));
@@ -1197,18 +1199,14 @@ int *spell_no;
 	for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++) {
 #ifndef JP
 		Sprintf(buf, iflags.menu_tab_sep ?
-			"%s\t%-d%s\t%s\t%-d%%" : "%-20s  %2d%s   %-12s %3d%%",
-			spellname(i), spellev(i),
-			spellknow(i) ? " " : "*",
+			"%s\t%-d\t%s\t%-d%%" : "%-20s  %2d    %-12s %3d%%",
+			OBJ_NAME(objects[spellid(i)]), spellev(i),
 			spelltypemnemonic(spell_skilltype(spellid(i))),
 			100 - percent_success(i));
 #else
-		char snbuf[BUFSZ];
-		Sprintf(snbuf, "%s呪文", JOBJ_NAME(objects[spellid(i)]));
 		Sprintf(buf, iflags.menu_tab_sep ?
-			"%s\t%-d%s\t%s\t%-d%%" : "%-20s  %2d%s   %-12s %3d%%",
-			snbuf, spellev(i),
-			spellknow(i) ? " " : "*",
+			"%s\t%-d\t%s\t%-d%%" : "%-20s  %2d    %-12s %3d%%",
+			JOBJ_NAME(objects[spellid(i)]), spellev(i),
 			spelltypemnemonic(spell_skilltype(spellid(i))),
 			100 - percent_success(i));
 #endif /*JP*/
@@ -1387,8 +1385,8 @@ struct obj *obj;
 	    }
 	    if (spellid(i) == NO_SPELL)  {
 	        spl_book[i].sp_id = obj->otyp;
-	        spl_book[i].sp_lev = objects[obj->otyp].oc_level;
-	        incrnknow(i);
+//	        spl_book[i].sp_lev = objects[obj->otyp].oc_level;
+//	        incrnknow(i);
 	        return;
 	    }
 	}

@@ -29,12 +29,6 @@
 
 STATIC_DCL void FDECL(give_may_advance_msg, (int));
 
-#ifndef OVLB
-
-STATIC_DCL NEARDATA const short skill_names_indices[];
-STATIC_DCL NEARDATA const char *barehands_or_martial[];
-
-#else	/* OVLB */
 
 struct skill_name {
 	int        num;
@@ -76,29 +70,6 @@ struct skill_name {
 	{ P_NONE,		"no skill" }
 };
 
-STATIC_VAR NEARDATA const short skill_names_indices[P_NUM_SKILLS] = {
-	0,                DAGGER,         KNIFE,        AXE,
-	PICK_AXE,         SHORT_SWORD,    BROADSWORD,   LONG_SWORD,
-	TWO_HANDED_SWORD, SCIMITAR,       PN_SABER,     CLUB,
-	MACE,             MORNING_STAR,   FLAIL,
-	PN_HAMMER,        QUARTERSTAFF,   PN_POLEARMS,  SPEAR,
-	JAVELIN,          TRIDENT,        LANCE,        BOW,
-	SLING,            CROSSBOW,       DART,
-	SHURIKEN,         BOOMERANG,      PN_WHIP,      UNICORN_HORN,
-	PN_ATTACK_SPELL,     PN_HEALING_SPELL,
-	PN_DIVINATION_SPELL, PN_ENCHANTMENT_SPELL,
-	PN_CLERIC_SPELL,     PN_ESCAPE_SPELL,
-	PN_MATTER_SPELL,
-	PN_BARE_HANDED,   PN_TWO_WEAPONS, PN_ARMOR,     SHIELD,
-#ifdef STEED
-	PN_RIDING
-#endif
-};
-
-/* indexed vis `is_martial() */
-STATIC_VAR NEARDATA const char * const barehands_or_martial[] = {
-    "bare handed combat", "martial arts"
-};
 
 STATIC_OVL void
 give_may_advance_msg(skill)
@@ -114,20 +85,15 @@ int skill;
 		"fighting ");
 }
 
-#endif	/* OVLB */
-
 STATIC_DCL boolean FDECL(can_advance, (int, BOOLEAN_P));
 STATIC_DCL boolean FDECL(could_advance, (int));
 STATIC_DCL boolean FDECL(peaked_skill, (int));
 STATIC_DCL int FDECL(slots_required, (int));
 STATIC_DCL const char* FDECL(get_skill_name, (int));
 
-#ifdef OVL1
-
 STATIC_DCL char *FDECL(skill_level_name, (int,char *));
 STATIC_DCL void FDECL(skill_advance, (int));
-
-#endif	/* OVL1 */
+STATIC_DCL void NDECL(show_combat_skill);
 
 const char *
 get_skill_name(type)
@@ -147,7 +113,6 @@ int type;
 
 #define P_NAME(type) get_skill_name(type)
 
-#ifdef OVLB
 static NEARDATA const char kebabable[] = {
 	S_XORN, S_DRAGON, S_JABBERWOCK, S_NAGA, S_GIANT, '\0'
 };
@@ -348,9 +313,6 @@ doubleattack_roll()
 	return (roll < 0) ? 0 : roll;
 }
 
-
-#endif /* OVLB */
-#ifdef OVL0
 
 STATIC_DCL struct obj *FDECL(oselect, (struct monst *,int));
 #define Oselect(x)	if ((otmp = oselect(mtmp, x)) != 0) return(otmp);
@@ -838,9 +800,6 @@ abon()		/* attack bonus for strength & dexterity */
 	return sbon;
 }
 
-#endif /* OVL0 */
-#ifdef OVL1
-
 int
 dbon()		/* damage bonus for strength */
 {
@@ -1016,11 +975,15 @@ boolean to_advance;
 		any.a_int = 1+1;
 		add_menu(win, NO_GLYPH, &any, 'w', 0, ATR_NONE,
 				E_J("Show weapon capability",
-				    "‹Z”\‚É‘Î‰ž‚·‚é•Ší‚ð•\Ž¦"), MENU_UNSELECTED);
+				    "•Ší‹Z”\‚É‘Î‰ž‚·‚é•Ší‚ðŒ©‚é"), MENU_UNSELECTED);
 		any.a_int = 2+1;
 		add_menu(win, NO_GLYPH, &any, 's', 0, ATR_NONE,
 				E_J("Show spellcasting capability",
-				    "‹Z”\‚É‘Î‰ž‚·‚é–‚–@‚ð•\Ž¦"), MENU_UNSELECTED);
+				    "–‚–@‹Z”\‚É‘Î‰ž‚·‚éŽô•¶‚ðŒ©‚é"), MENU_UNSELECTED);
+		any.a_int = 3+1;
+		add_menu(win, NO_GLYPH, &any, 'c', 0, ATR_NONE,
+				E_J("Show combat capability",
+				    "í“¬‹Z”\‚ðŒ©‚é"), MENU_UNSELECTED);
 	}
 	Strcpy(buf, (to_advance) ? E_J("Pick a skill to advance:","ã’B‚³‚¹‚½‚¢‹Z”\‚ð‘I‚ñ‚Å‚­‚¾‚³‚¢:") :
 				   E_J("Current skills:","Œ»Ý‚Ì‹Z”\:"));
@@ -1039,6 +1002,9 @@ boolean to_advance;
 				break;
 			    case 2:
 				show_spell_skill();
+				break;
+			    case 3:
+				show_combat_skill();
 				break;
 			    default:
 				break;
@@ -1062,9 +1028,6 @@ int skill;
 //	P_ADVANCE(skill) = 0;
     }
 }
-
-#endif /* OVL1 */
-#ifdef OVLB
 
 void
 use_skill(skill,degree)
@@ -1204,6 +1167,7 @@ wepidentify_byhit(obj)
 struct obj *obj;
 {
 	int type;
+	if (obj->otyp == BULLET) return 0;
 	if (is_ammo(obj) && ammo_and_launcher(obj, uwep))
 	    type = weapon_type(uwep);
 	else
@@ -1608,6 +1572,65 @@ const schar *skills;
 	destroy_nhwindow(tmpwin);
 }
 
-#endif /* OVLB */
+void
+show_combat_skill()
+{
+	winid tmpwin;
+	anything any;
+	menu_item *selected;
+	int i,j;
+	int skill;
+	int cnt = 0;
+	boolean isweapon = TRUE;
+	const char *actualn;
+	char buf[BUFSZ];
+	const int skills[] = {
+	    P_BARE_HANDED_COMBAT, P_TWO_WEAPON_COMBAT, P_ARMORED_COMBAT, P_SHIELD,
+#ifdef STEED
+	    P_RIDING,
+#endif /*STEED*/
+	    P_NONE /* terminator */
+	};
+
+	any.a_void = 0;
+	tmpwin = create_nhwindow(NHW_MENU);
+
+	start_menu(tmpwin);
+
+	for (j=0; skill = skills[j]; j++) {
+	    if(P_RESTRICTED(skill)) continue;
+	    Strcpy(buf, P_NAME(skill));		/* prepare heading */
+	    for ( i=0; buf[i]; ) {
+#ifndef JP
+		buf[i] = highc(buf[i]);
+#endif /*JP*/
+		while (letter(buf[i])) i++;
+		while (buf[i] && !letter(buf[i])) i++;
+	    }
+	    Strcat(buf, " ");
+	    if (P_MAX_SKILL(skill) >= P_SKILLED) {
+		Sprintf(eos(buf), "(+%s)", P_MAX_SKILL(skill) >= P_EXPERT ? "+" : "");
+	    } else if (P_MAX_SKILL(skill) < P_BASIC) {
+		Sprintf(eos(buf), "(-)");
+	    }
+	    add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, buf, MENU_UNSELECTED);
+	    cnt++;
+	}
+#ifndef JP
+	if (cnt)
+	    Sprintf(buf, "Avaliable Combat Skill Groups:";
+	else
+	    Sprintf(buf, "No available combat skill.");
+#else
+	if (cnt)
+	    Sprintf(buf, "’b˜B‚Å‚«‚éí“¬‹Z”\:");
+	else
+	    Sprintf(buf, "’b˜B‚Å‚«‚éí“¬‹Z”\‚Í‚ ‚è‚Ü‚¹‚ñ");
+#endif /*JP*/
+	end_menu(tmpwin, buf);
+
+	select_menu(tmpwin, PICK_NONE, &selected);
+	destroy_nhwindow(tmpwin);
+}
 
 /*weapon.c*/

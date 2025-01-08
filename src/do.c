@@ -927,7 +927,8 @@ dodown()
 			E_J("swallowed","ˆù‚İ‚Ü") : E_J("engulfed","ˆÍ‚Ü"));
 		return(1);
 	}
-	if (on_level(&valley_level, &u.uz) && !u.uevent.gehennom_entered) {
+	if (on_level(&valley_level, &u.uz) && stairs_down &&
+	    !u.uevent.gehennom_entered) {
 		You(E_J("are standing at the gate to Gehennom.",
 			"ƒQƒwƒi‚Ì–å‚Ì‘O‚É—§‚Á‚Ä‚¢‚éB"));
 		pline(E_J("Unspeakable cruelty and harm lurk down there.",

@@ -431,7 +431,7 @@ struct obj *instr;
 	    if (do_spec && instr->spe > 0) {
 		consume_obj_charge(instr, TRUE);
 
-		if (!/*getdir((char *)0)*/getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("aim","ë_Ç§"))) {
+		if (!/*getdir((char *)0)*/getdir_or_pos(0, GETPOS_MONTGT, (char *)0, E_J("aim","ë_Ç§ëŒè€"))) {
 #ifndef JP
 		    pline("%s.", Tobjnam(instr, "vibrate"));
 #else

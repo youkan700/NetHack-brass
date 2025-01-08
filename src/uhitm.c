@@ -995,7 +995,7 @@ int thrown;
 			break;
 		    case EXPENSIVE_CAMERA:
 			You(E_J("succeed in destroying %s camera.  Congratulations!",
-				"%sのカメラを破壊することに成功した。おめでとう！"),
+				"%sカメラを破壊することに成功した。おめでとう！"),
 			        shk_your(yourbuf, obj));
 			useup(obj);
 			return(TRUE);

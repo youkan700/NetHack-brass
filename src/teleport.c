@@ -60,9 +60,10 @@ unsigned gpflags;
 	    mdat = mtmp->data;
 	    if (is_pool(x,y) && !ignorewater) {
 		if (mtmp == &youmonst)
-			return !!(HLevitation || Flying || Wwalking ||
-					Swimming || Amphibious);
-		else	return (is_flying(mtmp) || is_swimming(mtmp) ||
+		    /* Don't include Amphibious to avoid getting wet */
+		    return !!(HLevitation || Flying || Wwalking || Swimming);
+		else
+		    return (is_flying(mtmp) || is_swimming(mtmp) ||
 							is_clinging(mtmp));
 	    } else if (mdat->mlet == S_EEL && rn2(13) && !ignorewater) {
 		return FALSE;

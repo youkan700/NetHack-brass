@@ -2371,7 +2371,7 @@ register struct monst *mtmp;
 			}
 			if (out_of_water) break;
 
-			trap->vl.v_lasttrig = monstermoves + rn1(100,100);
+			trap->vl.v_lasttrig = monstermoves + (in_sight ? rn1(100,100) : rn1(10,10));
 			if (is_animobj(mtmp->data)) {
 			    if (in_sight)
 				pline(E_J("%s %s!","%s%s‚É–½’†‚µ‚½I"), A_gush_of_water_hits,

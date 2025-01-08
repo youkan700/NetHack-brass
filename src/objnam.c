@@ -219,7 +219,8 @@ register int otyp;
 		buf2 = "杖";
 		break;
 	    case SPBOOK_CLASS:
-		buf2 = "魔法書";
+		if (nn) Strcat(buf, "の");
+		buf2 = "呪文書";
 		break;
 	    case RING_CLASS:
 		buf2 = "指輪";
@@ -665,17 +666,33 @@ boolean ignore_oquan;
 		break;
 	case WAND_CLASS:
 		if(!obj->dknown)
-			Strcat(buf, E_J("wand","杖"));
-		else if(nn)
-			Sprintf(eos(buf), E_J("wand of %s","%s杖"), actualn);
-		else if(un)
-			Sprintf(eos(buf), E_J("wand called %s","%sと呼ばれる杖"), un);
+		    Strcat(buf, E_J("wand","杖"));
+		else if(nn) {
+		    if (obj->otyp == WAN_NOTHING &&
+			obj->corpsenm != 0) {
+			switch (obj->corpsenm) {
+			    case AD_MAGM: actualn = E_J("magic missile", "魔法の矢の"); break;
+			    case AD_FIRE: actualn = E_J("fire",          "炎の"); break;
+			    case AD_COLD: actualn = E_J("cold",          "吹雪の"); break;
+			    case AD_SLEE: actualn = E_J("sleep",         "眠りの"); break;
+			    case AD_ELEC: actualn = E_J("lightning",     "稲妻の"); break;
+			    case AD_DETH: actualn = E_J("death",         "死の"); break;
+			    case AD_DRST: actualn = E_J("poison",        "毒の"); break;
+			    case AD_ACID: actualn = E_J("acid",          "酸の"); break;
+			    case AD_DISN: actualn = E_J("disintegration","分解の"); break;
+			    case AD_PLYS: actualn = E_J("paralysis",     "麻痺の"); break;
+			    default: break;
+			}
+		    }
+		    Sprintf(eos(buf), E_J("wand of %s","%s杖"), actualn);
+		} else if(un)
+		    Sprintf(eos(buf), E_J("wand called %s","%sと呼ばれる杖"), un);
 		else
-			Sprintf(eos(buf), E_J("%s wand","%s杖"), dn);
+		    Sprintf(eos(buf), E_J("%s wand","%s杖"), dn);
 		break;
 	case SPBOOK_CLASS:
 		if (!obj->dknown) {
-			Strcat(buf, E_J("spellbook","魔法書"));
+			Strcat(buf, E_J("spellbook","呪文書"));
 		} else if (nn) {
 #ifndef JP
 			if (typ != SPE_BOOK_OF_THE_DEAD)
@@ -684,12 +701,12 @@ boolean ignore_oquan;
 			Strcat(buf, actualn);
 #ifdef JP
 			if (typ != SPE_BOOK_OF_THE_DEAD)
-			    Strcat(buf, "魔法書");
+			    Strcat(buf, "の呪文書");
 #endif /*JP*/
 		} else if (un) {
-			Sprintf(eos(buf), E_J("spellbook called %s","%sと呼ばれる魔法書"), un);
+			Sprintf(eos(buf), E_J("spellbook called %s","%sと呼ばれる呪文書"), un);
 		} else
-			Sprintf(eos(buf), E_J("%s spellbook","%s魔法書"), dn);
+			Sprintf(eos(buf), E_J("%s spellbook","%s呪文書"), dn);
 		break;
 	case RING_CLASS:
 		if(!obj->dknown)
@@ -3731,7 +3748,13 @@ struct obj *armor;
 {
     int t;
     if (armor) {
-	if ( is_clothes(armor) ) return E_J("clothes","服");
+	if ( is_clothes(armor) ) {
+	    if ( is_robe(armor) ) {
+		return E_J("robe","ローブ");
+	    } else {
+		return E_J("clothes","服");
+	    }
+	}
     }
     return E_J("armor","鎧");
 }

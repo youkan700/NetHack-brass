@@ -927,7 +927,7 @@ doidtrap()
 	int x, y, tt;
 
 /*	if (!getdir("^")) return 0;*/
-	if (!getdir_or_pos(0, GETPOS_TRAP, "^", E_J("identify","―•Κ"))) return 0;
+	if (!getdir_or_pos(0, GETPOS_TRAP, "^", E_J("identify","―•Κ‚·‚ιγ©"))) return 0;
 	x = u.ux + u.dx;
 	y = u.uy + u.dy;
 	for (trap = ftrap; trap; trap = trap->ntrap)
