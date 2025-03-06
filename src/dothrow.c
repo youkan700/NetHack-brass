@@ -435,13 +435,19 @@ register struct obj *obj;
 	}
 	if (IS_ALTAR(levl[u.ux][u.uy].typ))
 		doaltarobj(obj);
-	else
+	else {
+	    if (obj->othrown && u.dz > 0 &&
+		down_gate(u.ux, u.uy) != MIGR_NOWHERE) {
+		/* obj is intentionally thrown downward: don't hit to floor */
+	    } else {
 #ifndef JP
 		pline("%s hit%s the %s.", Doname2(obj),
 		      (obj->quan == 1L) ? "s" : "", surface(u.ux,u.uy));
 #else
 		pline("%sÇÕ%sÇ…ñΩíÜÇµÇΩÅB", doname(obj), surface(u.ux,u.uy));
 #endif /*JP*/
+	    }
+	}
 
 	if (hero_breaks(obj, u.ux, u.uy, TRUE)) return;
 	if (ship_object(obj, u.ux, u.uy, FALSE)) return;

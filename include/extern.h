@@ -912,6 +912,7 @@ E void FDECL(jprepare_epitaph, (const char *, int));
 E boolean FDECL(jrubout, (unsigned char *, int));
 E const char *FDECL(j_no_ni, (const char *));
 E char *FDECL(jdgnnam, (int));
+E void FDECL(remove_rank_from_mplayer_name, (struct monst *));
 #endif /*JP*/
 
 /* ### levitate.c ### */
@@ -2665,6 +2666,7 @@ E void FDECL(bresenham_back, (struct bresenham *));
 E void FDECL(setup_zapinfo, (struct zapinfo *, uchar, uchar, uchar, uchar, const char *, const char *, struct monst *));
 E void FDECL(setup_zapobj, (struct zapinfo *, struct obj *, struct monst *));
 E boolean FDECL(does_obj_worn_out, (struct obj *));
+E void FDECL(destroy_container, (struct obj *, struct monst *));
 
 #endif /* !MAKEDEFS_C && !LEV_LEX_C */
 

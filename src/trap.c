@@ -201,6 +201,7 @@ struct monst *victim;
 		    if (youdefend) {
 			remove_worn_item(otmp, FALSE);
 			if (otmp == uball) unpunish();
+			if (Is_container(otmp)) destroy_container(otmp, victim);
 			useupall(otmp);
 			update_inventory();
 		    } else if (mondefend) {
@@ -216,6 +217,7 @@ struct monst *victim;
 			    possibly_unwield(victim, FALSE);
 			else if (unwornmask & W_ARMG)	/* worn gloves are broken */
 			    mselftouch(victim, (const char *)0, TRUE);
+			if (Is_container(otmp)) destroy_container(otmp, victim);
 			m_useup(victim, otmp);
 		    } /*else {
 			obj_extract_self(otmp);
@@ -263,7 +265,7 @@ boolean youdefend;
 
 	/* blessing */
 	if (otmp->blessed && !rn2(4)) {
-	    if (otmp->greased) return RUST_GREASEPRT;
+	    if (otmp->greased && grprot) return RUST_GREASEPRT;
 	    if (otmp->oerodeproof && otmp->rknown)  return RUST_PROTECTED;
 	    return RUST_BLESSPRT;
 	}

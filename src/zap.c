@@ -4818,15 +4818,11 @@ register int osym, dmgtyp;
 				get_material(obj) == VEGGY) {
 				dindx = 3;
 				dmg = 0;
-				if (!objects[obj->otyp].oc_merge &&
-				    !obj->oerodeproof &&
-				    obj->oeroded < MAX_ERODE) {
+				if (Is_container(obj) || !objects[obj->otyp].oc_merge) {
+				    char buf[BUFSZ];
+				    Sprintf(buf, xname(obj));
+				    rust_dmg(obj, buf, 0, FALSE, &youmonst);
 				    skip++;
-				    if (!rn2(3+(obj->blessed*2))) {
-					obj->oeroded++;
-					Your(E_J("%s catches fire and smoulders!",
-						 "%sに火がつき、くすぶった！"), xname(obj));
-				    }
 				}
 			    } else skip++;
 			    break;
@@ -4897,36 +4893,9 @@ register int osym, dmgtyp;
 //			setnotworn(obj);
 //		}
 		if (obj == current_wand) current_wand = 0;	/* destroyed */
-		if (Is_container(obj) && Has_contents(obj)) {
-		    struct obj *otmp;
-		    long ccnt;
-		    schar typ = levl[u.ux][u.uy].typ;
-		    for (ccnt = 0, otmp = obj->cobj; otmp; otmp = otmp->nobj)
-			ccnt += otmp->quan;
-#ifndef JP
-		    if (ccnt) pline_The("content%s of %s fall%s %sto the %s!",
-					(ccnt > 1) ? "s" : "", the(xname(obj)),
-					(ccnt == 1) ? "s" : "",
-					(IS_SOFT(typ) || IS_FOUNTAIN(typ) ||
-					 typ == LAVAPOOL) ? "in" : "",
-					surface(u.ux, u.uy));
-#else
-		    if (ccnt) pline("%sの中身が%s%sに落ちた！",
-					xname(obj), surface(u.ux, u.uy),
-					(IS_SOFT(typ) || IS_FOUNTAIN(typ) ||
-					 typ == LAVAPOOL) ? "の中" : "");
-#endif /*JP*/
-		    while (obj->cobj) {
-			otmp = obj->cobj;
-			obj_extract_self(otmp);
-			place_object(otmp, u.ux, u.uy);
-			stackobj(otmp);
-		    }
-		} else if (obj->otyp == BAG_OF_TRICKS && obj->spe > 0) {
-		    if (create_critters(obj->spe, (struct permonst *)0)) {
-			pline(E_J("Something drops out from the burning bag!",
-				  "焼けた鞄から怪物があふれ出た！"));
-		    }
+		
+		if (Is_container(obj)) {
+		    destroy_container(obj, &youmonst);
 		}
 		for (i = 0; i < cnt; i++)
 		    useup(obj);
@@ -4948,6 +4917,52 @@ register int osym, dmgtyp;
 	    }
 	}
 	return;
+}
+
+void
+destroy_container(obj, victim)
+struct obj *obj;
+struct monst *victim;
+{
+	xchar x, y;
+	if (victim == &youmonst) {
+	    x = u.ux;
+	    y = u.uy;
+	} else if (victim != 0) {
+	    x = victim->mx;
+	    x = victim->my;
+	}
+	if (obj->otyp == BAG_OF_TRICKS) {
+	    if (obj->spe > 0 && create_critters(obj->spe, (struct permonst *)0)) {
+		pline(E_J("Something drops out from the burning bag!",
+			  "焼けた鞄から怪物があふれ出た！"));
+	    }
+	} else if (Is_container(obj) && Has_contents(obj)) {
+	    struct obj *otmp;
+	    long ccnt;
+	    schar typ = levl[x][y].typ;
+	    for (ccnt = 0, otmp = obj->cobj; otmp; otmp = otmp->nobj)
+		ccnt += otmp->quan;
+#ifndef JP
+	    if (ccnt) pline_The("content%s of %s fall%s %sto the %s!",
+				(ccnt > 1) ? "s" : "", the(xname(obj)),
+				(ccnt == 1) ? "s" : "",
+				(IS_SOFT(typ) || IS_FOUNTAIN(typ) ||
+				 typ == LAVAPOOL) ? "in" : "",
+				surface(x, y));
+#else
+	    if (ccnt) pline("%sの中身が%s%sに落ちた！",
+				xname(obj), surface(x, y),
+				(IS_SOFT(typ) || IS_FOUNTAIN(typ) ||
+				 typ == LAVAPOOL) ? "の中" : "");
+#endif /*JP*/
+	    while (obj->cobj) {
+		otmp = obj->cobj;
+		obj_extract_self(otmp);
+		place_object(otmp, x, y);
+		stackobj(otmp);
+	    }
+	}
 }
 
 void

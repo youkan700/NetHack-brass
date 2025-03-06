@@ -3753,6 +3753,29 @@ wiz_select_wan_n()
 STATIC_OVL int
 wiz_objdesc()
 {
+    winid w;
+    int i, n;
+    char buf[BUFSZ];
+    menu_item *selected;
+    anything any;
+    struct monst *mtmp;
+	w = create_nhwindow(NHW_MENU);
+	start_menu(w);
+	for (i=1,mtmp=fmon; mtmp; mtmp = mtmp->nmon) {
+		if (!mtmp->has_name) continue;
+		any.a_int = i++;
+		Sprintf(buf, "%s", mon_nam(mtmp));
+		add_menu(w, NO_GLYPH, &any, 0, 0, ATR_NONE,
+			 buf, MENU_UNSELECTED);
+	}
+	if (i==1) 
+		add_menu(w, NO_GLYPH, &any, 0, 0, ATR_NONE,
+			 "(no named monst)", MENU_UNSELECTED);
+	end_menu(w, "Named monsters:");
+	n = select_menu(w, PICK_NONE, &selected);
+	destroy_nhwindow(w);
+
+#if 0
     struct obj *otmp;
     otmp = mksobj(WAN_NOTHING, FALSE, FALSE);
     otmp->corpsenm = wiz_select_wan_n();
@@ -3760,7 +3783,7 @@ wiz_objdesc()
     otmp = hold_another_object(otmp, (const char *)0,
 		    (const char *)0, (const char *)0);
 return 0;
-
+#endif
 #if 0
 	struct monst *mtmp;
 	struct obj *otmp;

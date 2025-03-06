@@ -1149,6 +1149,7 @@ peffects(otmp)
 		unkn++; /* holy/unholy water can burn like acid too */
 		break;
 	case POT_POLYMORPH:
+		if (otmp->blessed) HPolymorph_control |= 1;
 #ifndef JP
 		You_feel("a little %s.", Hallucination ? "normal" : "strange");
 #else

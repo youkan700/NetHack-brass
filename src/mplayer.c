@@ -33,29 +33,44 @@ static const char *developers[] = {
 	/* OS/2 team */
 	"Helge", "Ron", "Timo",
 	/* VMS team */
-	"Joshua", "Pat",
-	""};
+	"Joshua", "Pat"
+};
 
 
 /* return a randomly chosen developer name */
 STATIC_OVL const char *
 dev_name()
 {
-	register int i, m = 0, n = SIZE(developers);
-	register struct monst *mtmp;
-	register boolean match;
+	int i, m = 0, n = SIZE(developers);
+	int len;
+	struct monst *mtmp;
+	boolean match;
+#ifdef JP
+	char *mn;
+	int mnlen;
+#endif
 
 	do {
 	    match = FALSE;
 	    i = rn2(n);
+	    len = strlen(developers[i]);
 	    for (mtmp = fmon; mtmp; mtmp = mtmp->nmon) {
 		if(!mtmp->has_name) continue;
 		if(!is_mplayer(mtmp->data)) continue;
-		if(!strncmp(developers[i], NAME(mtmp),
-			               strlen(developers[i]))) {
+#ifndef JP
+		if(!strncmp(developers[i], NAME(mtmp), len)) {
 		    match = TRUE;
 		    break;
 	        }
+#else
+		mn = NAME(mtmp);
+		mnlen = strlen(mn);
+		if (mnlen < len) continue;
+		if(!strncmp(developers[i], mn + mnlen - len, len)) {
+		    match = TRUE;
+		    break;
+	        }
+#endif
 	    }
 	    m++;
 	} while (match && m < 100); /* m for insurance */
@@ -71,6 +86,10 @@ char *nam;
 {
 	boolean fmlkind = is_female(mtmp->data);
 	const char *devnam;
+#ifdef JP
+	static boolean pick_Pri = FALSE;
+	static boolean pick_Val = FALSE;
+#endif
 
 	devnam = dev_name();
 #ifndef JP
@@ -94,9 +113,16 @@ char *nam;
 			    (boolean)mtmp->female));
 	if (!devnam)
 	    Strcat(nam, fmlkind ? "Eve" : "Adam");
-	else if (fmlkind && !!strcmp(devnam, "Janet"))
-	    Strcat(nam, rn2(2) ? "Maud" : "Eve");
-	else Strcat(nam, devnam);
+	else if (fmlkind && !!strcmp(devnam, "Janet")) {
+	    if (mtmp->mnum == PM_VALKYRIE && !pick_Val && !rn2(3)) {
+		Strcat(nam, "Nathroola");
+		pick_Val = TRUE;
+	    } else if (mtmp->mnum == PM_PRIESTESS && !pick_Pri && !rn2(3)) {
+		Strcat(nam, "Tike");
+		pick_Pri = TRUE;
+	    } else
+		Strcat(nam, rn2(2) ? "Maud" : "Eve");
+	} else Strcat(nam, devnam);
 
 	if (fmlkind || !strcmp(devnam, "Janet"))
 	    mtmp->female = 1;
@@ -380,9 +406,9 @@ register struct monst *mtmp;
 		E_J("You don't deserve to win!",	   "お前は勝利するに値しない！"),
 		E_J("Mine should be the honor, not yours!","名誉は我にあり！ お前にではない！"),
 	},		  *other_class_msg[3] = {
-		E_J("The low-life wants to talk, eh?",	   "下等な生命体がお話したいってか、え？"),
+		E_J("The low-life wants to talk, eh?",	   "下等生物がお話したいってか、え？"),
 		E_J("Fight, scum!",			   "戦え、クズ野郎！"),
-		E_J("Here is what I have to say!",	   "私の言うべきことはこれだ！"),
+		E_J("Here is what I have to say!",	   "これが我が返答だ！"),
 	};
 
 	if(mtmp->mpeaceful) return; /* will drop to humanoid talk */

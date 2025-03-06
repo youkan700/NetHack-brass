@@ -1460,6 +1460,7 @@ boolean shop_floor_obj;
 	struct obj *obj;
 	struct trap *t;
 	boolean nodrop, unpaid, container, impact = FALSE;
+	boolean force_drop;
 	long n = 0L;
 
 	if (!otmp) return(FALSE);
@@ -1467,10 +1468,13 @@ boolean shop_floor_obj;
 	drop_to(&cc, toloc);
 	if (!cc.y) return(FALSE);
 
+	/* hero throw the object to downstairs intentionally */
+	force_drop = (otmp->othrown && x == u.ux && y == u.uy && u.dz > 0);
+
 	/* objects other than attached iron ball always fall down ladder,
 	   but have a chance of staying otherwise */
 	nodrop = (otmp == uball) || (otmp == uchain) || Is_sokoprize(otmp) ||
-		(toloc != MIGR_LADDER_UP && rn2(3));
+		(toloc != MIGR_LADDER_UP && !force_drop && rn2(3));
 
 	container = Has_contents(otmp);
 	unpaid = (otmp->unpaid || (container && count_unpaid(otmp->cobj)));

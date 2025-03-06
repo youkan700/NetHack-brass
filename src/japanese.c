@@ -466,6 +466,48 @@ int dnum;
 	return jdgnnamp[dnum];
 }
 
+/*
+ * 「ランク名」+「名前」のNPCを「名前」だけにする
+ * 天上界のNPCが変化させられたときに呼ばれる
+ */
+void
+remove_rank_from_mplayer_name(mon)
+struct monst *mon;
+{
+	struct Role *role;
+	char newname[BUFSZ];
+	char *oldname;
+	const char *rankstr;
+	int len;
+	int i;
+
+	if (!is_mplayer(mon->data)) return;
+
+	newname[0] = 0;
+	oldname = NAME(mon);
+
+	/* Find the role */
+	for (role = (struct Role *) roles; role->name.m; role++)
+	    if (mon->mnum == role->malenum || mon->mnum == role->femalenum)
+	    	break;
+	if (!role->name.m) return;
+
+	/* Find the rank */
+	for (i = 8; i >= 0; i--) {
+	    if (mon->female && role->rank[i].f) {
+		rankstr = role->rank[i].f;
+	    } else {
+		rankstr = role->rank[i].m;
+	    }
+	    len = strlen(rankstr);
+	    if (!strncmp(oldname, rankstr, len)) {
+		Strcpy(newname, oldname + len);
+		if (newname[0]) christen_monst(mon, newname);
+		return;
+	    }
+	}
+}
+
 /*-------------------------------------------------------------------------
 	全角文字のかすれパターン
   -------------------------------------------------------------------------*/

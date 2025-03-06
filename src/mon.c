@@ -2736,6 +2736,7 @@ boolean msg;		/* "The oldmon turns into a newmon!" */
 	}
 
 	if (In_endgame(&u.uz) && is_mplayer(olddata) && mtmp->has_name) {
+#ifndef JP
 		/* mplayers start out as "Foo the Bar", but some of the
 		 * titles are inappropriate when polymorphed, particularly
 		 * into the opposite sex.  players don't use ranks when
@@ -2745,20 +2746,17 @@ boolean msg;		/* "The oldmon turns into a newmon!" */
 		char namebody[BUFSZ];
 		char *p = NAME(mtmp);
 		char *q = namebody;
-#ifndef JP
 		char c;
 		do {
 			c = *p++;
 			if (c == ' ') c = '\0';
 			*q++ = c;
 		} while (c);
+		if (namebody[0]) christen_monst(mtmp, namebody);
 #else
 		/* 日本語では "BarFoo" */
-		/* Barは全部全角文字、Fooは全部半角文字とみなす… */
-		while (*p && is_kanji(*p)) p += 2;
-		while ((*q++ = *p++) != 0);
+		remove_rank_from_mplayer_name(mtmp);
 #endif /*JP*/
-		if (namebody[0]) christen_monst(mtmp, namebody);
 	}
 
 	if(mdat == mtmp->data) return(0);	/* still the same monster */
