@@ -58,7 +58,7 @@ CONTAINER:'`',"statue",(36,10),uncursed,"knight",3,"ペルセウス"
 OBJECT[75%]:'[',"shield of reflection",contained,cursed,+0
 OBJECT[25%]:'[',"levitation boots",contained,random,+0
 OBJECT[50%]:')',"scimitar",contained,blessed,+2
-OBJECT[50%]:'(',"sack",contained
+OBJECT[50%]:'(',"bag of holding",contained
 # These aren't really containers, but specifying CONTAINER forces them to be
 # empty, since CONTAINERs contain only what is explicitly specified.
 CONTAINER:'`',"statue",random

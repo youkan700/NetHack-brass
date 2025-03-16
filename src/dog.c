@@ -736,6 +736,9 @@ migrate_to_level(mtmp, tolev, xyloc, cc)
 	    wormgone(mtmp);
 	}
 
+	/* room guard */
+	mtmp->mstrategy &= ~STRAT_ROOMGUARD;
+
 	/* set minvent's obj->no_charge to 0 */
 	for(obj = mtmp->minvent; obj; obj = obj->nobj) {
 	    if (Has_contents(obj))
@@ -757,7 +760,6 @@ migrate_to_level(mtmp, tolev, xyloc, cc)
 	/* overload mtmp->[mx,my], mtmp->[mux,muy], and mtmp->mtrack[] as */
 	/* destination codes (setup flag bits before altering mx or my) */
 	xyflags = (depth(&new_lev) < depth(&u.uz));	/* 1 => up */
-	if (In_W_tower(mtmp->mx, mtmp->my, &u.uz)) xyflags |= 2;
 	mtmp->wormno = num_segs;
 	mtmp->mlstmv = monstermoves;
 	mtmp->mtrack[1].x = cc ? cc->x : mtmp->mx;

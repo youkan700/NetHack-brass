@@ -197,6 +197,7 @@ char *s, *callerbuf;
 int bufsz;
 {
 	char *sp, *op;
+	unsigned char uc;
 	int cnt = 0;
 	static char hexdigits[] = "0123456789ABCDEF";
 
@@ -205,19 +206,47 @@ int bufsz;
 	*op = '\0';
 	
 	while (*sp) {
+		uc = (unsigned char)*sp;
+
 		/* Do we have room for one more character or encoding? */
 		if ((bufsz - cnt) <= 4) return callerbuf;
 
 		if (*sp == quotechar) {
-			(void)sprintf(op, "%c%02X", quotechar, *sp);
+			(void)sprintf(op, "%c%02X", quotechar, uc);
 			 op += 3;
 			 cnt += 3;
 		} else if ((index(legal, *sp) != 0) || (index(hexdigits, *sp) != 0)) {
 			*op++ = *sp;
 			*op = '\0';
 			cnt++;
+#if defined(WIN32) && defined(JP)
+		} else if ((uc >= 0x81 && uc <= 0x9F) ||
+			   (uc >= 0xE0 && uc <= 0xEF)) {
+			unsigned char uc2;
+			uc2 = (unsigned char)sp[1];
+			if ((uc2 >= 0x40 && uc2 <= 0x7E) ||
+			    (uc2 >= 0x80 && uc2 <= 0xFC)) {
+				/* Shift-JIS character */
+				*op++ = *sp++;
+				*op++ = *sp;
+				*op = '\0';
+				cnt++;
+				cnt++;
+			} else {
+				/* invalid Shift-JIS character? */
+				(void)sprintf(op,"%c%02X", quotechar, uc);
+				op += 3;
+				cnt += 3;
+				if (uc2) {
+					(void)sprintf(op,"%c%02X", quotechar, uc2);
+					op += 3;
+					cnt += 3;
+					sp++;
+				}
+			}
+#endif
 		} else {
-			(void)sprintf(op,"%c%02X", quotechar, *sp);
+			(void)sprintf(op,"%c%02X", quotechar, uc);
 			op += 3;
 			cnt += 3;
 		}

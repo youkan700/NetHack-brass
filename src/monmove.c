@@ -778,6 +778,18 @@ register int after;
 	    mmoved = 0;
 	}
 
+	/* room guard */
+	if((mtmp->mstrategy & STRAT_ROOMGUARD) != 0) {
+	    if (m_canseeu(mtmp)) goto not_special;
+	    gx = STRAT_GOALX(mtmp->mstrategy);
+	    gy = STRAT_GOALY(mtmp->mstrategy);
+	    appr = 1;
+	    if (!rn2(1+distmin(gx, gy, mtmp->mx, mtmp->my))) {
+		appr = 0;
+	    }
+	    goto goal_is_set;
+	}
+
 #ifdef MAIL
 	if(mtmp->mnum == PM_MAIL_DAEMON) {
 	    if(flags.soundok && canseemon(mtmp))

@@ -1055,7 +1055,7 @@ boolean suppress_impossible;
 #endif
 
 	if (mtmp->iswiz && mtmp->mx) {	/* Wizard, not just arriving */
-	    if (!In_W_tower(u.ux, u.uy, &u.uz))
+	    if (xupstair)
 		x = xupstair,  y = yupstair;
 	    else if (!xdnladder)	/* bottom level of tower */
 		x = xupladder,  y = yupladder;

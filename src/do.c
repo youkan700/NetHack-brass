@@ -1131,7 +1131,6 @@ boolean at_stairs, falling, portal;
 	boolean cant_go_back,
 		up = (depth(newlevel) < depth(&u.uz)),
 		newdungeon = (u.uz.dnum != newlevel->dnum),
-		was_in_W_tower = In_W_tower(u.ux, u.uy, &u.uz),
 		familiar = FALSE;
 	boolean new = FALSE;	/* made a new level? */
 	struct monst *mtmp;
@@ -1172,9 +1171,6 @@ boolean at_stairs, falling, portal;
 
 		    if (diff != 0) {
 			assign_rnd_level(newlevel, &u.uz, diff);
-			/* if inside the tower, stay inside */
-			if (was_in_W_tower &&
-			    !On_W_tower_level(newlevel)) diff = 0;
 		    }
 		    if (diff == 0)
 			assign_level(newlevel, &u.uz);
@@ -1406,13 +1402,7 @@ boolean at_stairs, falling, portal;
 		    You(E_J("climb down the ladder.","ÇÕÇµÇ≤Çâ∫ÇËÇΩÅB"));
 	    }
 	} else {	/* trap door or level_tele or In_endgame */
-	    if (was_in_W_tower && On_W_tower_level(&u.uz))
-		/* Stay inside the Wizard's tower when feasible.	*/
-		/* Note: up vs down doesn't really matter in this case. */
-		place_lregion(dndest.nlx, dndest.nly,
-				dndest.nhx, dndest.nhy,
-				0,0, 0,0, LR_DOWNTELE, (d_level *) 0);
-	    else if (up)
+	    if (up)
 		place_lregion(updest.lx, updest.ly,
 				updest.hx, updest.hy,
 				updest.nlx, updest.nly,

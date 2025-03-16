@@ -25,7 +25,7 @@
 #define EDITLEVEL	0
 /*123456789012345678901234567890123456789012345678901234567890123456789012345678*/
 #define COPYRIGHT_BANNER_A \
-"NetHack brass, based on NetHack v3.4.3, Copyright 2002-2009 by youkan"
+"NetHack brass, based on NetHack v3.4.3, Copyright 2002-2025 by youkan"
 //"NetHack brass, Copyright 1985-2002"
 
 #define COPYRIGHT_BANNER_B \
