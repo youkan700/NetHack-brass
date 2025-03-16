@@ -92,6 +92,7 @@ void NDECL(store_room);
 boolean FDECL(write_level_file, (char *,splev *,specialmaze *));
 void FDECL(free_rooms, (splev *));
 void FDECL(add_serial_no, (char *));
+int FDECL(get_material_id, (char *s));
 
 extern void NDECL(monst_init);
 extern void NDECL(objects_init);

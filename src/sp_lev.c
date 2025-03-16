@@ -892,13 +892,25 @@ struct mkroom	*croom;
 	    }
 	    if (m->asleep >= 0) {
 #ifdef UNIXPC
+		if (m->asleep == 2) {
+		    /* room guard */
+		    mtmp->mstrategy = STRAT_ROOMGUARD |
+				      (((long)(mtmp->mx)<<16) & STRAT_XMASK) |
+				      (((long)(mtmp->my)<<8) & STRAT_YMASK);
+		} else
 		/* optimizer bug strikes again */
 		if (m->asleep)
 			mtmp->msleeping = 1;
 		else
 			mtmp->msleeping = 0;
 #else
-		mtmp->msleeping = m->asleep;
+		if (m->asleep == 2) {
+		    /* room guard */
+		    mtmp->mstrategy = STRAT_ROOMGUARD |
+				      (((long)(mtmp->mx)<<16) & STRAT_XMASK) |
+				      (((long)(mtmp->my)<<8) & STRAT_YMASK);
+		} else
+		    mtmp->msleeping = m->asleep;
 #endif
 	    }
 	    /* mark a temporary serial number for later use */

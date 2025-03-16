@@ -1454,7 +1454,7 @@ arti_invoke(obj)
 	    use_crystal_ball(obj);
 	else if (obj->otyp == RIN_LEVITATION ||
 		 obj->otyp == LEVITATION_BOOTS ||
-		 (oart->cspfx & SPFX_LWILL))
+		 (oart && (oart->cspfx & SPFX_LWILL)))
 	    return invoke_levitation(obj);
 	else
 	    pline(nothing_happens);

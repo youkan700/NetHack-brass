@@ -1253,8 +1253,7 @@ d_level *lev;
 {
     /* can't rise up from inside the top of the Wizard's tower */
     /* KMH -- or in sokoban */
-    if (In_endgame(lev) || In_sokoban(lev) ||
-			(Is_wiz1_level(lev) && In_W_tower(x, y, lev)))
+    if (In_endgame(lev) || In_sokoban(lev))
 	return FALSE;
     return (boolean)(lev->dlevel > 1 ||
 		(dungeons[lev->dnum].entry_lev == 1 && ledger_no(lev) != 1 &&
@@ -1400,24 +1399,24 @@ d_level	*lev;
 			 Is_wiz3_level(lev));
 }
 
-boolean
-In_W_tower(x, y, lev)	/* is <x,y> of `lev' inside the Wizard's tower? */
-int	x, y;
-d_level	*lev;
-{
-	if (!On_W_tower_level(lev)) return FALSE;
-	/*
-	 * Both of the exclusion regions for arriving via level teleport
-	 * (from above or below) define the tower's boundary.
-	 *	assert( updest.nIJ == dndest.nIJ for I={l|h},J={x|y} );
-	 */
-	if (dndest.nlx > 0)
-	    return (boolean)within_bounded_area(x, y, dndest.nlx, dndest.nly,
-						dndest.nhx, dndest.nhy);
-	else
-	    impossible("No boundary for Wizard's Tower?");
-	return FALSE;
-}
+//boolean
+//In_W_tower(x, y, lev)	/* is <x,y> of `lev' inside the Wizard's tower? */
+//int	x, y;
+//d_level	*lev;
+//{
+//	if (!On_W_tower_level(lev)) return FALSE;
+//	/*
+//	 * Both of the exclusion regions for arriving via level teleport
+//	 * (from above or below) define the tower's boundary.
+//	 *	assert( updest.nIJ == dndest.nIJ for I={l|h},J={x|y} );
+//	 */
+//	if (dndest.nlx > 0)
+//	    return (boolean)within_bounded_area(x, y, dndest.nlx, dndest.nly,
+//						dndest.nhx, dndest.nhy);
+//	else
+//	    impossible("No boundary for Wizard's Tower?");
+//	return FALSE;
+//}
 
 boolean
 On_W_tower_portal_level(lev)

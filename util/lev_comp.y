@@ -58,6 +58,8 @@ extern void NDECL(store_part);
 extern void NDECL(store_room);
 extern boolean FDECL(write_level_file, (char *,splev *,specialmaze *));
 extern void FDECL(free_rooms, (splev *));
+extern void FDECL(add_serial_no, (char *));
+extern int FDECL(get_material_id, (char *s));
 
 static struct reg {
 	int x1, y1;
@@ -995,7 +997,7 @@ object_where	: coordinate
 		| MINVENT
 		  {
 			/* added into the previous monster's inventory */
-			tmpobj[nobj]->containment = -nmons;
+			tmpobj[nobj]->containment = -((xchar)nmons);
 			tmpobj[nobj]->x = -MAX_REGISTERS-1;
 			tmpobj[nobj]->y = -MAX_REGISTERS-1;
 		  }

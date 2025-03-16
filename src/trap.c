@@ -683,7 +683,7 @@ int *fail_reason;
 	struct monst *mon = 0;
 	struct obj *item;
 	coord cc;
-	boolean historic = (Role_if(PM_ARCHEOLOGIST) && !flags.mon_moving && (statue->spe & STATUE_HISTORIC));
+	boolean historic = !!(statue->spe & STATUE_HISTORIC);
 	boolean frozen;
 	char statuename[BUFSZ];
 
@@ -781,9 +781,11 @@ int *fail_reason;
 		    pline_The(E_J("statue %s!","彫像が%s！"),
 			    canspotmon(mon) ? comes_to_life : E_J("disappears","消え失せた"));
 		if (historic) {
-		    You_feel(E_J("guilty that the historic statue is now gone.",
-				 "歴史ある像が失われたことに罪の意識を覚えた。"));
-		    adjalign(-1);
+		    if (Role_if(PM_ARCHEOLOGIST) && !flags.mon_moving) {
+			You_feel(E_J("guilty that the historic statue is now gone.",
+				     "歴史ある像が失われたことに罪の意識を覚えた。"));
+			adjalign(-1);
+		    }
 		}
 	    }
 	} else if (cause == ANIMATE_SHATTER)
