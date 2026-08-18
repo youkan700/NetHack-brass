@@ -1545,7 +1545,8 @@ int xx1, yy1, xx2, yy2;
 	    if (!isok(x, y) ||
 		(xx1 == x && yy1 == y) || (xx2 == x && yy2 == y) ||
 		MON_AT(x, y) || dist2(x, y, mtmp->mux, mtmp->muy) <= 2 ||
-		!ACCESSIBLE(levl[x][y].typ) || closed_door(x,y)) continue;
+		!ACCESSIBLE(levl[x][y].typ) || closed_door(x,y) ||
+		(sobj_at(BOULDER, x, y) != 0) ) continue;
 	    oka[idx++] = i;
 	}
 	if (!idx) return FALSE;

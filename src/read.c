@@ -142,7 +142,21 @@ doread()
 #endif /*JP*/
 		return 0;
 	    }
-	    if (scroll->oprint == TSHIRT_PRINT_NONE ||
+	    if (scroll->oprint == TSHIRT_PRINT_MON_PIC ||
+		scroll->oprint == TSHIRT_PRINT_BOGUS_PIC) {
+#ifdef JP
+		pline("Tシャツには%sの絵が描かれている。",
+			scroll->oprint == TSHIRT_PRINT_MON_PIC ?
+			    JMONNAM(scroll->corpsenm) : get_bogusmonnam(scroll->corpsenm));
+#else
+		const char *nam;
+		nam = (scroll->oprint == TSHIRT_PRINT_MON_PIC) ?
+		    mons[scroll->corpsenm].mname : get_bogusmonnam(scroll->corpsenm);
+		pline("A picture of a%s %s is printed on the shirt.",
+			index(vowels,*(nam)) ? "n" : "", nam);
+#endif /*JP*/
+		return(0);
+	    } else if (scroll->oprint == TSHIRT_PRINT_NONE ||
 		scroll->oprint != TSHIRT_PRINT_TEXT) {
 		pline(E_J("Nothing is printed on the shirt.",
 			  "このTシャツは無地だ。"));
@@ -1398,7 +1412,33 @@ register struct obj	*sobj;
 		if (Underwater)
 			pline_The(E_J("water around you vaporizes violently!",
 				      "あなたの周りの水が激しく沸騰した！"));
-		else {
+		else if (cval > 0) {
+		    coord cc;
+#ifndef JP
+		    You("have found a scroll of fire!");
+#else
+		    pline("これは炎の巻物だ！");
+#endif /*JP*/
+		    known = TRUE;
+		    pline(E_J("Where do you want to center the fire?",
+			      "炎の中心をどこに定めますか？"));
+		    cc.x = u.ux;
+		    cc.y = u.uy;
+		    mark_goodpos(&cc, 32-1, GOODPOS_CANSEE|GOODPOS_COULDSEE|GOODPOS_NOWALL);
+		    if (getpos(&cc, TRUE, E_J("the desired position","望みの位置")) < 0) {
+			pline(Never_mind);
+			return 0;
+		    }
+		    if (!cansee(cc.x, cc.y) || distu(cc.x, cc.y) >= 32) {
+			goto fire_on_u;
+		    }
+		    pline(E_J("scroll erupts in a tower of flame!",
+			      "巻物から、燃えさかる炎が噴き上がった！"));
+		    explode(cc.x, cc.y, &zi, (2*(rn1(3, 3) + 2) + 1)/3, EXPL_FIERY);
+		    return(1);
+
+		} else {
+fire_on_u:
 		    pline_The(E_J("scroll erupts in a tower of flame!",
 				  "巻物から、燃えさかる炎が噴き上がった！"));
 		    burn_away_slime();

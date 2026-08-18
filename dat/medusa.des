@@ -157,7 +157,7 @@ CONTAINER:'`',"statue",(68,10),uncursed,"knight",3,"ペルセウス"
 OBJECT[25%]:'[',"shield of reflection",contained,cursed,+0
 OBJECT[75%]:'[',"levitation boots",contained,random,+0
 OBJECT[50%]:')',"scimitar",contained,blessed,+2
-OBJECT[50%]:'(',"sack",contained
+OBJECT[50%]:'(',"bag of holding",contained
 CONTAINER:'`',"statue",(64,08)
 CONTAINER:'`',"statue",(65,08)
 CONTAINER:'`',"statue",(64,09)
@@ -272,7 +272,7 @@ CONTAINER:'`',"statue",place[2],uncursed,"knight",3,"ペルセウス"
 OBJECT[75%]:'[',"shield of reflection",contained,cursed,+0
 OBJECT[25%]:'[',"levitation boots",contained,random,+0
 OBJECT[50%]:')',"scimitar",contained,blessed,+2
-OBJECT[50%]:'(',"sack",contained
+OBJECT[50%]:'(',"bag of holding",contained
 
 #
 CONTAINER:'`',"statue",random
@@ -402,7 +402,7 @@ CONTAINER:'`',"statue",place[2],uncursed,"knight",3,"ペルセウス"
 OBJECT[75%]:'[',"shield of reflection",contained,cursed,+0
 OBJECT[25%]:'[',"levitation boots",contained,random,+0
 OBJECT[50%]:')',"scimitar",contained,blessed,+2
-OBJECT[50%]:'(',"sack",contained
+OBJECT[50%]:'(',"bag of holding",contained
 #
 CONTAINER:'`',"statue",random
 CONTAINER:'`',"statue",random

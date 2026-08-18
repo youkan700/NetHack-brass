@@ -1483,13 +1483,15 @@ static const char * const bogusmons[] = {
 	"恐竜バーニーちゃん",			/* saccharine kiddy TV */
 	"モルゴス",				/* Angband */
 	"ヴォーロン",				/* Babylon 5 */
-	"探求のけもの",				/* King Arthur */
+	"唸る獣",				/* King Arthur */
 	"プレデター",				/* Movie */
 	"義理の母",				/* common pest */
 
+	"タモリ",
 	"ガチャピン", "ムック",			/* ひらけ！ ポンキッキ */
 	"のっぽさん", "ゴン太くん",		/* できるかな */
 	"ののワさん",				/* THE IDOLM@STER */
+	"カービィ", "ワドルディ",		/* 星のカービィ */
 	"怪人19面相"				/* 名たんていカゲマン */
 #endif /*JP*/
 };
@@ -1512,6 +1514,18 @@ rndmonnam()
 
 	if (name >= SPECIAL_PM) return bogusmons[name - SPECIAL_PM];
 	return E_J(mons[name].mname,JMONNAM(name));
+}
+
+int
+get_bogusmonnum()
+{
+	return rn2(SIZE(bogusmons));
+}
+const char *
+get_bogusmonnam(name)
+int name;
+{
+	return bogusmons[name];
 }
 
 #ifdef REINCARNATION

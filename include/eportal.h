@@ -11,6 +11,7 @@ struct eportal_dest {
 };
 
 struct eportal {
+	long			readytime;	/* when the power becomes ready */
 	int			num_slots;	/* number of usable slots */
 	struct	eportal_dest	dests[8];	/* destinations */
 };

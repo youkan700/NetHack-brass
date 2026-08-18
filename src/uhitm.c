@@ -270,12 +270,12 @@ struct monst *mtmp;
 	}
 }
 
-schar
+int
 find_roll_to_hit(mtmp, hflg)
 register struct monst *mtmp;
 uchar hflg;
 {
-	schar tmp;
+	int tmp;
 	int tmp2;
 	struct obj *wep = (struct obj *)0;
 
@@ -362,6 +362,7 @@ uchar hflg;
 
 	/* At least 5% chance guaranteed to hit */
 	if (tmp < 2) tmp = 2;
+	if (tmp > 127) tmp = 127;
 	return tmp;
 }
 
@@ -371,7 +372,7 @@ boolean
 attack(mtmp)
 register struct monst *mtmp;
 {
-	schar tmp;
+	int tmp;
 	register struct permonst *mdat = mtmp->data;
 	uchar hitflags = 0;
 	boolean malive = TRUE;
@@ -1392,7 +1393,7 @@ int thrown;
 
 	if (!hittxt &&			/*( thrown => obj exists )*/
 	  (!destroyed || (thrown && m_shot.n > 1 && m_shot.o == obj->otyp))) {
-		if (thrown) hit(mshot_xname(obj), mon, exclam(tmp));
+		if (thrown) hit(mshot_xname(obj), mon, exclam(tmp), 0);
 		else if (!flags.verbose) E_J(You("hit it."),pline("çUåÇÇµÇΩÅB"));
 #ifndef JP
 		else You("%s %s%s", Role_if(PM_BARBARIAN) ? "smite" : "hit",

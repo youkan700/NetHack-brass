@@ -1752,7 +1752,7 @@ chance		: /* empty */
 		  }
 		| PERCENT
 		  {
-			if ($1 <= 0 || $1 > 100)
+			if ($1 == 0 || $1 > 100 || $1 < -100)
 			    yyerror("Expected percentile chance.");
 			$$ = $1;
 		  }

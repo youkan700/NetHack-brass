@@ -25,5 +25,6 @@ struct xdat {
 #define XDAT_M_ID	6	/* monst id in oextra */
 #define	XDAT_PERMONST	7
 #define	XDAT_PORTAL	8
+#define	XDAT_ARTIFACT	9
 
 #endif /* XDAT_H */

@@ -33,6 +33,8 @@ STATIC_DCL int FDECL(in_or_out_menu, (const char *,struct obj *, BOOLEAN_P, BOOL
 STATIC_DCL boolean FDECL(able_to_loot, (int, int));
 STATIC_DCL boolean FDECL(mon_beside, (int, int));
 STATIC_DCL void NDECL(del_sokoprize);
+STATIC_DCL int FDECL(start_drag_out_of_box, (struct obj *, struct obj *));
+STATIC_DCL int NDECL(drag_out_of_box);
 
 /* define for query_objlist() and autopickup() */
 #define FOLLOW(curr, flags) \
@@ -762,7 +764,8 @@ boolean FDECL((*allow), (OBJ_P));/* allow function */
 		    /* Insert object at correct index */
 		    for (j = i; j; j--)
 		    {
-			if (strcmpi(cxname2(curr), cxname2(oarray[j-1]))>0) break;
+//TEST//			if (strcmpi(cxname2(curr), cxname2(oarray[j-1]))>0) break;
+			if (sortloot_cmp(curr, oarray[j-1])>0) break;
 			oarray[j] = oarray[j-1];
 		    }
 		    oarray[j] = curr;
@@ -1245,6 +1248,11 @@ boolean telekinesis;
     *cnt_p = carry_count(obj, container, *cnt_p, telekinesis, &old_wt, &new_wt);
     if (*cnt_p < 1L) {
 	result = -1;	/* nothing lifted */
+	if (container &&
+	    ynq(E_J("Do you want to drag it out to floor?",
+		    "引っぱり出しますか？")) == 'y') {
+	    start_drag_out_of_box(container, obj);
+      }
     } else if (obj->oclass != COIN_CLASS && inv_cnt() >= 52 &&
 		!merge_choice(invent, obj)) {
 	Your(E_J("knapsack cannot accommodate any more items.",
@@ -2739,6 +2747,84 @@ del_sokoprize()
 		obfree(otmp, (struct obj *)0);
 	    }
 	}
+}
+
+/*
+  Drag a heavy object out of a container
+ */
+static NEARDATA struct {
+	unsigned int container_id;
+	unsigned int obj_id;
+	int	     usedtime, reqtime;
+} drag_out_info;
+
+STATIC_PTR
+int
+start_drag_out_of_box(container, target)
+struct obj *container;
+struct obj *target;
+{
+    int tmp, d;
+
+    if (!container || !target) return 0;
+
+    tmp = ACURR(A_STR);
+    if      (tmp >= STR19(18)) d = tmp - 118 + 21; // 18/**, 19-25
+    else if (tmp >= STR18(50)) d = 20;
+    else if (tmp > 18)         d = 19;
+    else                       d = tmp;
+
+    drag_out_info.usedtime     = 0;
+    drag_out_info.reqtime      = (weight(target) / target->quan / 100) * 18 / d + 1;
+    drag_out_info.container_id = container->o_id;
+    drag_out_info.obj_id       = target->o_id;
+
+    set_occupation(drag_out_of_box, E_J("dragging out","引っぱり出すの"), 0);
+#ifndef JP
+    You("start dragging %s out of %s.", an(singular(target, xname)), xname(container));
+#else
+    You("%sから%sを引っぱり出しはじめた。", xname(container), singular(target, xname));
+#endif
+    return 1;
+}
+
+STATIC_PTR
+int
+drag_out_of_box(void)
+{
+    struct obj *cobj, *nobj, *tobj;
+    struct obj *otmp;
+
+    for (cobj = level.objects[u.ux][u.uy]; cobj; cobj = nobj) {
+	nobj = cobj->nexthere;
+	if (Is_container(cobj) && cobj->o_id == drag_out_info.container_id) break;
+    }
+    if (!cobj) return(0);	/* container is gone? */
+
+    for (tobj = cobj->cobj; tobj; tobj = tobj->nobj) {
+	if (tobj->o_id == drag_out_info.obj_id) break;
+    }
+    if (!tobj) return(0);	/* target is gone? */
+    if(drag_out_info.usedtime++ < drag_out_info.reqtime)
+	return(1);		/* still busy */
+
+    if (tobj->quan > 1)
+	tobj = splitobj(tobj, 1L);
+
+    obj_extract_self(tobj);
+    cobj->owt = weight(cobj);
+    if (cobj->otyp == ICE_BOX && !age_is_relative(tobj)) {
+	defrost_obj(tobj);
+    }
+    place_object(tobj, u.ux, u.uy);	/* put on floor */
+    stackobj(tobj);
+
+#ifndef JP
+    You("drag %s out of %s with very effort.", doname(tobj), xname(cobj));
+#else
+    You("ようやく%sから%sを引っぱり出した。", xname(cobj), doname(tobj));
+#endif
+  return(0);
 }
 
 /*pickup.c*/

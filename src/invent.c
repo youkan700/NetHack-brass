@@ -26,6 +26,7 @@ static struct obj *FDECL(find_unpaid,(struct obj *,struct obj **));
 static void FDECL(menu_identify, (int));
 static boolean FDECL(tool_in_use, (struct obj *));
 static char FDECL(obj_to_let,(struct obj *));
+static char *FDECL(loot_xname, (struct obj *));
 
 
 static int lastinvnr = 51;	/* 0 ... 51 (never saved&restored) */
@@ -543,7 +544,6 @@ register struct obj *obj;
 	if (obj->otyp == AMULET_OF_YENDOR ||
 			obj->otyp == CANDELABRUM_OF_INVOCATION ||
 			obj->otyp == BELL_OF_OPENING ||
-			obj->otyp == RIN_PORTAL ||
 			obj->otyp == SPE_BOOK_OF_THE_DEAD) {
 		/* player might be doing something stupid, but we
 		 * can't guarantee that.  assume special artifacts
@@ -1474,7 +1474,10 @@ fully_identify_obj(otmp)
 struct obj *otmp;
 {
     makeknown(otmp->otyp);
-    if (otmp->oartifact) discover_artifact((xchar)otmp->oartifact);
+    if (otmp->oartifact) {
+	discover_artifact((xchar)otmp->oartifact);
+	identify_ego(otmp);
+    }
     otmp->known = otmp->dknown = otmp->bknown = otmp->rknown = 1;
     if (otmp->otyp == EGG && otmp->corpsenm != NON_PM)
 	learn_egg_type(otmp->corpsenm);
@@ -1801,7 +1804,8 @@ long* out_cnt;
 		if (flags.sortloot == 'f') {
 		    /* Insert object at correct index */
 		    for (j = i; j; j--) {
-			if (strcmpi(cxname2(otmp), cxname2(oarray[j-1]))>0) break;
+//TEST//			if (strcmpi(cxname2(otmp), cxname2(oarray[j-1]))>0) break;
+			if (sortloot_cmp(otmp, oarray[j-1])>0) break;
 			oarray[j] = oarray[j-1];
 		    }
 		    oarray[j] = otmp;
@@ -3136,5 +3140,107 @@ boolean as_if_seen;
 	return n;
 }
 
+
+/* sortloot() formatting routine; for alphabetizing, not shown to user */
+static char *
+loot_xname(struct obj *obj)
+{
+    struct obj saveo;
+    char *res;
+
+    /*
+     * Deal with things that xname() includes as a prefix.  We don't
+     * want such because they change alphabetical ordering.  First,
+     * remember 'obj's current settings.
+     */
+    saveo.odiluted = obj->odiluted;
+    saveo.blessed = obj->blessed, saveo.cursed = obj->cursed;
+    saveo.spe = obj->spe;
+    saveo.owt = obj->owt;
+    saveo.has_name = obj->has_name;
+    /* suppress "diluted" for potions and "holy/unholy" for water;
+       sortloot() will deal with them using other criteria than name */
+    if (obj->oclass == POTION_CLASS) {
+        obj->odiluted = 0;
+        if (obj->otyp == POT_WATER)
+            obj->blessed = 0, obj->cursed = 0;
+    }
+    /* suppress user-assigned name */
+    if (saveo.has_name && !obj->oartifact)
+        obj->has_name = 0;
+
+    res = cxname2(obj);
+
+    /* restore the object */
+    if (obj->oclass == POTION_CLASS) {
+        obj->odiluted = saveo.odiluted;
+        if (obj->otyp == POT_WATER)
+            obj->blessed = saveo.blessed, obj->cursed = saveo.cursed;
+    }
+    if (saveo.has_name && !obj->oartifact)
+        obj->has_name = saveo.has_name;
+
+    return res;
+}
+
+/* qsort comparison routine for sortloot() */
+int
+sortloot_cmp(struct obj *obj1, struct obj *obj2)
+{
+    char *nam1, *nam2;
+    int val1, val2, namcmp;
+
+    /*
+     * Sort object names in lexicographical order, ignoring quantity.
+     *
+     * Each obj gets formatted at most once (per sort) no matter how many
+     * comparisons it gets subjected to.
+     */
+    nam1 = loot_xname(obj1);
+    nam2 = loot_xname(obj2);
+    if ((namcmp = strcmpi(nam1, nam2)) != 0)
+        return namcmp;
+
+    /* Sort by BUCX. */
+    val1 = obj1->bknown ? (obj1->blessed ? 3 : !obj1->cursed ? 2 : 1) : 0;
+    val2 = obj2->bknown ? (obj2->blessed ? 3 : !obj2->cursed ? 2 : 1) : 0;
+    if (val1 != val2)
+        return val2 - val1; /* bigger is better */
+
+    /* Sort by greasing.  This will put the objects in degreasing order. */
+    val1 = obj1->greased;
+    val2 = obj2->greased;
+    if (val1 != val2)
+        return val2 - val1; /* bigger is better */
+
+    /* Sort by erosion.  The effective amount is what matters. */
+    val1 = greatest_erosion(obj1);
+    val2 = greatest_erosion(obj2);
+    if (val1 != val2)
+        return val1 - val2; /* bigger is WORSE */
+
+    /* Sort by erodeproofing.  Map known-invulnerable to 1, and both
+       known-vulnerable and unknown-vulnerability to 0, because that's
+       how they're displayed. */
+    val1 = obj1->rknown && obj1->oerodeproof;
+    val2 = obj2->rknown && obj2->oerodeproof;
+    if (val1 != val2)
+        return val2 - val1; /* bigger is better */
+
+    /* Sort by enchantment.  Map unknown to -1000, which is comfortably
+       below the range of obj->spe.  oc_uses_known means that obj->known
+       matters, which usually indirectly means that obj->spe is relevant.
+       Lots of objects use obj->spe for some other purpose (see obj.h). */
+    if (objects[obj1->otyp].oc_uses_known
+        /* exclude eggs (laid by you) and tins (homemade, pureed, &c) */
+        && obj1->oclass != FOOD_CLASS) {
+        val1 = obj1->known ? obj1->spe : -1000;
+        val2 = obj2->known ? obj2->spe : -1000;
+        if (val1 != val2)
+            return val2 - val1; /* bigger is better */
+    }
+
+    return 0;
+}
 
 /*invent.c*/

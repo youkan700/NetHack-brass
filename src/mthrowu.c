@@ -96,7 +96,7 @@ const char *name;
 
 	if (mon == &youmonst) {
 	    /* thrown by yourself */
-	    Sprintf(killer_buf, "Ž©•ª‚Å%s%s‚É“–‚½‚Á‚ÄŽ€‚ñ‚¾", verb, name ? name : killer_xname(obj));
+	    Sprintf(killer_buf, "Ž©•ª‚Å%s%s‚É“–‚½‚Á‚Ä", verb, name ? name : killer_xname(obj));
 	} else {
 	    /* thrown by a monster */
 	    setup_killername(mon, killer_buf);
@@ -401,10 +401,10 @@ boolean verbose;  /* give message(s) even when you can't see what happened */
 	    if (ismimic) seemimic(mtmp);
 	    mtmp->msleeping = 0;
 #ifndef JP
-	    if (vis) hit(distant_name(otmp,mshot_xname), mtmp, exclam(damage));
+	    if (vis) hit(distant_name(otmp,mshot_xname), mtmp, exclam(damage), damage);
 	    else if (verbose) pline("%s is hit%s", Monnam(mtmp), exclam(damage));
 #else
-	    hit(vis ? distant_name(otmp,mshot_xname) : something, mtmp, exclam(damage));
+	    hit(vis ? distant_name(otmp,mshot_xname) : something, mtmp, exclam(damage), damage);
 #endif /*JP*/
 
 	    if (otmp->opoisoned && is_poisonable(otmp)) {

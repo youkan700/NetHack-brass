@@ -367,7 +367,6 @@ static short uniq_objs[] = {
 	SPE_BOOK_OF_THE_DEAD,
 	CANDELABRUM_OF_INVOCATION,
 	BELL_OF_OPENING,
-	RIN_PORTAL,
 };
 
 int
@@ -379,7 +378,6 @@ dodiscovered()				/* free after Robert Viduya */
     winid tmpwin;
     char buf[BUFSZ];
     int eggcnt;
-    struct obj tmpegg;
 
     tmpwin = create_nhwindow(NHW_MENU);
     putstr(tmpwin, 0, E_J("Discoveries","î≠å©ï®àÍóó"));
@@ -395,7 +393,6 @@ dodiscovered()				/* free after Robert Viduya */
 				    JOBJ_NAME(objects[uniq_objs[i]])));
 #ifdef JP
 	    if (uniq_objs[i] == AMULET_OF_YENDOR) Strcpy(eos(buf), "ñÇèúÇØ");
-	    else if (uniq_objs[i] == RIN_PORTAL) Strcpy(eos(buf), "éwó÷");
 #endif /*JP*/
 	    putstr(tmpwin, 0, buf);
 	    ++ct;
@@ -430,17 +427,16 @@ dodiscovered()				/* free after Robert Viduya */
     }
 
     /* discovered eggs */
-    tmpegg = zeroobj;
-    tmpegg.oclass = FOOD_CLASS;
-    tmpegg.otyp = EGG;
-    tmpegg.quan = 1;
     eggcnt = 0;
     for (i=LOW_PM; i<NUMMONS; i++) {
 	if (mvitals[i].mvflags & MV_KNOWS_EGG) {
 	    if (eggcnt++ == 0)
 		putstr(tmpwin, iflags.menu_headings, E_J("Eggs","óë"));
-	    tmpegg.corpsenm = i;
-	    Sprintf(buf, "  %s", doname(&tmpegg));
+#ifndef JP
+	    Sprintf(buf, "  %s egg", mons[i].mname);
+#else /*JP*/
+	    Sprintf(buf, "  %sÇÃóë", JMONNAM(i));
+#endif /*JP*/
 	    putstr(tmpwin, 0, buf);
 	}
     }
@@ -465,7 +461,6 @@ dodiscovered_group()
     winid tmpwin;
     char buf[BUFSZ];
     int eggcnt;
-    struct obj tmpegg;
 
     anything any;
     menu_item *selected;
@@ -522,14 +517,13 @@ dodiscovered_group()
 	    }
 	} else {
 	    /* discovered eggs */
-	    tmpegg = zeroobj;
-	    tmpegg.oclass = FOOD_CLASS;
-	    tmpegg.otyp = EGG;
-	    tmpegg.quan = 1;
 	    for (i=LOW_PM; i<NUMMONS; i++) {
 		if (mvitals[i].mvflags & MV_KNOWS_EGG) {
-		    tmpegg.corpsenm = i;
-		    Sprintf(buf, "  %s", doname(&tmpegg));
+#ifndef JP
+		    Sprintf(buf, "  %s egg", mons[i].mname);
+#else /*JP*/
+		    Sprintf(buf, "  %sÇÃóë", JMONNAM(i));
+#endif /*JP*/
 		    putstr(tmpwin, 0, buf);
 		    ct++;
 		}

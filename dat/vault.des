@@ -22,16 +22,17 @@ MAP
 ---...-----...---
 |...---...---...|
 |...|.......|...|
+|...|.......|...|
 |...---...---...|
 ---...--+--...---
 //---.......---//
 ////---------////
 ENDMAP
 
-REGION: (00,00,16,08),random,"empty",unfilled,rndvault
+REGION: (00,00,16,09),random,"empty",unfilled,rndvault
 REGION: (07,03,07,03),lit,"shop",filled,irregular
 
-DOOR: closed,(08,06)
+DOOR: closed,(08,07)
 
 #
 # test room
@@ -156,4 +157,84 @@ MAP
 ENDMAP
 
 REGION: (03,01,03,01),random,"beehive",filled,true
+
+#
+# farm
+#
+#@ 10 2 20
+MAZE: "rndv-???", none
+GEOMETRY: random, random
+MAP
+---------
+|eeeeeee|
+|eeeeeee|
+|eeeeeee|
+---------
+ENDMAP
+
+# Shape of this room
+REGION:(01,01,01,01), lit, "empty", unfilled, irregular
+
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+OBJECT[25%]:'%',"carrot",random
+OBJECT[-25%]:'%',"clove of garlic",random
+OBJECT[-25%]:'%',"sprig of wolfsbane",random
+OBJECT[-25%]:'%',"melon",random
+
+##
+## room guard test
+##
+##@ 10 2 10
+#MAZE: "rndv-???", none
+#GEOMETRY: random, random
+#MAP
+#-------------
+#|...........|
+#|...........|
+#|...........|
+#|...........|
+#|...........|
+#-------------
+#ENDMAP
+#
+## Shape of this room
+#REGION:(01,01,01,01), lit, "ordinary", unfilled, irregular
+#
+#MONSTER: '@',"knight",(05,03),hostile,roomguard,"çïãRémÉzÉG"
+
 

@@ -4,7 +4,7 @@
 # Oracle level
 #
 
-LEVEL: "oracle"
+LEVEL: "oracle-1"
 
 ROOM: "ordinary" , lit, (3,3), (center,center), (11,9)
 NAME: "central"
@@ -26,6 +26,88 @@ FOUNTAIN: (1, 2)
 FOUNTAIN: (2, 1)
 MONSTER: '@', "Oracle", (1,1)
 DOOR: false , nodoor , random, random
+
+ROOM: "ordinary" , random, random, random, random
+STAIR: random, up
+OBJECT: random,random,random
+
+ROOM: "ordinary" , random, random, random, random
+STAIR: random, down
+OBJECT: random, random, random
+TRAP: random, random
+MONSTER: random, random, random
+MONSTER: random, random, random
+
+ROOM: "ordinary" , random, random, random, random
+OBJECT: random, random, random
+OBJECT: random, random, random
+MONSTER: random, random, random
+
+ROOM: "ordinary" , random, random, random, random
+OBJECT: random, random, random
+TRAP: random, random
+MONSTER: random, random, random
+
+ROOM: "ordinary" , random, random, random, random
+OBJECT: random, random, random
+TRAP: random, random
+MONSTER: random, random, random
+
+RANDOM_CORRIDORS
+
+
+#
+# Oracle level variant
+#
+
+MAZE: "oracle-2",none
+MESSAGE: "@oracle2s"
+GEOMETRY: center, center
+MAP
+////|-----|////
+//---.....---//
+/--.........--/
+/|.T.......T.|/
+--....---....--
+|....--.--....|
+|...--...--...|
+|...|.....|...|
+|...--...--...|
+|....--.--....|
+--....---....--
+/|.T.......T.|/
+/--.........--/
+//---.....---//
+////|-----|////
+ENDMAP
+
+RANDOM_PLACES:(07,04),(07,10),(04,07),(10,07)
+
+REGION: (03,02,11,12),lit,"empty",unfilled,rndvault
+REGION: (06,06,08,08),lit,"delphi",unfilled,irregular
+DOOR: nodoor,place[0]
+
+FOUNTAIN: (06,06)
+FOUNTAIN: (08,06)
+FOUNTAIN: (06,08)
+FOUNTAIN: (08,08)
+
+MONSTER: '@',"Oracle",(07,07)
+
+OBJECT: '`',"statue:mineral",(05,02),"forest centaur",9
+OBJECT: '`',"statue:mineral",(09,02),"mountain centaur",9
+OBJECT: '`',"statue:mineral",(02,05),"plains centaur",9
+OBJECT: '`',"statue:mineral",(12,05),"plains centaur",9
+OBJECT: '`',"statue:mineral",(02,09),"plains centaur",9
+OBJECT: '`',"statue:mineral",(12,09),"plains centaur",9
+OBJECT: '`',"statue:mineral",(05,12),"mountain centaur",9
+OBJECT: '`',"statue:mineral",(09,12),"forest centaur",9
+
+MONSTER: random, random, random
+MONSTER: random, random, random
+
+
+LEVEL: "oracle2s"
 
 ROOM: "ordinary" , random, random, random, random
 STAIR: random, up

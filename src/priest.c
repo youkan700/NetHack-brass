@@ -551,7 +551,7 @@ register struct monst *priest;
 		if(u.ugold > (offer * 2L)) verbalize(E_J("Cheapskate.","ケチ。"));
 		else {
 		    verbalize(E_J("I thank thee for thy contribution.",
-				  "汝の献身に感謝いたします。"));
+				  "汝の献身に感謝いたす。"));
 		    /*  give player some token  */
 		    exercise(A_WIS, TRUE);
 		}
@@ -574,7 +574,7 @@ register struct monst *priest;
 			HProtection |= FROMOUTSIDE;
 		u.ublessed++;
 	    } else {
-		verbalize("汝の私心なき寛容さは大いに認められた。");
+		verbalize("汝の惜しみなき厚意に深く感謝いたす。");
 		if(u.ugold < (offer * 2L) && coaligned) {
 		    if(strayed && (moves - u.ucleansed) > 5000L) {
 			u.ualign.record = 0; /* cleanse thee */

@@ -53,6 +53,7 @@ E int FDECL(getobj_filter_repair, (struct obj *));
 #ifdef FIRSTAID
 E void FDECL(bandage_disappears, (struct obj *));
 #endif
+E int FDECL(use_portal_ring, (struct obj *));
 
 /* ### artifact.c ### */
 
@@ -88,9 +89,17 @@ E boolean FDECL(artifact_light, (struct obj *));
 E long FDECL(spec_m2, (struct obj *));
 E boolean FDECL(artifact_has_invprop, (struct obj *,UCHAR_P));
 E long FDECL(arti_cost, (struct obj *));
+E int FDECL(arti_weight, (struct obj *));
 E boolean FDECL(vorpalize_weapon, (struct obj *, struct obj *));
 E void FDECL(know_enchantment_artifact_worker, (struct obj *, winid));
 E int FDECL(get_artifact_adtyp, (struct obj *));
+
+E boolean FDECL(named_artifact, (struct obj *));
+E const char *FDECL(blade_name, (struct obj *));
+E const char *FDECL(ego_prefix, (struct obj *));
+E boolean FDECL(make_ego, (struct obj *));
+E boolean FDECL(identify_ego, (struct obj *));
+E boolean FDECL(is_ego_identified, (struct obj *));
 
 /* ### attrib.c ### */
 
@@ -371,6 +380,8 @@ E char *FDECL(mon_it, (struct monst *));
 E int FDECL(getpos2, (coord *, int, int, const char *));
 E int FDECL(getnearestpos, (coord *, int, int));
 E void FDECL(mark_goodpos, (coord *, int, int));
+E int NDECL(get_bogusmonnum);
+E const char *FDECL(get_bogusmonnam, (int));
 
 /* ### do_wear.c ### */
 
@@ -888,6 +899,7 @@ E int FDECL(count_buc, (struct obj *,int));
 E void FDECL(carry_obj_effects, (struct obj *));
 E const char *FDECL(currency, (long));
 E void FDECL(silly_thing, (const char *,struct obj *));
+E int FDECL(sortloot_cmp, (struct obj *, struct obj *));
 
 /* ### ioctl.c ### */
 
@@ -2278,7 +2290,7 @@ E void NDECL(u_init);
 E void FDECL(hurtmarmor,(struct monst *,int));
 E boolean FDECL(attack_checks, (struct monst *,struct obj *));
 E void FDECL(check_caitiff, (struct monst *));
-E schar FDECL(find_roll_to_hit, (struct monst *, uchar));
+E int FDECL(find_roll_to_hit, (struct monst *, uchar));
 E boolean FDECL(attack, (struct monst *));
 E boolean FDECL(hmon, (struct monst *,struct obj *,int));
 E int FDECL(damageum, (struct monst *,struct attack *));
@@ -2637,7 +2649,7 @@ E boolean FDECL(cancel_monst, (struct monst *,struct obj *,
 E void FDECL(weffects, (struct obj *));
 E int NDECL(spell_damage_bonus);
 E const char *FDECL(exclam, (int force));
-E void FDECL(hit, (const char *,struct monst *,const char *));
+E void FDECL(hit, (const char *,struct monst *,const char *, int));
 E void FDECL(miss, (const char *,struct monst *));
 E struct monst *FDECL(bhit, (int,int,int,int,int (*)(MONST_P,OBJ_P),
 			     int (*)(OBJ_P,OBJ_P),struct obj *));

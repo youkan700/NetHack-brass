@@ -256,7 +256,7 @@ struct obj *otmp;
 			if(dbldam) dmg *= 2;
 			if (otyp == SPE_FORCE_BOLT)
 			    dmg += spell_damage_bonus();
-			hit(zap_type_text, mtmp, exclam(dmg));
+			hit(zap_type_text, mtmp, exclam(dmg), dmg);
 			(void) resist(mtmp, otmp->oclass, dmg, TELL);
 		} else miss(zap_type_text, mtmp);
 		makeknown(otyp);
@@ -1077,7 +1077,6 @@ int ochance, achance;	/* percent chance for ordinary objects, artifacts */
 	    obj->otyp == SPE_BOOK_OF_THE_DEAD ||
 	    obj->otyp == CANDELABRUM_OF_INVOCATION ||
 	    obj->otyp == BELL_OF_OPENING ||
-	    obj->otyp == RIN_PORTAL ||
 	    (obj->otyp == CORPSE && is_rider(&mons[obj->corpsenm]))) {
 		return TRUE;
 	} else {
@@ -2850,21 +2849,32 @@ register int force;
 }
 
 void
-hit(str,mtmp,force)
-register const char *str;
-register struct monst *mtmp;
-register const char *force;		/* usually either "." or "!" */
+hit(str,mtmp,force,dmg)
+const char *str;
+struct monst *mtmp;
+const char *force;		/* usually either "." or "!" */
+int dmg;
 {
 	if((!cansee(bhitpos.x,bhitpos.y) && !canspotmon(mtmp) &&
 	     !(u.uswallow && mtmp == u.ustuck))
 	   || !flags.verbose)
 #ifndef JP
 	    pline("%s %s it.", The(str), vtense(str, "hit"));
-	else pline("%s %s %s%s", The(str), vtense(str, "hit"),
+	else {
+	    pline("%s %s %s%s", The(str), vtense(str, "hit"),
 		   mon_nam(mtmp), force);
+#ifdef SHOWDMG
+	    if (flags.showdmg && dmg) printdmg(dmg);
+#endif
+	}
 #else
 	    pline("%sが何かに命中した。", str);
-	else pline("%sが%sに命中した%s", str, mon_nam(mtmp), force);
+	else {
+	    pline("%sが%sに命中した%s", str, mon_nam(mtmp), force);
+#ifdef SHOWDMG
+	    if (flags.showdmg && dmg) printdmg(dmg);
+#endif
+	}
 #endif /*JP*/
 }
 
@@ -4025,7 +4035,7 @@ boolean dodelay;
 		if (blocked) goto skip_hit;
 		if (mon_reflects(mon, (char *)0)) {
 		    if(cansee(mon->mx,mon->my)) {
-			hit(fltxt, mon, exclam(0));
+			hit(fltxt, mon, exclam(0), 0);
 			shieldeff(mon->mx, mon->my);
 			(void) mon_reflects(mon, E_J("But it reflects from %s %s!",
 						     "だが、それは%s%sで反射した！"));
@@ -4038,7 +4048,7 @@ boolean dodelay;
 
 		    if (is_rider(mon->data) && ztmp->adtyp == AD_DISN) {
 			if (canseemon(mon)) {
-			    hit(fltxt, mon, E_J(".","。"));
+			    hit(fltxt, mon, E_J(".","。"), 0);
 			    pline(E_J("%s disintegrates.","%sは分解された。"), Monnam(mon));
 			    pline(E_J("%s body reintegrates before your %s!",
 				      "%s身体があなたの%sの前で再合成されてゆく！"),
@@ -4054,7 +4064,7 @@ boolean dodelay;
 		    }
 		    if (mon->mnum == PM_DEATH && ztmp->adtyp == AD_DETH) {
 			if (canseemon(mon)) {
-			    hit(fltxt, mon, E_J(".","。"));
+			    hit(fltxt, mon, E_J(".","。"), 0);
 			    pline(E_J("%s absorbs the deadly %s!",
 				      "%sは致死の%sを吸収している！"),
 				      Monnam(mon), ztmp->fstxt);
@@ -4073,7 +4083,7 @@ boolean dodelay;
 				pline(E_J("%s is disintegrated!",
 					  "%sは分解された！"), Monnam(mon));
 			    else
-				hit(fltxt, mon, E_J("!","！"));
+				hit(fltxt, mon, E_J("!","！"), 0);
 			}
 			mon->mgold = 0L;
 
@@ -4103,7 +4113,7 @@ boolean dodelay;
 		    } else {
 			if (!otmp) {
 			    /* normal non-fatal hit */
-			    hit(fltxt, mon, exclam(tmp));
+			    hit(fltxt, mon, exclam(tmp), tmp);
 			} else {
 			    /* some armor was destroyed; no damage done */
 			    if (canseemon(mon))
