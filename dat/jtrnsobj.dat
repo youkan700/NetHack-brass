@@ -313,7 +313,6 @@
 =invisibility:		透明化の
 =see invisible:		透明視の
 =protection from shape changers:	変身怪物封じの
-=portal:		転移門の
 #
 =wooden:	木の
 =granite:	花崗岩の
@@ -637,6 +636,7 @@
 +stone to flesh:	軟化
 +know enchantment:	武具鑑定
 +torch:			松明
++blank paper:		白紙
 #
 +parchment:	羊皮紙の
 +vellum:	子牛皮の
@@ -682,7 +682,6 @@
 +hardcover:	ハードカバーの
 +Book of the Dead:	死者の書
 +papyrus:	パピルスの
-+blank paper:	白紙の
 +wrinkled:	くしゃくしゃの
 +khaki:		カーキ色の
 +sky blue:	空色の
@@ -861,6 +860,10 @@ AQuick Blade:		クイックブレード
 AGauntlets of Defense:	守りの篭手
 AFist of Fury:		怒りの鉄拳
 AEbony Lacquered Bow:	烏漆の弓
+AOsafunabashi:		長船橋
+ABlade Cusinart':	カシナートの剣
+AVampire Killer:	ヴァンパイアキラー
+AArthur's Fullplate:	騎士アーサーの全身鎧
 # A
 AThe Orb of Detection:		探索のオーブ
 # B
@@ -889,6 +892,9 @@ AThe Platinum Yendorian Express Card:	イェンドリアン・エクスプレスのプラチナカー
 AThe Orb of Fate:		運命のオーブ
 # W
 AThe Eye of the Aethiopica:	エチオピアの目
+
+ANoName:		無銘
+ACustom:		自作
 
 
 #

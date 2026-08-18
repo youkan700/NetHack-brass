@@ -253,7 +253,7 @@ struct obj *book2;
 	if(arti_cursed) {
 	    pline_The(E_J("invocation fails!","儀式は失敗した！"));
 	    pline(E_J("At least one of your artifacts is cursed...",
-		      "魔法の品々の少なくとも一つが呪われていた…。"));
+		      "神秘の品々の少なくとも一つが呪われていた…。"));
 	} else if(arti1_primed && arti2_primed) {
 	    unsigned soon = (unsigned) d(2,6);	/* time til next intervene() */
 
@@ -311,7 +311,7 @@ raise_dead:
 	switch(rn2(3)) {
 	case 0:
 	    Your(E_J("ancestors are annoyed with you!",
-		     "先祖たちはあなたにいらついた！"));
+		     "先祖たちはあなたに苛立った！"));
 	    break;
 	case 1:
 	    pline_The(E_J("headstones in the cemetery begin to move!",
@@ -1283,6 +1283,8 @@ int spell;
 
 	if (uarmh && is_metallic(uarmh) && uarmh->otyp != HELM_OF_BRILLIANCE)
 		splcaster += uarmhbon;
+	if (uarmh && uarmh->otyp == CORNUTHAUM)
+		splcaster -= uarmhbon;
 	if (uarmg && is_metallic(uarmg)) splcaster += uarmgbon;
 	if (uarmf && is_metallic(uarmf)) splcaster += uarmfbon;
 
@@ -1387,6 +1389,10 @@ struct obj *obj;
 	        spl_book[i].sp_id = obj->otyp;
 //	        spl_book[i].sp_lev = objects[obj->otyp].oc_level;
 //	        incrnknow(i);
+		if (u.uenmax < 5) {
+		    u.uen = u.uenmax = 5;
+		}
+
 	        return;
 	    }
 	}

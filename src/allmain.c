@@ -181,7 +181,23 @@ once_per_turn_things()
 	run_regions();
 	run_cloud();
 
-	if (u.ublesscnt)  u.ublesscnt--;
+	if (u.ublesscnt) {
+	    u.ublesscnt--;
+	    if (u.ublesscnt == 0 && u.ugangr == 1) {
+		if (u.uluck >= 0 && u.ualign.record == ALIGNLIM) {
+#ifndef JP
+		    pline("%s seems %s.", u_gname(), Hallucination ?
+			  "cosmic (not a new fact)" : "mollified");
+#else
+		    pline("%s‚Í%s‚æ‚¤‚¾B", u_gname(), Hallucination ?
+			  "‘S‰F’ˆ‚É˜A‚È‚Á‚Ä‚¢‚é(V”­Œ©‚Å‚Í‚È‚¢‚ª)" : "“{‚è‚ğ˜a‚ç‚°‚½");
+#endif /*JP*/
+		    u.ugangr = 0;
+		} else {
+		    u.ublesscnt = rnz(300);
+		}
+	    }
+	}
 	if (u.urest)      u.urest--;
 	if(flags.time && !flags.run)
 	    flags.botl = 1;

@@ -560,7 +560,11 @@ char c;
 		  case 'c'  : return(CARPET);
 		  case 'e'  : return(GROUND); /* earth */
 		  case 'g'  : return(GRASS);
-	    }
+		  case '1'  : return(TLCORNER);
+		  case '2'  : return(TRCORNER);
+		  case '3'  : return(BLCORNER);
+		  case '4'  : return(BRCORNER);
+	}
 	return(INVALID_TYPE);
 }
 
@@ -578,11 +582,11 @@ char *map;
 	int max_hig = 0;
 	char msg[256];
 
-	/* First, strip out digits 0-9 (line numbering) */
-	for (s1 = s2 = map; *s1; s1++)
-	    if (*s1 < '0' || *s1 > '9')
-		*s2++ = *s1;
-	*s2 = '\0';
+//	/* First, strip out digits 0-9 (line numbering) */
+//	for (s1 = s2 = map; *s1; s1++)
+//	    if (*s1 < '0' || *s1 > '9')
+//		*s2++ = *s1;
+//	*s2 = '\0';
 
 	/* Second, find the max width of the map */
 	s1 = map;

@@ -16,7 +16,7 @@ STATIC_DCL void FDECL(check_contained, (struct obj *,const char *));
 #endif
 STATIC_DCL const struct probmat *FDECL(get_obj_material_table, (struct obj *));
 STATIC_DCL void FDECL(adjust_weight_by_material, (struct obj *obj));
-STATIC_DCL void FDECL(init_portal_ring, (struct obj *));
+STATIC_DCL void FDECL(init_portal_item, (struct obj *));
 
 extern struct obj *thrownobj;		/* defined in dothrow.c */
 
@@ -463,6 +463,8 @@ boolean artif;
 		if (is_poisonable(otmp) && !rn2(30/*100*/))
 			otmp->opoisoned = 1;
 
+		if (artif && !rn2(30) && make_ego(otmp))
+		    artif = FALSE;
 		if (artif && !rn2(20))
 		    otmp = mk_artifact(otmp, (aligntyp)A_NONE);
 
@@ -612,7 +614,7 @@ boolean artif;
 					blessorcurse(otmp, 4);
 					break;
 				}
-		case BELL_OF_OPENING:   otmp->spe = 3;
+		case BELL_OF_OPENING:   init_portal_item(otmp);
 					break;
 		case MAGIC_FLUTE:
 		case MAGIC_HARP:
@@ -692,8 +694,19 @@ boolean artif;
 			    int tmpc;
 			    tmpc = rn2(CLR_MAX);
 			    if (tmpc != NO_COLOR) otmp->color = tmpc;
-			    otmp->oprint = TSHIRT_PRINT_TEXT;
+			    if (rn2(3)) {
+				otmp->oprint = TSHIRT_PRINT_TEXT;
+			    } else if (rn2(5)) {
+				otmp->oprint = TSHIRT_PRINT_MON_PIC;
+				otmp->corpsenm = rndmonnum();
+			    } else {
+				otmp->oprint = TSHIRT_PRINT_BOGUS_PIC;
+				otmp->corpsenm = get_bogusmonnum();
+			    }
 			}
+		}
+		if (otmp->otyp == SHIELD && get_material(otmp) == SILVER) {
+		    otmp->prevotyp = SHIELD_OF_REFLECTION;
 		}
 		break;
 	case WAND_CLASS:
@@ -704,9 +717,7 @@ boolean artif;
 		otmp->recharged = 0; /* used to control recharging */
 		break;
 	case RING_CLASS:
-		if (otmp->otyp == RIN_PORTAL) {
-		    init_portal_ring(otmp);
-		} else if(objects[otmp->otyp].oc_charged) {
+		if (objects[otmp->otyp].oc_charged) {
 		    blessorcurse(otmp, 3);
 		    if(rn2(10)) {
 			if(rn2(10) && bcsign(otmp))
@@ -959,6 +970,10 @@ weight(obj)
 register struct obj *obj;
 {
 	int wt = objects[obj->otyp].oc_weight;
+	int awt;
+
+	awt = arti_weight(obj);
+	if (awt > 0) return awt;
 
 	if (obj->otyp == LARGE_BOX && obj->spe == -1) /* Schroedinger's Cat */
 		wt += mons[PM_HOUSECAT].cwt;
@@ -1114,6 +1129,17 @@ const struct probmat special_probs1[] = {
 {   0, 0	} /* terminator */
 };
 
+/* generic iron weapon (never randomly generated) */
+const struct probmat generic_weapon_probs[] = {
+{1000, IRON	},
+{   0, COPPER	},
+{   0, METAL	},
+{   0, GOLD	},
+{   0, SILVER	},
+{   0, MITHRIL	},
+{   0, 0	} /* terminator */
+};
+
 struct moti {
     int  typ;			/* item type */
     const struct probmat *tbl;	/* ptr to table of allowable materials */
@@ -1146,8 +1172,11 @@ is_material_variable(obj)
 struct obj *obj;
 {
 	if (obj->oclass != RING_CLASS &&	/* bit is used as oc_tough */
-	    obj->oclass != GEM_CLASS)		/* bit is used as oc_tough */
+	    obj->oclass != GEM_CLASS) {		/* bit is used as oc_tough */
+		if (obj->oclass == WEAPON_CLASS &&
+		    objects[obj->otyp].oc_material == IRON) return TRUE;
 		return (objects[obj->otyp].oc_other_material);
+	}
 	return FALSE;
 }
 
@@ -1166,6 +1195,8 @@ struct obj *obj;
 	for ( i=0; mat_obj_tbl[i].typ != STRANGE_OBJECT; i++ ) {
 		if ( obj->otyp == mat_obj_tbl[i].typ ) return mat_obj_tbl[i].tbl;
 	}
+	if (obj->oclass == WEAPON_CLASS &&
+	    objects[obj->otyp].oc_material == IRON) return generic_weapon_probs;
 	return (const struct probmat *)0;
 }
 
@@ -2015,30 +2046,42 @@ int x, y;
 int rank;
 boolean artif;
 {
-	struct obj *otmp;
+	struct obj *otmp, *o2nd;
 	int otyp;
 	int trycnt;
 
-	otmp = (struct obj *)0;
+	otmp = o2nd = (struct obj *)0;
 	otyp = 0;
 	trycnt = 10;
 	if (let == ARMOR_CLASS) {
 	    trycnt = 5;
 	}
 	for (; trycnt; trycnt--) {
-	    if (otmp) obfree(otmp, (struct obj *)0);
 	    otmp = mkobj(let, artif);
 	    if (otmp->oartifact) break;
 	    if (objects[otmp->otyp].oc_rank >= rank) break;
+	    if (o2nd) {
+		if (objects[otmp->otyp].oc_rank > objects[o2nd->otyp].oc_rank) {
+		    obfree(o2nd, (struct obj *)0);
+		    o2nd = otmp;
+		} else {
+		    obfree(otmp, (struct obj *)0);
+		}
+	    } else {
+		o2nd = otmp;
+	    }
 	}
 
 	/* try some compensation... */
 	if (!trycnt) {
+	    otmp = o2nd;
 	    switch (otmp->oclass) {
 		case WEAPON_CLASS:
 		    /* try making it of silver */
-		    if (!change_material(otmp, SILVER)) {
-			otmp->spe += 2 + rnd(3);
+		    if (objects[otmp->otyp].oc_other_material) {
+			if (!change_material(otmp, rn2(10) ? SILVER : MITHRIL)) {
+			    otmp->spe += 2 + rnd(3);
+			}
 		    }
 		    if (otmp->spe < 0) otmp->spe = 0;
 		    break;
@@ -2080,12 +2123,13 @@ boolean artif;
 }
 
 void
-init_portal_ring(otmp)
+init_portal_item(otmp)
 struct obj *otmp;
 {
 	struct eportal eptmp;
 	int i;
 
+	eptmp.readytime = 0;
 	eptmp.num_slots = 3;
 	for (i=0; i<MAX_EPORTAL_SLOT; i++) {
 	    eptmp.dests[i].dlev.dnum   = -1;	/* empty slot */
@@ -2093,9 +2137,9 @@ struct obj *otmp;
 	    eptmp.dests[i].dx = 0;
 	    eptmp.dests[i].dy = 0;
 	}
-	eptmp.dests[0].dlev = stronghold_level;
-	eptmp.dests[0].dx = 41;
-	eptmp.dests[0].dy = 11;
+//	eptmp.dests[0].dlev = stronghold_level;
+//	eptmp.dests[0].dx = 41;
+//	eptmp.dests[0].dy = 11;
 
 	add_xdat_obj(otmp, XDAT_PORTAL, &eptmp);
 }

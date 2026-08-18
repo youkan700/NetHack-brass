@@ -78,7 +78,6 @@ struct obj {
 	Bitfield(oerodeproof,1); /* erodeproof weapon/armor */
 	Bitfield(olocked,1);	/* object is locked */
 #define sokoprize olocked	/* special flag for sokoban prize */
-#define mcandles7 olocked	/* 7 magic candles are attached to candelabrum */
 	Bitfield(obroken,1);	/* lock has been broken */
 #define oshot obroken		/* a bullet is shot from a gun, not thrown */
 	Bitfield(otrapped,1);	/* container is trapped */
@@ -87,8 +86,10 @@ struct obj {
 /*2*/
 	Bitfield(recharged,3);	/* number of times it's been recharged */
 #define oprint recharged	/* print type of T-shirt */
-#define TSHIRT_PRINT_NONE 0
-#define TSHIRT_PRINT_TEXT 1
+#define TSHIRT_PRINT_NONE      0
+#define TSHIRT_PRINT_TEXT      1
+#define TSHIRT_PRINT_MON_PIC   2
+#define TSHIRT_PRINT_BOGUS_PIC 3
 	Bitfield(lamplit,1);	/* a light-source -- can be lit */
 #ifdef PICKUP_THROWN
 	Bitfield(othrown,1);	/* object is thrown by you */

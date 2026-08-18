@@ -1140,7 +1140,7 @@
 #"So, follower of %l, you seek to invade the lair of %n.
 #Only my meals are allowed down here.  Prepare to be eaten!"
 「さて、%lの手下よ。%nの住処に侵入を企てたというわけか。
-  ここへ入るのを許されるのは我が食事のみ。食われる準備はよいな！」
+  ここへ入るのを許されるのは我が贄のみ。食われる準備はよいな！」
 %E
 %Cp Cav 00051
 #"So, again you face me, %c.  No one has ever before escaped me.

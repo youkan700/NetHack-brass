@@ -161,7 +161,7 @@ register xchar x, y;
 	 */
 	if (Upolyd && attacktype(youmonst.data, AT_KICK)) {
 	    struct attack *uattk;
-	    schar tmp = find_roll_to_hit(mon, 0);
+	    int tmp = find_roll_to_hit(mon, 0);
 	    int die;
 
 	    for (i = 0; i < NATTK; i++) {

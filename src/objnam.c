@@ -326,7 +326,7 @@ named_obj_name(obj)
 struct obj *obj;
 {
 	char *p;
-	if (obj->oartifact) {
+	if (named_artifact(obj)) {
 	    p = (char *)artiname(obj->oartifact);
 	    if (p && *p) return p;
 	}
@@ -376,7 +376,7 @@ boolean ignore_oquan;
 	if (!Blind) obj->dknown = TRUE;
 	if (Role_if(PM_PRIEST)) obj->bknown = TRUE;
 #ifdef JP
-	if ((obj->has_name || obj->oartifact) && obj->dknown) {
+	if ((obj->has_name || named_artifact(obj)) && obj->dknown) {
 	    if (obj_is_pname(obj)) {
 		Sprintf(buf, "%s%s", (obj->oclass == WEAPON_CLASS &&
 			is_poisonable(obj) && obj->opoisoned) ? "毒の塗られた" : "",
@@ -416,6 +416,24 @@ boolean ignore_oquan;
 		if (is_poisonable(obj) && obj->opoisoned)
 			Strcat(buf, E_J("poisoned ","毒の塗られた"));
 		Strcat(buf, material_prefix(obj));
+		Strcat(buf, ego_prefix(obj));
+		if (!obj->dknown)
+			Strcat(buf, dn ? dn : actualn);
+		else if (nn)
+			Strcat(buf, actualn);
+		else if (un) {
+#ifdef JP
+			Strcat(buf, un);
+			Strcat(buf, "と呼ばれる");
+#endif /*JP*/
+			Strcat(buf, dn ? dn : actualn);
+#ifndef JP
+			Strcat(buf, " called ");
+			Strcat(buf, un);
+#endif /*JP*/
+		} else
+			Strcat(buf, dn ? dn : actualn);
+		break;
 	    case VENOM_CLASS:
 	    case TOOL_CLASS:
 #ifndef JP
@@ -744,7 +762,7 @@ boolean ignore_oquan;
 #endif /*JP*/
 
 #ifndef JP
-	if ((obj->has_name || obj->oartifact) && obj->dknown) {
+	if ((obj->has_name || named_artifact(obj) && obj->dknown) {
 		Strcat(buf, " named ");
 nameit:
 		Strcat(buf, named_obj_name(obj));
@@ -872,6 +890,8 @@ struct obj *obj;
 		}
 	    } else if (obj->otyp == LONG_SWORD && obj->oartifact == ART_EXCALIBUR) {
 		matpfx = "神秘的な";
+	    } else if (obj->otyp == LONG_SWORD && obj->oartifact == ART_VORPAL_BLADE) {
+		matpfx = "不可思議な";
 	    }
 	} else {
 	    if (obj->otyp == STATUE)
@@ -916,7 +936,7 @@ register struct obj *obj;
 #ifdef JP
 	/* 日本語では「～と名づけられた」「毒の塗られた」「～と呼ばれる」が先行する */
 	if (obj->dknown) {
-	    if (obj->oartifact && !obj_is_pname(obj)) {
+	    if (named_artifact(obj) && !obj_is_pname(obj)) {
 		/* 未鑑定のアーティファクトは「～と名づけられた」が先行する */
 		bp += strlen(artiname(obj->oartifact)) + 14;
 		nazuke = TRUE;
@@ -1246,6 +1266,7 @@ register struct obj *otmp;
 #else
 	    !otmp->bknown ||
 #endif
+	    !is_ego_identified(otmp) ||
 	    !objects[otmp->otyp].oc_name_known)	/* ?redundant? */
 	return TRUE;
     if (otmp->oartifact && undiscovered_artifact(otmp->oartifact))
@@ -2771,6 +2792,7 @@ prefixes:
 		     || !strncmp(bp, jmatpfx[i], k=strlen(jmatpfx[i]))
 		     || !strncmp(bp, jmatpfx[i], k=(k-2))
 		     || (i == METAL && !strncmp(bp, "神秘的な", k=8))
+		     || (i == METAL && !strncmp(bp, "不可思議な", k=10))
 #endif /*JP*/
 		   ) {
 		    const int *mat_var_obj = material_var_objs;
@@ -3355,9 +3377,6 @@ typfnd:
 		case SPE_BOOK_OF_THE_DEAD:
 		    typ = SPE_BLANK_PAPER;
 		    break;
-		case RIN_PORTAL:
-		    typ = RIN_TELEPORTATION;
-		    break;
 	    }
 	}
 
@@ -3750,7 +3769,10 @@ struct obj *armor;
     if (armor) {
 	if ( is_clothes(armor) ) {
 	    if ( is_robe(armor) ) {
-		return E_J("robe","ローブ");
+		if (use_japanese_name())
+		    return E_J("kimono","着物");
+		else
+		    return E_J("robe","ローブ");
 	    } else {
 		return E_J("clothes","服");
 	    }

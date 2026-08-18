@@ -136,7 +136,6 @@ OBJECT:'/',"wishing",contained
 ENGRAVING:place[0],burn,"Elbereth"
 # The treasure of the lord
 CONTAINER:'(',"chest",(37,08)
-OBJECT:'=',"portal",contained
 OBJECT[75%]:'*',random,contained
 OBJECT[75%]:'!',random,contained
 OBJECT[50%]:'?',random,contained

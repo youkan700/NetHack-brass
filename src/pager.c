@@ -1172,7 +1172,7 @@ struct obj *otmp;
 	return;
     }
     ep = (char *)0;
-    if (otmp->oartifact) {
+    if (named_artifact(otmp)) {
 	oindex = NUM_OBJECTS * 2 + otmp->oartifact;
     } else if (objects[otmp->otyp].oc_name_known) {
 	oindex = otmp->otyp * 2;

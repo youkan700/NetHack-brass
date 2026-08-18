@@ -1818,6 +1818,7 @@ verbalize(E_J("In return for thy service, I grant thee the gift of Immortality!"
 	if(u.ugangr) {
 	    u.ugangr -=
 		((value * (u.ualign.type == A_CHAOTIC ? 2 : 3)) / MAXVALUE);
+	    if (u.ugangr == saved_anger && value >= rn2(8)) u.ugangr--;
 	    if(u.ugangr < 0) u.ugangr = 0;
 	    if(u.ugangr != saved_anger) {
 		if (u.ugangr) {
@@ -2071,7 +2072,7 @@ prayer_done()		/* M. Stephenson (1.0.3b) */
     if (p_type == 0) {
 	if(on_altar() && u.ualign.type != alignment)
 	    (void) water_prayer(FALSE);
-	u.ublesscnt += rnz(250);
+	u.ublesscnt += rnz(2000);
 	change_luck(-3);
 	gods_upset(u.ualign.type);
     } else if(p_type == 1) {

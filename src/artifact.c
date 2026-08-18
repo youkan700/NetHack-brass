@@ -19,7 +19,9 @@ STATIC_DCL struct artifact artilist[];
 extern boolean notonhead;	/* for long worms */
 
 #define get_artifact(o) \
-		(((o)&&(o)->oartifact) ? &artilist[(int) (o)->oartifact] : 0)
+		(((o)&&(o)->oartifact) ? \
+		  ((o)->oartifact >= ART_NONAME) ? get_xdat_obj((o), XDAT_ARTIFACT) : \
+		  &artilist[(int) (o)->oartifact] : 0)
 
 STATIC_DCL int FDECL(spec_applies, (const struct artifact *,struct monst *));
 STATIC_DCL int FDECL(arti_invoke, (struct obj*));
@@ -41,6 +43,10 @@ STATIC_OVL xchar artidisco[NROFARTIFACTS];
 STATIC_DCL void NDECL(hack_artifacts);
 STATIC_DCL boolean FDECL(attacks, (int,struct obj *));
 STATIC_DCL int FDECL(getobj_filter_invoke, (struct obj *));
+
+static void FDECL(wield_ego_weapon, (struct obj *));
+static void FDECL(identify_thrown_ego, (struct obj *));
+
 
 /* handle some special cases; must be called after u_init() */
 STATIC_OVL void
@@ -131,9 +137,12 @@ aligntyp alignment;	/* target alignment, or A_NONE */
 	boolean unique = !by_align && otmp && objects[o_typ].oc_unique;
 	short eligible[NROFARTIFACTS];
 	short prob[NROFARTIFACTS];
+	int last_anum;
+	
+	last_anum = by_align ? ART_EBONY_LACQUERED_BOW : (ART_ORB_OF_DETECTION - 1);
 
 	/* gather eligible artifacts */
-	for (n = 0, a = artilist+1, m = 1; a->otyp; a++, m++)
+	for (n = 0, a = artilist+1, m = 1; m <= last_anum; a++, m++)
 	    if ((!by_align ? a->otyp == o_typ :
 		    (a->alignment == alignment ||
 			(a->alignment == A_NONE && u.ugifts > 0))) &&
@@ -171,6 +180,7 @@ aligntyp alignment;	/* target alignment, or A_NONE */
 //	    otmp = oname(otmp, E_J(a->name, jartifact_names[m]));
 	    otmp->oartifact = m;
 	    change_material(otmp, a->material);
+	    if (a->weight) otmp->owt = a->weight;
 	    artiexist[m] = TRUE;
 	    if (m == ART_GRIMTOOTH) otmp->opoisoned = 1;
 	} else {
@@ -194,6 +204,8 @@ int artinum;
 	otmp->oartifact = artinum;
 	otmp->age = 0;
 	change_material(otmp, artilist[artinum].material);
+	if (artilist[artinum].weight)
+	    otmp->owt = artilist[artinum].weight;
 	artiexist[artinum] = TRUE;
 	if (otmp->oartifact) {
 	    /* can't dual-wield with artifact as secondary weapon */
@@ -217,8 +229,8 @@ const char *name;
 short *otyp;
 int *anum;
 {
-    register const struct artifact *a;
-    register const char *aname;
+    const struct artifact *a;
+    const char *aname, *rname;
     int i;
 
     if(!strncmpi(name, "the ", 4)) name += 4;
@@ -229,10 +241,14 @@ int *anum;
 	if(!strcmpi(name, aname)) {
 	    *otyp = a->otyp;
 	    if (anum) *anum = i;
-	    return E_J(a->name, jartifact_names[i]);
+	    rname = E_J(a->name, jartifact_names[i]);
+#ifdef JP
+	    if (!rname) rname = a->name;
+#endif /*JP*/
+	    return rname;
 	}
 #ifdef JP
-	if(!strcmpi(name, jartifact_names[i])) {
+	if(jartifact_names[i] && !strcmpi(name, jartifact_names[i])) {
 	    *otyp = a->otyp;
 	    if (anum) *anum = i;
 	    return jartifact_names[i];
@@ -248,6 +264,7 @@ exist_artifact(artinum)
 int artinum;
 {
 	if (artinum <= 0 || artinum > NROFARTIFACTS) return FALSE;
+	if (artinum == ART_NONAME || artinum == ART_CUSTOM) return FALSE;
 	return artiexist[artinum];
 }
 
@@ -321,7 +338,7 @@ struct obj *obj;
 {
     const struct artifact *arti = get_artifact(obj);
 
-    if (arti) {      
+    if (arti) {
 	/* while being worn */
 	if ((obj->owornmask & ~W_ART) && (arti->spfx & SPFX_REFLECT))
 	    return TRUE;
@@ -380,7 +397,7 @@ attacks(adtyp, otmp)
 register int adtyp;
 register struct obj *otmp;
 {
-	register const struct artifact *weap;
+	const struct artifact *weap;
 
 	if ((weap = get_artifact(otmp)) != 0)
 		return((boolean)(weap->attk.adtyp == adtyp));
@@ -392,11 +409,12 @@ defends(adtyp, otmp)
 register int adtyp;
 register struct obj *otmp;
 {
-	register const struct artifact *weap;
+	const struct artifact *weap;
 
-	if ((weap = get_artifact(otmp)) != 0)
-		return((boolean)(weap->defn.adtyp == adtyp));
-	return FALSE;
+	weap = get_artifact(otmp);
+	if (!weap) return FALSE;
+	if (weap->defn.adtyp == AD_PHYS) return FALSE;
+	return((boolean)(weap->defn.adtyp == adtyp));
 }
 
 /* used for monsters */
@@ -405,11 +423,12 @@ protects(adtyp, otmp)
 int adtyp;
 struct obj *otmp;
 {
-	register const struct artifact *weap;
+	const struct artifact *weap;
 
-	if ((weap = get_artifact(otmp)) != 0)
-		return (boolean)(weap->cary.adtyp == adtyp);
-	return FALSE;
+	weap = get_artifact(otmp);
+	if (!weap) return FALSE;
+	if (weap->cary.adtyp == AD_PHYS) return FALSE;
+	return((boolean)(weap->cary.adtyp == adtyp));
 }
 
 /*
@@ -428,6 +447,9 @@ long wp_mask;
 	long spfx;
 
 	if (!oart) return;
+
+	if (on && (wp_mask == W_WEP || wp_mask == W_SWAPWEP))
+	    wield_ego_weapon(otmp);
 
 	/* effects from the defn field */
 	dtyp = (wp_mask != W_ART) ? oart->defn.adtyp : oart->cary.adtyp;
@@ -551,6 +573,10 @@ long wp_mask;
 		ELevAtWill &= ~wp_mask;
 		levitation_off(0);
 	    }
+	}
+	if (wp_mask != W_ART && (spfx & SPFX_DPROP)) {
+	    if (on) u.uprops[oart->defn.damn].extrinsic |= wp_mask;
+	    else u.uprops[oart->defn.damn].extrinsic &= ~wp_mask;
 	}
 
 	if(wp_mask == W_ART && !on && oart->inv_prop) {
@@ -759,13 +785,17 @@ spec_abon(otmp, mon)
 struct obj *otmp;
 struct monst *mon;
 {
-	register const struct artifact *weap = get_artifact(otmp);
+	const struct artifact *weap = get_artifact(otmp);
 
 	/* no need for an extra check for `NO_ATTK' because this will
 	   always return 0 for any artifact which has that attribute */
 
-	if (weap && weap->attk.damn && spec_applies(weap, mon))
+	if (weap->ego_type == EGO_HIT) return 999;
+
+	if (weap && weap->attk.damn && spec_applies(weap, mon)) {
+	    if (weap->attk.damn == 255) return 999;
 	    return rnd((int)weap->attk.damn);
+	}
 	return 0;
 }
 
@@ -809,6 +839,9 @@ xchar m;
 {
     int i;
 
+    /* do not discover ego item */
+    if (m >= ART_NONAME) return;
+
     /* look for this artifact in the discoveries list;
        if we hit an empty slot then it's not present, so add it */
     for (i = 0; i < NROFARTIFACTS; i++)
@@ -827,6 +860,9 @@ undiscovered_artifact(m)
 xchar m;
 {
     int i;
+
+    /* do not count ego item */
+    if (m >= ART_NONAME) return FALSE;
 
     /* look for this artifact in the discoveries list;
        if we hit an empty slot then it's undiscovered */
@@ -1147,23 +1183,26 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 
 	/* the four basic attacks: fire, cold, shock and missiles */
 	if (attacks(AD_FIRE, otmp)) {
-	    if (realizes_damage)
+	    if (realizes_damage) {
 #ifndef JP
 		pline_The("fiery %s %s %s%c",
-			is_blade(otmp) ? "blade" : "weapon",
+			blade_name(otmp),
 			!spec_dbon_applies ? "hits" :
 			(mdef->mnum == PM_WATER_ELEMENTAL) ?
 			"vaporizes part of" : "burns",
 			hittee, !spec_dbon_applies ? '.' : '!');
 #else
 		pline("炎の%sが%s%s%s",
-			is_blade(otmp) ? "刃" : "武器",
+			blade_name(otmp),
 			hittee,
 			!spec_dbon_applies ? "に命中した" :
 			(mdef->mnum == PM_WATER_ELEMENTAL) ?
 			"の一部を蒸発させた" : "を焼いた",
 			!spec_dbon_applies ? "。" : "！");
 #endif /*JP*/
+		if (is_ammo(otmp) || is_missile(otmp))
+		    identify_thrown_ego(otmp);
+	    }
 	    if (!rn2(4)) (void) destroy_mitem(mdef, POTION_CLASS, AD_FIRE);
 	    if (!rn2(4)) (void) destroy_mitem(mdef, SCROLL_CLASS, AD_FIRE);
 	    if (!rn2(7)) (void) destroy_mitem(mdef, SPBOOK_CLASS, AD_FIRE);
@@ -1171,32 +1210,49 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 	    return realizes_damage;
 	}
 	if (attacks(AD_COLD, otmp)) {
-	    if (realizes_damage)
+	    if (realizes_damage) {
 #ifndef JP
 		pline_The("ice-cold %s %s %s%c",
-			is_blade(otmp) ? "blade" : "weapon",
+			blade_name(otmp),
 			!spec_dbon_applies ? "hits" : "freezes",
 			hittee, !spec_dbon_applies ? '.' : '!');
 #else
 		pline("氷結の%sが%s%s%s",
-			is_blade(otmp) ? "刃" : "武器",
+			blade_name(otmp),
 			hittee,
 			!spec_dbon_applies ? "に命中した" : "を凍らせた",
 			!spec_dbon_applies ? "。" : "！");
 #endif /*JP*/
+		if (is_ammo(otmp) || is_missile(otmp))
+		    identify_thrown_ego(otmp);
+	    }
 	    if (!rn2(4)) (void) destroy_mitem(mdef, POTION_CLASS, AD_COLD);
 	    return realizes_damage;
 	}
 	if (attacks(AD_ELEC, otmp)) {
-	    if (realizes_damage)
+	    if (realizes_damage) {
+		if (otmp->otyp == HEAVY_HAMMER)
 #ifndef JP
-		pline_The("massive hammer hits%s %s%c",
-			  !spec_dbon_applies ? "" : "!  Lightning strikes",
-			  hittee, !spec_dbon_applies ? '.' : '!');
+		    pline_The("massive hammer hits%s %s%c",
+			      !spec_dbon_applies ? "" : "!  Lightning strikes",
+			      hittee, !spec_dbon_applies ? '.' : '!');
+		else
+		    pline_The("shocking %s %s %s%c",
+			    blade_name(otmp),
+			    !spec_dbon_applies ? "hits" : "strikes",
+			    hittee, !spec_dbon_applies ? '.' : '!');
 #else
-		pline("巨大な槌が%sに命中し%s", hittee,
-			!spec_dbon_applies ? "た。" : "、電撃をくらわせた！");
+		    pline("巨大な槌が%sに命中し%s", hittee,
+			    !spec_dbon_applies ? "た。" : "、電撃をくらわせた！");
+		else
+		    pline("雷光の%sが%sに%s",
+			    blade_name(otmp),
+			    hittee,
+			    !spec_dbon_applies ? "命中した。" : "電撃をくらわせた！");
 #endif /*JP*/
+		if (is_ammo(otmp) || is_missile(otmp))
+		    identify_thrown_ego(otmp);
+	    }
 	    if (!rn2(5)) (void) destroy_mitem(mdef, RING_CLASS, AD_ELEC);
 	    if (!rn2(5)) (void) destroy_mitem(mdef, WAND_CLASS, AD_ELEC);
 	    return realizes_damage;
@@ -1354,9 +1410,10 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 		if (!youdefend) {
 			if (vis) {
 			    if(is_sb)
-				pline_The(E_J("%s blade draws the life from %s!",
-					      "%s刃が%sの生命力を吸い取った！"),
+				pline_The(E_J("%s %s draws the life from %s!",
+					      "%s%sが%sの生命力を吸い取った！"),
 				      hcolor(NH_BLACK),
+				      blade_name(otmp),
 				      mon_nam(mdef));
 			    else
 #ifndef JP
@@ -1387,7 +1444,7 @@ int dieroll; /* needed for Magicbane and vorpal blades */
 			if (Blind)
 				You_feel(E_J("an %s drain your life!","%sがあなたの生命力を奪うのを感じた！"),
 				    is_sb ?
-				    E_J("unholy blade","不浄な刃") : E_J("object","物体"));
+				    E_J("unholy blade","不浄な刃") : blade_name(otmp));
 			else if (is_sb)
 				pline_The(E_J("%s blade drains your life!","%s刃があなたの生命力を奪った！"),
 				      hcolor(NH_BLACK));
@@ -1423,6 +1480,7 @@ struct obj *otmp;
 	   /* note: presenting the possibility of invoking non-artifact
 	      mirrors and/or lamps is a simply a cruel deception... */
 	    otyp == MIRROR || otyp == MAGIC_LAMP ||
+	    otyp == BELL_OF_OPENING ||
 	    (otyp == OIL_LAMP &&	/* don't list known oil lamp */
 	     (otmp->dknown && objects[OIL_LAMP].oc_name_known)))
 		return GETOBJ_CHOOSEIT;
@@ -1456,6 +1514,8 @@ arti_invoke(obj)
 		 obj->otyp == LEVITATION_BOOTS ||
 		 (oart && (oart->cspfx & SPFX_LWILL)))
 	    return invoke_levitation(obj);
+	else if (obj->otyp == BELL_OF_OPENING)
+	    return use_portal_ring(obj);
 	else
 	    pline(nothing_happens);
 	return 1;
@@ -1862,7 +1922,19 @@ struct obj *otmp;
 	if (oart->cost)
 	    return (oart->cost);
 	else
-	    return (100L * (long)objects[otmp->otyp].oc_cost);
+	    return (20L * (long)objects[otmp->otyp].oc_cost);
+}
+
+int
+arti_weight(otmp)
+struct obj *otmp;
+{
+	struct artifact *oart;
+
+	if (!otmp->oartifact) return 0;
+
+	oart = get_artifact(otmp);
+	return (oart->weight);
 }
 
 #endif /* OVLB */
@@ -1876,6 +1948,11 @@ winid win;
 	const struct artifact *artifact = get_artifact(weapon);
 
 	if (artifact) {
+
+	    if (weapon->oartifact == ART_NONAME) {
+		/* use SPFX_NOGEN as identify flag */
+		if (!(artifact->spfx & SPFX_NOGEN)) return;
+	    }
 
 	    /* NO_ATTK ? */
 	    if (artifact->attk.adtyp == AD_PHYS &&
@@ -1901,25 +1978,36 @@ winid win;
 			break;
 		}
 	    } else if (artifact->spfx & SPFX_DFLAG2) {
-		switch (artifact->mtype) {
-		    case M2_ORC:
-			Sprintf(buf, E_J("To orcs", "オーク族に対し"));
-			break;
-		    case M2_UNDEAD:
-			Sprintf(buf, E_J("To ogres", "アンデッドに対し"));
-			break;
-		    case M2_DEMON:
-			Sprintf(buf, E_J("To devils and demons", "悪魔に対し"));
-			break;
-		    case M2_WERE:
-			Sprintf(buf, E_J("To lycanthropes", "獣人に対し"));
-			break;
-		    case M2_GIANT:
-			Sprintf(buf, E_J("To giants", "巨人に対し"));
-			break;
-		    default:
+		long mtype = artifact->mtype;
+		int l;
+		l = 0;
+		while (mtype) {
+		    if (mtype & M2_ORC) {
+			Sprintf(&buf[l], "オーク族");
+			l += 8;
+			mtype &= ~M2_ORC;
+		    } else if (mtype & M2_UNDEAD) {
+			Sprintf(&buf[l], "アンデッド");
+			l += 10;
+			mtype &= ~M2_UNDEAD;
+		    } else if (mtype & M2_DEMON) {
+			Sprintf(&buf[l], "悪魔");
+			l += 4;
+			mtype &= ~M2_DEMON;
+		    } else if (mtype & M2_WERE) {
+			Sprintf(&buf[l], "獣人");
+			l += 4;
+			mtype &= ~M2_WERE;
+		    } else if (mtype & M2_GIANT) {
+			Sprintf(&buf[l], "巨人");
+			l += 4;
+			mtype &= ~M2_GIANT;
+		    } else {
 			Sprintf(buf, "??? Unknown artifact");
 			break;
+		    }
+		    Sprintf(&buf[l], mtype ? "・" : "に対し");
+		    l += 2;
 		}
 	    } else if (artifact->spfx & SPFX_DALIGN) {
 		Sprintf(buf, E_J("To foes except %s ones", "%s属性でない敵に対し"), align_str(artifact->alignment));
@@ -1954,7 +2042,10 @@ winid win;
 		Sprintf(buf, E_J("To all foes", "あらゆる敵に対し"));
 	    }
 	    putstr(win, 0, buf);
-	    if (artifact->attk.damn>0) {
+	    if (artifact->attk.damn == 255) {
+		Sprintf(buf, E_J("  It always hits", "　必ず命中する"));
+		putstr(win, 0, buf);
+	    } else if (artifact->attk.damn>0) {
 		Sprintf(buf, E_J("  Hit bonus: +1d%d", "　命中ボーナス: +1d%d"), artifact->attk.damn);
 		putstr(win, 0, buf);
 	    }
@@ -1965,12 +2056,362 @@ winid win;
 		Sprintf(buf, E_J("  Damage bonus: +1d%d", "　追加ダメージ: +1d%d"), artifact->attk.damd);
 		putstr(win, 0, buf);
 	    }
-	    if (artifact == &artilist[ART_ORCRIST] ||
-	        artifact == &artilist[ART_STING]) {
-		putstr(win, 0, "");
-		putstr(win, 0, E_J("+1d4 damage bonus to all foes", "あらゆる敵に対し +1d4の追加ダメージ"));
+
+	}
+}
+
+const char *
+blade_name(otmp)
+struct obj *otmp;
+{
+	if (is_blade(otmp)) return E_J("blade", "刃");
+	if (is_axe(otmp)) return E_J("axe", "斧");
+	if (is_hammer(otmp)) return E_J("hammer", "槌");
+	if (is_pick(otmp)) return E_J("pick", "つるはし");
+	if (is_spear(otmp) || is_pole(otmp)) return E_J("spear", "穂先");
+	if ((objects[otmp->otyp].oc_wprop & WP_WEAPONTYPE) == WP_AMMUNITION) {
+	    switch (objects[otmp->otyp].oc_wprop & WP_SUBTYPE) {
+		case WP_BULLET: return E_J("bullet", "弾丸");
+		case WP_ARROW:  return E_J("arrow", "矢");
+		case WP_STONE:	return E_J("stone", "石");
+		case WP_BOLT:   return E_J("bolt", "ボルト");
+	    }
+	}
+	if (is_missile(otmp))
+	    return E_J(OBJ_NAME(objects[otmp->otyp]),
+		       JOBJ_NAME(objects[otmp->otyp]));
+	return E_J("weapon", "武器");
+}
+
+boolean
+named_artifact(otmp)
+struct obj *otmp;
+{
+	return (otmp->oartifact && otmp->oartifact != ART_NONAME);
+}
+
+void ego_test(struct obj *otmp) {
+    struct artifact *artifact;
+    int tmp_adtyp[4] = { AD_PHYS, AD_FIRE, AD_COLD, AD_ELEC };
+    if (otmp->oartifact) {
+	pline("%s is artifact.", doname(otmp));
+	return;
+    }
+    add_xdat_obj(otmp, XDAT_ARTIFACT, &artilist[0]);
+    otmp->oartifact = ART_NONAME;
+    artifact =  get_artifact(otmp);
+    if (!artifact) {
+	pline("Error in add_xdat_obj().");
+	return;
+    }
+    artifact->otyp = otmp->otyp;
+//    artifact->weight = 0;
+    artifact->name = "<FIXME>";
+    artifact->spfx = SPFX_ATTK;
+//    artifact->cspfx = 0;
+//    artifact->mtype = 0;
+    artifact->attk.adtyp = tmp_adtyp[rn2(4)];
+    artifact->attk.damn = 0;
+    artifact->attk.damd = 8;
+}
+
+boolean
+make_ego(otmp)
+struct obj *otmp;
+{
+	struct artifact *art;
+	int otyp;
+	int dam, d1, d2;
+	int adtyp;
+	int tmp;
+
+	if (otmp->oartifact) {
+	    impossible("make_ego(): Try to make ego on an artifact.");
+	    return FALSE;
+	}
+
+	otyp = otmp->otyp;
+	if (otmp->oclass == WEAPON_CLASS) {
+	    tmp = objects[otyp].oc_wldam;
+	    d1 = ((tmp>>5) & 0x07) * (tmp & 0x1f) + ((objects[otyp].oc_dambon) & 0x0f);
+	    if (otyp == TSURUGI || otyp == DWARVISH_MATTOCK)
+		d1 += 12;
+	    tmp = objects[otyp].oc_wsdam;
+	    d2 = ((tmp>>5) & 0x07) * (tmp & 0x1f) + ((objects[otyp].oc_dambon >> 4) & 0x0f);
+	    dam = max(d1, d2);
+
+	    add_xdat_obj(otmp, XDAT_ARTIFACT, &artilist[0]);
+	    otmp->oartifact = ART_NONAME;
+	    art = get_artifact(otmp);
+	    if (!art) {
+		impossible("make_ego: Error in add_xdat_obj().");
+		return FALSE;
 	    }
 
+	    art->otyp = otmp->otyp;
+	    art->name = "<FIXME>";
+	    art->ego_desc = (otmp->o_id % 7) + 1;
+
+	    /* arrows, darts */
+	    if (is_consumable(otmp)) {
+		art->spfx = SPFX_ATTK;
+		art->attk.adtyp = rn2(2) ? AD_FIRE : AD_COLD;
+		art->attk.damn = 0;
+		art->attk.damd = max((dam+1)/2, 4);
+		art->ego_type = (art->attk.adtyp == AD_FIRE) ? EGO_FIRE : EGO_COLD;
+		return TRUE;
+	    }
+
+	    /* launchers */
+	    if (is_launcher(otmp)) goto xit_none;
+
+	    adtyp = AD_ANY;
+	    switch (rn2(20)) {
+		case 0:
+		    adtyp = AD_PHYS;
+		    if (is_blade(otmp) || is_axe(otmp))
+			art->ego_type = EGO_SLICE;
+		    else if (is_hammer(otmp) || is_pick(otmp))
+			art->ego_type = EGO_CRUSH;
+		    else if (is_launcher(otmp))
+			art->ego_type = EGO_LAUNCHER;
+		    else
+			art->ego_type = EGO_PIERCE;
+		    break;
+		case 1:
+		    /* ligt weight */
+		    art->weight = objects[otyp].oc_weight / 2;
+		    otmp->owt = art->weight;
+		    art->attk.adtyp = AD_PHYS;
+		    art->attk.damn = 4;
+		    art->ego_type = EGO_LIGHTWEIGHT;
+		    return TRUE;
+		case 2:
+		    /* bull's eye */
+		    art->attk.adtyp = AD_PHYS;
+		    art->attk.damn = 255;
+		    art->ego_type = EGO_HIT;
+		    return TRUE;
+		case 7:
+		case 8:
+		case 9:
+		    adtyp = AD_ELEC;
+		    art->ego_type = EGO_ELEC;
+		    break;
+		case 10:
+		case 11:
+		case 12:
+		case 13:
+		case 14:
+		    adtyp = AD_COLD;
+		    art->ego_type = EGO_COLD;
+		    break;
+		case 15:
+		case 16:
+		case 17:
+		case 18:
+		case 19:
+		    adtyp = AD_FIRE;
+		    art->ego_type = EGO_FIRE;
+		    break;
+		default:
+		    goto xit_none;
+	    }
+	    if (adtyp != AD_ANY) {
+		art->spfx = SPFX_ATTK;
+		art->attk.adtyp = adtyp;
+		art->attk.damn = 0;
+		art->attk.damd = max((dam+1)/2, 4);
+		if (!rn2(dam)) art->attk.damd = max(dam, 8);
+	    }
+	    return TRUE;
+	}
+xit_none:
+	del_xdat_obj(otmp, XDAT_ARTIFACT);
+	otmp->oartifact = 0;
+	return FALSE;
+}
+
+boolean
+identify_ego(otmp)
+struct obj *otmp;
+{
+	struct artifact *a;
+
+	if (otmp->oartifact != ART_NONAME) return FALSE;
+	a =  get_artifact(otmp);
+	if (!a) return FALSE;
+	
+	/* use SPFX_NOGEN as identify flag */
+	if (!(a->spfx & SPFX_IDENTIFIED)) {
+	    a->spfx |= SPFX_IDENTIFIED;
+	    return TRUE;
+	}
+	return FALSE;
+}
+
+boolean
+is_ego_identified(otmp)
+struct obj *otmp;
+{
+	struct artifact *a;
+
+	if (otmp->oartifact != ART_NONAME) return TRUE;
+	a =  get_artifact(otmp);
+	if (!a) return TRUE;
+	
+	/* use SPFX_NOGEN as identify flag */
+	if (!(a->spfx & SPFX_IDENTIFIED)) {
+	    return FALSE;
+	}
+	return TRUE;
+}
+
+void
+wield_ego_weapon(otmp)
+struct obj *otmp;
+{
+	struct artifact *a;
+	boolean ident = FALSE;
+
+	if (otmp->oclass != WEAPON_CLASS) return;
+	if (otmp->oartifact != ART_NONAME) return;
+	a =  get_artifact(otmp);
+	if (!a) return;
+	
+	/* use SPFX_NOGEN as identify flag */
+	if (!(a->spfx & SPFX_IDENTIFIED) && (a->spfx & SPFX_ATTK)) {
+	    switch (a->attk.adtyp) {
+		case AD_FIRE:
+		    Your(E_J("weapon emits fire!", "武器が炎を放った！"));
+		    ident = TRUE;
+		    break;
+		case AD_COLD:
+		    Your(E_J("weapon is covered by frost!", "武器が霜に包まれた！"));
+		    ident = TRUE;
+		    break;
+		case AD_ELEC:
+		    Your(E_J("weapon emits spark!", "武器は帯電した！"));
+		    ident = TRUE;
+		    break;
+		default:
+		    break;
+	    }
+	    if (ident) {
+		a->spfx |= SPFX_IDENTIFIED;
+	    }
+	    return;
+	}
+}
+
+const char *ego_desc_prefix[] = {
+    E_J("", ""),
+    E_J("shiny ",   "輝く"),
+    E_J("fine ",    "上質な"),
+    E_J("glowing ", "淡く光る"),
+    E_J("solemn ",  "厳めしい"),
+    E_J("elegant ", "優雅な"),
+    E_J("old ",     "古風な"),
+    E_J("decent ",  "きっちりした"),
+};
+
+const char *ego_weapon_prefix[] = {
+    E_J("strange ",      "謎の"),
+    E_J("slashing ",     "切断の"),
+    E_J("crushing ",     "強打の"),
+    E_J("pierecing ",    "貫きの"),
+    E_J("pierecing ",    "強射の"),
+    E_J("fiery ",        "火炎の"),
+    E_J("icy ",          "冷気の"),
+    E_J("shocking ",     "電撃の"),
+    E_J("lightweight ",  "軽捷の"),
+    E_J("bullseye ",     "必中の"),
+};
+
+const char *
+ego_prefix(otmp)
+struct obj *otmp;
+{
+	struct artifact *artifact;
+
+	if (otmp->oartifact != ART_NONAME) return "";
+	artifact = get_artifact(otmp);
+	if (otmp->oclass == WEAPON_CLASS) {
+	    if (!(artifact->spfx & SPFX_IDENTIFIED)) {
+		return ego_desc_prefix[artifact->ego_desc];
+	    } else {
+		return ego_weapon_prefix[artifact->ego_type];
+	    }
+	}
+	return "";
+}
+
+int
+ego_prefix_to_type(str, typ)
+char *str;
+int *typ;
+{
+	int l = 0;
+	int type = EGO_NONE;
+	if      (!strncmpi(str, "slashing ", l=9)) type = EGO_SLICE;
+	else if (!strncmpi(str, "crushing ", l=9)) type = EGO_CRUSH;
+	else if (!strncmpi(str, "pierecing ", l=10)) type = EGO_PIERCE;
+	else if (!strncmpi(str, "fiery ", l=6)) type = EGO_FIRE;
+	else if (!strncmpi(str, "icy ", l=4)) type = EGO_COLD;
+	else if (!strncmpi(str, "shocking ", l=9)) type = EGO_ELEC;
+	else if (!strncmpi(str, "lightweight ", l=12)) type = EGO_LIGHTWEIGHT;
+	else if (!strncmpi(str, "bullseye ", l=9)) type = EGO_HIT;
+#ifdef JP
+	else if (!strncmpi(str, "切断の", l=6)) type = EGO_SLICE;
+	else if (!strncmpi(str, "強打の", l=6)) type = EGO_CRUSH;
+	else if (!strncmpi(str, "貫きの", l=6)) type = EGO_PIERCE;
+	else if (!strncmpi(str, "強射の", l=6)) type = EGO_LAUNCHER;
+	else if (!strncmpi(str, "火炎の", l=6)) type = EGO_FIRE;
+	else if (!strncmpi(str, "冷気の", l=6)) type = EGO_COLD;
+	else if (!strncmpi(str, "電撃の", l=6)) type = EGO_ELEC;
+	else if (!strncmpi(str, "軽捷の", l=6)) type = EGO_LIGHTWEIGHT;
+	else if (!strncmpi(str, "必中の", l=6)) type = EGO_HIT;
+#endif /*JP*/
+	else l=0;
+	*typ = type;
+	return l;
+}
+
+static void
+identify_thrown_ego(wep)
+struct obj *wep;
+{
+	struct artifact *a, *atmp;
+	struct obj *otmp;
+
+	if (wep->oartifact != ART_NONAME) return;
+	a = get_artifact(wep);
+
+	if (a->spfx & SPFX_IDENTIFIED) return;
+
+	a->spfx |= SPFX_IDENTIFIED;
+
+	/* if hero shot a missile and knew its ego type,
+	   identify the original group of the missile */
+	if (wep->oclass == WEAPON_CLASS && wep->corpsenm &&
+	    objects[wep->otyp].oc_merge) {
+	    for (otmp = invent; otmp; otmp = otmp->nobj) {
+		if (otmp->otyp == wep->otyp &&
+		    otmp->o_id == wep->corpsenm && otmp->oartifact == ART_NONAME) {
+		    atmp = get_artifact(otmp);
+		    if (!atmp || a->ego_type != atmp->ego_type) continue;
+		    atmp->spfx |= SPFX_IDENTIFIED;
+		}
+	    }
+	    /* identify the already-thrown weapon... */
+	    for (otmp = fobj; otmp; otmp = otmp->nobj) {
+		if (otmp->otyp == wep->otyp &&
+		    otmp->corpsenm == wep->corpsenm && otmp->oartifact == ART_NONAME) {
+		    atmp = get_artifact(otmp);
+		    if (!atmp || a->ego_type != atmp->ego_type) continue;
+		    atmp->spfx |= SPFX_IDENTIFIED;
+		}
+	    }
 	}
 }
 

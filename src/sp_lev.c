@@ -169,6 +169,7 @@ rndtrap()
  */
 #define DRY	0x1
 #define WET	0x2
+#define NOOBJ	0x4
 
 STATIC_DCL boolean FDECL(is_ok_location, (SCHAR_P, SCHAR_P, int));
 
@@ -220,6 +221,9 @@ register int humidity;
 
 	if (Is_waterlevel(&u.uz)) return TRUE;	/* accept any spot */
 
+	if (humidity & NOOBJ) {
+	    if (OBJ_AT(x, y)) return FALSE;
+	}
 	if (humidity & DRY) {
 	    typ = levl[x][y].typ;
 	    if (typ == ROOM || typ == AIR ||
@@ -270,13 +274,17 @@ schar		*x, *y;
 struct mkroom	*croom;
 {
 	coord c;
+	int trycnt;
 
 	if (*x <0 && *y <0) {
-		if (somexy(croom, &c)) {
+		for (trycnt = 10; trycnt; trycnt--) {
+		    if (somexy(croom, &c)) {
 			*x = c.x;
 			*y = c.y;
-		} else
-		    panic("get_room_loc : can't find a place!");
+		    } else
+			panic("get_room_loc : can't find a place!");
+		    if (!OBJ_AT(c.x, c.y)) break;
+		}
 	} else {
 		if (*x < 0)
 		    *x = rn2(croom->hx - croom->lx + 1);
@@ -947,15 +955,21 @@ struct mkroom	*croom;
     char c;
     boolean named;	/* has a name been supplied in level description? */
     char oclass;
+    static boolean prev_chance = TRUE;
+
+    if (o->chance < 0)
+	o->chance = prev_chance ? 0 : -(o->chance);
 
     if (rn2(100) < o->chance) {
+	prev_chance = TRUE;
+
 	named = o->name.str ? TRUE : FALSE;
 
 	x = o->x; y = o->y;
 	if (croom)
 	    get_room_loc(&x, &y, croom);
 	else
-	    get_location(&x, &y, DRY);
+	    get_location(&x, &y, DRY|NOOBJ);
 
 	if (o->class >= 0)
 	    c = o->class;
@@ -964,11 +978,9 @@ struct mkroom	*croom;
 	else
 	    c = 0;
 
-	if (!c)
-	    otmp = mkobj_at(RANDOM_CLASS, x, y, !named);
-	else if (o->id < -1) {
+	if (o->id < -1) {
 	    /* ranked random object */
-	    oclass = (char) def_char_to_objclass(c);
+	    oclass = !c ? RANDOM_CLASS : (char) def_char_to_objclass(c);
 	    switch (-(o->id)-2) {
 		case 0: /* fine */
 		    otmp = mk_ranked_obj_at(oclass, x, y, FINE, !named && !rn2(7));
@@ -991,7 +1003,7 @@ struct mkroom	*croom;
 	     * The special levels are compiled with the default "text" object
 	     * class characters.  We must convert them to the internal format.
 	     */
-	    oclass = (char) def_char_to_objclass(c);
+	    oclass = !c ? RANDOM_CLASS : (char) def_char_to_objclass(c);
 
 	    if (oclass == MAXOCLASSES)
 		panic("create_object:  unexpected object class '%c'",c);
@@ -1136,7 +1148,9 @@ struct mkroom	*croom;
 	} else
 	    stackobj(otmp);
 
-    }		/* if (rn2(100) < o->chance) */
+    } else {		/* if (rn2(100) < o->chance) */
+	prev_chance = FALSE;
+    }
  o_done:
     Free(o->name.str);
 }
@@ -1829,44 +1843,48 @@ int typ;
 
 	/* Read the level initialization data */
 	Fread((genericptr_t) &init_lev, 1, sizeof(lev_init), fd);
-	switch (init_lev.init_present) {
-	  case IM_MKMAP: /* mkmap */
-	    if(init_lev.lit < 0)
-		init_lev.lit = rn2(2);
-	    mkmap(&init_lev);
-	    break;
-	  case IM_ICE_CAVERN: /* ice cavern */
-	    if(init_lev.lit < 0)
-		init_lev.lit = rn2(2);
-	    mk_ice_cavern(init_lev.fg, init_lev.bg, init_lev.lit, 0);
-	    break;
-	  case IM_GHOST_TOWN: /* ghost town */
-	    mkghosttown(init_lev.arg);
-	    break;
-	  case IM_DESERTED: /* deserted field */
-	    mkbaallev(ROOM, BOG, init_lev.arg);
-	    break;
-	  case IM_TOWNLIKE: /* town like map */
-	    mktown(&init_lev);
-	    break;
-	  default: /* none */
-	    break;
+	if (!rndvault) {
+	    switch (init_lev.init_present) {
+	      case IM_MKMAP: /* mkmap */
+		if(init_lev.lit < 0)
+		    init_lev.lit = rn2(2);
+		mkmap(&init_lev);
+		break;
+	      case IM_ICE_CAVERN: /* ice cavern */
+		if(init_lev.lit < 0)
+		    init_lev.lit = rn2(2);
+		mk_ice_cavern(init_lev.fg, init_lev.bg, init_lev.lit, 0);
+		break;
+	      case IM_GHOST_TOWN: /* ghost town */
+		mkghosttown(init_lev.arg);
+		break;
+	      case IM_DESERTED: /* deserted field */
+		mkbaallev(ROOM, BOG, init_lev.arg);
+		break;
+	      case IM_TOWNLIKE: /* town like map */
+		mktown(&init_lev);
+		break;
+	      default: /* none */
+		break;
+	    }
 	}
 
 	/* Read the per level flags */
 	Fread((genericptr_t) &lev_flags, 1, sizeof(lev_flags), fd);
-	if (lev_flags & NOTELEPORT)
-	    level.flags.noteleport = 1;
-	if (lev_flags & HARDFLOOR)
-	    level.flags.hardfloor = 1;
-	if (lev_flags & NOMMAP)
-	    level.flags.nommap = 1;
-	if (lev_flags & SHORTSIGHTED)
-	    level.flags.shortsighted = 1;
-	if (lev_flags & ARBOREAL)
-	    level.flags.arboreal = 1;
-	if (lev_flags & NOMONGEN)
-	    level.flags.nomongen = 1;
+	if (!rndvault) {
+	    if (lev_flags & NOTELEPORT)
+		level.flags.noteleport = 1;
+	    if (lev_flags & HARDFLOOR)
+		level.flags.hardfloor = 1;
+	    if (lev_flags & NOMMAP)
+		level.flags.nommap = 1;
+	    if (lev_flags & SHORTSIGHTED)
+		level.flags.shortsighted = 1;
+	    if (lev_flags & ARBOREAL)
+		level.flags.arboreal = 1;
+	    if (lev_flags & NOMONGEN)
+		level.flags.nomongen = 1;
+	}
 
 	/* Read message */
 	Fread((genericptr_t) &n, 1, sizeof(n), fd);
@@ -2222,7 +2240,9 @@ dlb *fd;
     boolean has_bounds;
     boolean has_transparent;
     int yendor_branch = -1;
+    int random_wall = 0;
     struct mkroom *croom, *proom;
+    NhRect  *r1 = 0, r2;
 
     (void) memset((genericptr_t)&Map[0][0], 0, sizeof Map);
     load_common_data(fd, SP_LEV_MAZE);
@@ -2346,6 +2366,14 @@ dlb *fd;
 			levl[x][y].lit = 1;
 		    else if(levl[x][y].typ == CROSSWALL)
 			has_bounds = TRUE;
+		    else if(random_wall < 1 && levl[x][y].typ == TLCORNER)
+			random_wall = 1;
+		    else if(random_wall < 2 && levl[x][y].typ == TRCORNER)
+			random_wall = 2;
+		    else if(random_wall < 3 && levl[x][y].typ == BLCORNER)
+			random_wall = 3;
+		    else if(random_wall < 4 && levl[x][y].typ == BRCORNER)
+			random_wall = 4;
 		    else if(levl[x][y].typ == ICE)
 			levl[x][y].icedpool = ICED_POOL;
 		    Map[x][y] = 1;
@@ -2445,7 +2473,7 @@ dlb *fd;
 		/* special case: the first region with "rndvault" flag
 		   makes an irregular shaped room, with where
 		   Map[x][y] is 1 */
-		if (rndvault && !proom && tmpregion.rirreg == 2 &&
+		if (!proom && tmpregion.rirreg == 2 &&
 		    (tmpregion.rtype == OROOM ||
 		     tmpregion.rtype == EMPTYROOM)) {
 		    proom = &rooms[nroom];
@@ -2493,7 +2521,7 @@ dlb *fd;
 		    continue;
 		}
 
-		if (rndvault && proom)
+		if (proom)
 		    troom = &subrooms[nsubroom];
 		else
 		    troom = &rooms[nroom];
@@ -2512,7 +2540,7 @@ dlb *fd;
 		    min_ry = max_ry = tmpregion.y1;
 		    flood_fill_rm(tmpregion.x1, tmpregion.y1,
 				  roomno + ROOMOFFSET, tmpregion.rlit, TRUE);
-		    if (!rndvault || !proom)
+		    if (!proom)
 			add_room(min_rx, min_ry, max_rx, max_ry,
 				 FALSE, tmpregion.rtype, TRUE);
 		    else
@@ -2521,7 +2549,7 @@ dlb *fd;
 		    troom->rlit = tmpregion.rlit;
 		    troom->irregular = TRUE;
 		} else {
-		    if (!rndvault || !proom)
+		    if (!proom)
 			add_room(tmpregion.x1, tmpregion.y1,
 				 tmpregion.x2, tmpregion.y2,
 				 tmpregion.rlit, tmpregion.rtype, TRUE);
@@ -2597,6 +2625,16 @@ dlb *fd;
 		for(y = ystart; y < ystart+ysize; y++)
 		    if(levl[x][y].typ == CROSSWALL)
 			levl[x][y].typ = ROOM;
+	}
+
+	/* if random wall in map, remove 1/n of them */
+	if (random_wall) {
+	    random_wall = TLCORNER + rn2(random_wall);
+	    for(x = xstart; x < xstart+xsize; x++)
+		for(y = ystart; y < ystart+ysize; y++)
+		    if (levl[x][y].typ == random_wall)
+			levl[x][y].typ = ROOM;
+	    random_wall = 0;
 	}
 
 	Fread((genericptr_t) &n, 1, sizeof(n), fd);
@@ -2820,6 +2858,18 @@ dlb *fd;
     wallification(1, 0, COLNO-1, ROWNO-1);
     /* wallification might change wall type */
     remember_wallsign_on();
+
+    r1 = rnd_rect();	/*  */
+    r2.lx = xstart;
+    r2.ly = ystart;
+    r2.hx = xstart + xsize - 1;
+    r2.hy = ystart + ysize - 1;
+    if (r2.lx < 0) r2.lx = 0;
+    if (r2.ly < 0) r2.ly = 0;
+    if (r2.hx >= COLNO-1) r2.hx = COLNO-1;
+    if (r2.hy >= ROWNO-1) r2.hy = ROWNO-1;
+    split_rects(r1, &r2);
+
     if (rndvault) return TRUE;
 
     /*
@@ -2916,18 +2966,7 @@ const char *name;
 {
 	NhRect	*r1 = 0, r2;
 	rndvault = TRUE;
-	if (load_special(name)) {
-	    r1 = rnd_rect();	/*  */
-	    r2.lx = xstart;
-	    r2.ly = ystart;
-	    r2.hx = xstart + xsize - 1;
-	    r2.hy = ystart + ysize - 1;
-	    if (r2.lx < 0) r2.lx = 0;
-	    if (r2.ly < 0) r2.ly = 0;
-	    if (r2.hx >= COLNO-1) r2.hx = COLNO-1;
-	    if (r2.hy >= ROWNO-1) r2.hy = ROWNO-1;
-	    split_rects(r1, &r2);
-	}
+	load_special(name);
 	rndvault = FALSE;
 	level.flags.is_maze_lev = 0;	/* only inside this room is mazelike! */
 }

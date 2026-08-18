@@ -723,6 +723,20 @@ peffects(otmp)
 			 * will help them identify the potion...
 			 */
 			make_blinded(0L,TRUE);
+		} else if (otmp->otyp == POT_SEE_INVISIBLE &&
+			   (HInvis & (FROMOUTSIDE|TIMEOUT))) {
+			HInvis &= ~(FROMOUTSIDE|TIMEOUT);
+			if (!Invis) {
+			    if (See_invisible) {
+				You(E_J("can no longer see through yourself!",
+					"身体がもはや透き通っていないことに気づいた！"));
+			    } else {
+				You(E_J("can see yourself!",
+					"自分が見えるようになった！"));
+				newsym(u.ux,u.uy);
+			    }
+			}
+			break;
 		}
 		if (otmp->blessed)
 			incr_itimeout(&HSee_invisible, rn1(500,1000));

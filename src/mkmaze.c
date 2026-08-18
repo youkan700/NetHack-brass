@@ -559,13 +559,23 @@ register const char *s;
 	}
 #endif
 
-	if(*protofile) {
+	while(*protofile) {
 	    Strcat(protofile, LEV_EXT);
 	    if(load_special(protofile)) {
+		if (lev_message && lev_message[0] == '@') {
+		    Strcpy(protofile, &lev_message[1]); /* chained load */
+		    free((genericptr_t)lev_message);
+		    lev_message = 0;
+		} else
+		    *protofile = 0;
 		fixup_special();
 		/* some levels can end up with monsters
 		   on dead mon list, including light source monsters */
 		dmonsfree();
+		if (*protofile) {
+		    level.flags.is_maze_lev = 0;
+		    continue;
+		}
 		return;	/* no mazification right now */
 	    }
 	    impossible("Couldn't load \"%s\" - making a maze.", protofile);

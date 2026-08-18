@@ -58,7 +58,7 @@ STATIC_DCL int FDECL(use_gun, (struct obj *));
 STATIC_DCL int FDECL(getobj_filter_bullet, (struct obj *));
 STATIC_DCL int FDECL(use_bullet, (struct obj *));
 STATIC_DCL int FDECL(getobj_filter_gun, (struct obj *));
-STATIC_OVL int FDECL(use_portal_ring, (struct obj *));
+STATIC_DCL void FDECL(use_bell_opening, (struct obj *));
 
 
 #ifdef	AMIGA
@@ -907,7 +907,8 @@ struct obj **optr;
 	register struct obj *obj = *optr;
 	struct monst *mtmp;
 	boolean wakem = FALSE, learno = FALSE,
-		ordinary = (obj->otyp != BELL_OF_OPENING || !obj->spe),
+		ordinary = (obj->otyp != BELL_OF_OPENING ||
+			    obj->age > monstermoves),
 		invoking = (obj->otyp == BELL_OF_OPENING &&
 			 invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy));
 
@@ -1090,14 +1091,13 @@ register struct obj *obj;
 #endif /*JP*/
 	}
 	if (!invocation_pos(u.ux, u.uy)) {
-	    if (!obj->mcandles7 || obj->spe < 7) {
+	    if (obj->spe < 7) {
 #ifndef JP
 		pline_The("%s %s being rapidly consumed!", s, vtense(s, "are"));
 #else
 		pline("%sは急速に燃え尽きようとしている！", s);
 #endif /*JP*/
 		obj->age /= 2;
-		obj->mcandles7 = 0;
 	    }
 	} else {
 		if(obj->spe == 7) {
@@ -1197,12 +1197,6 @@ struct obj **optr;
 #endif /*JP*/
 		if (!otmp->spe || otmp->age > obj->age)
 		    otmp->age = obj->age;
-		if (obj->otyp == MAGIC_CANDLE &&
-		    (otmp->spe == 0 || otmp->mcandles7)) {
-		    otmp->mcandles7 = 1;
-		} else {
-		    otmp->mcandles7 = 0;
-		}
 		otmp->spe += (int)obj->quan;
 		if (otmp->lamplit && !obj->lamplit)
 #ifndef JP
@@ -1949,6 +1943,7 @@ register struct obj *obj;
 	bobj->blessed = (obj->blessed || otmp->blessed);
 	if (bobj->cursed && bobj->blessed)
 		bobj->blessed = bobj->cursed = 0;
+	bobj->bknown = otmp->bknown && obj->bknown;
 	useup(otmp);
 #ifndef JP
 	You("cut your %s into %s.", xname(otmp), (cnt > 1) ? "some bandages" : "a bandage");
@@ -3851,8 +3846,8 @@ struct obj *otmp;
 			return GETOBJ_CHOOSEIT;
 		break;
 	    case RING_CLASS:
-		if (type == RIN_LEVITATION ||
-		    type == RIN_PORTAL) return GETOBJ_CHOOSEIT;
+		if (type == RIN_LEVITATION)
+			return GETOBJ_CHOOSEIT;
 		break;
 
 	    default:
@@ -4056,8 +4051,10 @@ doapply()
 		res = use_mirror(obj);
 		break;
 	case BELL:
-	case BELL_OF_OPENING:
 		use_bell(&obj);
+		break;
+	case BELL_OF_OPENING:
+		use_bell_opening(obj);
 		break;
 	case CANDELABRUM_OF_INVOCATION:
 		use_candelabrum(obj);
@@ -4328,9 +4325,6 @@ doapply()
 	case LEVITATION_BOOTS:
 		res = invoke_levitation(obj);
 		break;
-	case RIN_PORTAL:
-		res = use_portal_ring(obj);
-		break;
 	default:
 		/* Pole-weapons can strike at a distance */
 		if (is_ranged(obj)) {
@@ -4392,6 +4386,113 @@ unfixable_trouble_count(is_horn)
 	return unfixable_trbl;
 }
 
+STATIC_OVL void
+use_bell_opening(obj)
+struct obj *obj;
+{
+	struct eportal *ep;
+	struct monst *mtmp;
+	boolean wakem = FALSE, learno = FALSE, ordinary,
+		invoking = invocation_pos(u.ux, u.uy) && !On_stairs(u.ux, u.uy);
+
+	ep = get_xdat_obj(obj, XDAT_PORTAL);
+	ordinary = (!ep || ep->readytime > monstermoves);
+
+#ifndef JP
+	You("ring %s.", the(xname(obj)));
+#else
+	You("%sを鳴らした。", xname(obj));
+#endif /*JP*/
+
+	if (Underwater || (u.uswallow && ordinary)) {
+#ifdef	AMIGA
+	    amii_speaker( obj, "AhDhGqEqDhEhAqDqFhGw", AMII_MUFFLED_VOLUME );
+#endif
+	    pline(E_J("But the sound is muffled.",
+		      "しかし、音はほとんど響かなかった。"));
+
+	} else if (invoking && ordinary) {
+	    /* needs to be recharged... */
+	    pline(E_J("But it makes no sound.","しかし、音がしなかった。"));
+	    learno = TRUE;	/* help player figure out why */
+
+	} else if (ordinary) {
+	    pline(E_J("The Bell rings lamely.", "鐘は力なく鳴った。"));
+#ifdef	AMIGA
+	    amii_speaker( obj, "ahdhgqeqdhehaqdqfhgw", AMII_MUFFLED_VOLUME );
+#endif
+	    wakem = TRUE;
+
+	} else {
+	    /* charged Bell of Opening */
+	    ep->readytime = monstermoves + rnz(100);
+
+	    if (u.uswallow) {
+		if (!obj->cursed)
+		    (void) openit();
+		else
+		    pline(nothing_happens);
+
+	    } else if (obj->cursed) {
+		coord mm;
+
+		mm.x = u.ux;
+		mm.y = u.uy;
+		mkundead(&mm, FALSE, NO_MINVENT);
+		wakem = TRUE;
+
+	    } else  if (invoking) {
+#ifndef JP
+		pline("%s an unsettling shrill sound...",
+		      Tobjnam(obj, "issue"));
+#else
+		pline("%sから、背筋の凍るような、かん高い音が響いた…。",
+		      xname(obj));
+#endif /*JP*/
+#ifdef	AMIGA
+		amii_speaker( obj, "aefeaefeaefeaefeaefe", AMII_LOUDER_VOLUME );
+#endif
+		obj->age = moves;
+		learno = TRUE;
+		wakem = TRUE;
+
+	    } else if (obj->blessed) {
+		int res = 0;
+
+		pline(E_J("Strange sound waves around!", "不思議な響きが周囲に広がった！"));
+#ifdef	AMIGA
+		amii_speaker( obj, "ahahahDhEhCw", AMII_SOFT_VOLUME );
+#endif
+		if (uchain) {
+		    unpunish();
+		    res = 1;
+		}
+		res += openit();
+		switch (res) {
+		  case 0:  pline(nothing_happens); break;
+		  case 1:  pline(E_J("%s opens...","%sが開いた…。"), Something);
+			   learno = TRUE; break;
+		  default: pline(E_J("Things open around you...","あなたの周囲の物が開いた…。"));
+			   learno = TRUE; break;
+		}
+
+	    } else {  /* uncursed */
+#ifdef	AMIGA
+		amii_speaker( obj, "AeFeaeFeAefegw", AMII_OKAY_VOLUME );
+#endif
+		if (findit() != 0) learno = TRUE;
+		else pline(nothing_happens);
+	    }
+
+	}	/* charged BofO */
+
+	if (learno) {
+	    makeknown(BELL_OF_OPENING);
+	    obj->known = 1;
+	}
+	if (wakem) wake_nearby();
+}
+
 STATIC_OVL int
 getobj_filter_dilithium(otmp)
 struct obj *otmp;
@@ -4400,7 +4501,7 @@ struct obj *otmp;
 	return 0;
 }
 
-STATIC_OVL int
+int
 use_portal_ring(obj)
 struct obj *obj;
 {
@@ -4420,32 +4521,26 @@ struct obj *obj;
     static const struct getobj_words exw = { 0, 0, "強化に使う", "強化に使い" };
 #endif /*JP*/
 
-    if (!obj->owornmask) {
-	E_J(You("must put it on to invoke its power."),
-	    pline("身につけていなければ、指輪の魔力を引き出すことはできない。"));
-	return 0;
+    ep = get_xdat_obj(obj, XDAT_PORTAL);
+    if(!ep || u.uhave.amulet || In_endgame(&u.uz)) {
+	You_feel(E_J("mysterious force surpress the power of your Bell.",
+		     "不思議な力が鐘の力を抑え込んでいるのを感じた。"));
+	return 1;
     }
 
-    if(obj->age > monstermoves) {
+    if(ep->readytime > monstermoves) {
 #ifdef WIZARD
 	if (!wizard || (yn("Force the invocation to succeed?") != 'y')) {
 #endif /*WIZARD*/
 #ifndef JP
-	    You_feel("that the ring needs time to use again.");
+	    You_feel("that the Bell needs time to use again.");
 #else
-	    pline("指輪が再び使えるようになるまで、しばらくかかるようだ。");
+	    pline("鐘が再び力を取り戻すまで、しばらくかかるようだ。");
 #endif /*JP*/
 	    return 1;
 #ifdef WIZARD
 	}
 #endif /*WIZARD*/
-    }
-
-    ep = get_xdat_obj(obj, XDAT_PORTAL);
-    if(!ep || u.uhave.amulet || In_endgame(&u.uz)) {
-	You_feel(E_J("mysterious force surpress the power of your ring.",
-		     "不思議な力が指輪の力を抑え込んでいるのを感じた。"));
-	return 1;
     }
 
     /* Create window */
@@ -4464,7 +4559,7 @@ struct obj *obj;
 		    count++;
 		} else {
 		    add_menu(win, NO_GLYPH, &any, 0, 0, ATR_NONE,
-			     E_J("(Record the place)","(この場所を記憶する)"), MENU_UNSELECTED);
+			     E_J("(Record this place)","(この場所を記憶する)"), MENU_UNSELECTED);
 		}
 	    }
 
@@ -4481,7 +4576,7 @@ struct obj *obj;
 		objects[DILITHIUM_CRYSTAL].oc_name_known) {
 		any.a_int = MAX_EPORTAL_SLOT + 2;
 		add_menu(win, NO_GLYPH, &any, 'X', 0, ATR_NONE,
-			 E_J("Extend a slot", "指輪の力を強化する"), MENU_UNSELECTED);
+			 E_J("Extend a slot", "鐘の力を強化する"), MENU_UNSELECTED);
 	    }
 
 	    end_menu(win, E_J("To where do you open the portal?","どの場所への門を開きますか？"));
@@ -4512,13 +4607,8 @@ struct obj *obj;
 		}
 		useup(otmp);
 		ep->num_slots++;
-		if (!Blind) {
-		    pline(E_J("The crystal shines brilliantly, and then the ring absorb the energy!",
-			      "結晶がまぶしく輝くと、光が指輪に吸い込まれていった！"));
-		} else {
-		    You_feel(E_J("warmth on your ring!",
-				 "指輪が暖かくなるのを感じた！"));
-		}
+		pline(E_J("The Bell and the crystal resonates, and then the Bell absorbs the magical wave!",
+			  "結晶と鐘が共鳴し、残響が鐘に吸い込まれていった！"));
 		pline(E_J("The crystal crumbles away.",
 			  "結晶は砕け散った。"));
 		return 1;
@@ -4547,9 +4637,9 @@ struct obj *obj;
 			uportal->launch.x   = ep->dests[i].dx;
 			uportal->launch.y   = ep->dests[i].dy;
 			newsym(x, y);
-			if(!Blind) You(E_J("open a shiny magic portal!",
-					   "光輝く魔法の門を開いた！"));
-			obj->age = monstermoves + rnz(100);
+			if(!Blind) pline(E_J("The magical sound opens a shiny magic portal!",
+					     "鐘の音が光輝く魔法の門を開いた！"));
+			ep->readytime = monstermoves + rnz(100);
 			return 1;
 		    }
 		}
@@ -4562,8 +4652,8 @@ struct obj *obj;
 		assign_level(&ep->dests[i].dlev, &u.uz);
 		ep->dests[i].dx = u.ux;
 		ep->dests[i].dy = u.uy;
-		pline(E_J("The place is recorded in the ring.",
-			"現在地が指輪に記憶された。"));
+		pline(E_J("The place is recorded in the Bell.",
+			"周囲に広がった残響が鐘に定位し、現在地が記憶された。"));
 		return 1;
 	    }
 
@@ -4616,8 +4706,8 @@ struct obj *obj;
 	    ep->dests[i].dx = 0;
 	    ep->dests[i].dy = 0;
 
-	    You(E_J("free the memory slot of the ring..",
-		    "指輪の記憶する座標を解放した。"));
+	    You(E_J("free the memory slot of the Bell.",
+		    "鐘の記憶する座標を解放した。"));
 	    return 1;
 	}
     }

@@ -2874,10 +2874,11 @@ xchar sy;
 
       /* draw terrain */
       d = vx*vx + vy*vy;
-      if      (d ==  0) levl[x][y].typ = ROOM;
+      if      (d ==  0) levl[x][y].typ = CARPET; /* avoid stairs are placed here */
       else if (d <=  2) levl[x][y].typ = inner;
       else if (d <=  5) levl[x][y].typ = mid;
       else if (d <= 10) levl[x][y].typ = outer;
+      levl[x][y].flags = 0;
     }
   }
 }

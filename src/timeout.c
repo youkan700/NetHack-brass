@@ -1390,10 +1390,10 @@ begin_burn(obj, already_lit)
 		break;
 
 	    case CANDELABRUM_OF_INVOCATION:
-		if (obj->mcandles7) {
+		if (obj->spe == 7) {
 		    obj->lamplit = 1;
 		    do_timer = FALSE;
-		    radius = candle_light_range(obj) + 1;
+		    radius = candle_light_range(obj);
 		    break;
 		}
 		/* fall through */
@@ -1462,7 +1462,7 @@ end_burn(obj, timer_attached)
 	}
 
 	if (obj->otyp == MAGIC_LAMP || obj->otyp == MAGIC_CANDLE || artifact_light(obj) ||
-	    (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->mcandles7))
+	    (obj->otyp == CANDELABRUM_OF_INVOCATION && obj->spe == 7))
 	    timer_attached = FALSE;
 
 	if (!timer_attached) {

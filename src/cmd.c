@@ -3753,6 +3753,17 @@ wiz_select_wan_n()
 STATIC_OVL int
 wiz_objdesc()
 {
+    u.ublesscnt = 50;
+#if 0
+    struct obj *otmp;
+    if (uwep && !uwep->oartifact) {
+	make_ego(uwep);
+	pline("%s.", xname(uwep));
+	if (uwep->known) identify_ego(uwep);
+    }
+    return 0;
+#endif
+#if 0
     winid w;
     int i, n;
     char buf[BUFSZ];
@@ -3774,7 +3785,7 @@ wiz_objdesc()
 	end_menu(w, "Named monsters:");
 	n = select_menu(w, PICK_NONE, &selected);
 	destroy_nhwindow(w);
-
+#endif
 #if 0
     struct obj *otmp;
     otmp = mksobj(WAN_NOTHING, FALSE, FALSE);

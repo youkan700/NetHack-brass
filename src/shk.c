@@ -3533,6 +3533,7 @@ struct monst *shkp;
 	    eshkp->bill_p = &eshkp->bill[0];
 	    check_special_room(FALSE);
 	}
+	if (g_at(shkp->mx, shkp->my)) mpickgold(shkp);
 }
 
 #endif /*OVL3*/

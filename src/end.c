@@ -461,6 +461,7 @@ boolean taken;
 			for (obj = invent; obj; obj = obj->nobj) {
 			    makeknown(obj->otyp);
 			    obj->known = obj->bknown = obj->dknown = obj->rknown = 1;
+			    identify_ego(obj);
 			}
 			(void) display_inventory((char *)0, TRUE);
 			container_contents(invent, TRUE, TRUE);
@@ -715,6 +716,8 @@ int how;
 	boolean bones_ok, have_windows = iflags.window_inited;
 	struct obj *corpse = (struct obj *)0;
 	long umoney;
+	char *saveobj;
+	long savedby;
 
 	if (how == TRICKED) {
 	    if (killer) {
@@ -747,23 +750,36 @@ int how;
 	killer = kilbuf;
 
 	if (how < PANICKED) u.umortality++;
-	if (Lifesaved && (how <= GENOCIDED)) {
+	while (Lifesaved && (how <= GENOCIDED)) {
+		if (uamul && uamul->otyp == AMULET_OF_LIFE_SAVING) {
+			savedby = W_AMUL;
+			saveobj = E_J("medallion", "メダリオン");
+		} else if (uarm && uarm->oartifact == ART_ARTHUR_S_FULLPLATE) {
+			savedby = W_ARM;
+			saveobj = E_J("armor", "鎧");
+		} else {
+			impossible("No source of life-saving?");
+			break;
+		}
 		pline(E_J("But wait...","だが待て…。"));
 		makeknown(AMULET_OF_LIFE_SAVING);
 #ifndef JP
-		Your("medallion %s!",
+		Your("%s %s!", saveobj,
 		      !Blind ? "begins to glow" : "feels warm");
 		if (how == CHOKING) You("vomit ...");
 		You_feel("much better!");
-		pline_The("medallion crumbles to dust!");
+		pline_The("%s crumbles to dust!", saveobj);
 #else
-		Your("メダリオンが%sた！",
+		Your("%sが%sた！", saveobj,
 		      !Blind ? "輝きはじめ" : "暖かさを増し");
 		if (how == CHOKING) You("嘔吐した…。");
 		You("とても元気になった！");
-		pline("メダリオンは砕けて塵となった！");
+		pline("%sは砕けて塵となった！", saveobj);
 #endif /*JP*/
-		if (uamul) useup(uamul);
+		switch (savedby) {
+		    case W_AMUL:    useup(uamul); break;
+		    case W_ARM:	    useup(uarm);  break;
+		}
 
 		(void) adjattrib(A_CON, -1, TRUE);
 		if(u.uhpmax <= 0) u.uhpmax = 10;	/* arbitrary */

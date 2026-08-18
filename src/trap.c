@@ -998,7 +998,7 @@ unsigned trflags;
 		if (thitu(7, dmgval(otmp, &youmonst), otmp, E_J("little dart","小さなダーツ"))) {
 		    if (otmp->opoisoned)
 			poisoned(E_J("dart","ダーツ"), A_CON,
-				 E_J("little dart","毒ダーツに殺された"), -10);
+				 E_J("little dart","毒ダーツの罠にかかって死んだ"), -10);
 		    obfree(otmp, (struct obj *)0);
 		} else {
 		    place_object(otmp, u.ux, u.uy);

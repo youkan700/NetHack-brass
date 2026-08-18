@@ -9,6 +9,7 @@
 #include "eshk.h"
 #include "eportal.h"
 #include "vault.h"
+#include "artifact.h"
 
 /*size of data chunk = oxlth, mxlth*/
 
@@ -30,7 +31,8 @@ short xdat_reqsiz[] = {
 	sizeof(struct egd),		/* XDAT_EGD */
 	sizeof(unsigned),		/* XDAT_M_ID */
 	sizeof(struct permonst),	/* XDAT_PERMONST */
-	sizeof(struct eportal)		/* XDAT_PORTAL */
+	sizeof(struct eportal),		/* XDAT_PORTAL */
+	sizeof(struct artifact)		/* XDAT_ARTIFACT */
 };
 
 /* create a new xdat with initial data (if any) */
@@ -202,27 +204,65 @@ struct obj *otmp;
 
 /* called from mergable() to check compatibility of
    attachments of given objs. Currently, any attachments
-   are incompatible except names. */
+   are incompatible except names and artifacts. */
 boolean
 compare_xdat_obj(obj1, obj2)
 struct obj *obj1, *obj2;
 {
 	struct xdat *xtmp;
 	char *nam1, *nam2;
+	struct artifact *art1, *art2;
+	boolean other1, other2;
 	nam1 = nam2 = 0;
+	art1 = art2 = 0;
+	other1 = other2 = FALSE;
 	for (xtmp = obj1->oextra; xtmp; xtmp = xtmp->next) {
 	    if (xtmp->typ == XDAT_NAME) {
 		nam1 = (char *)xtmp->dat;
-		continue;
+	    } else if (xtmp->typ == XDAT_ARTIFACT) {
+		art1 = (struct artifact *)xtmp->dat;
+	    } else {
+		other1 = TRUE;
 	    }
-	    return FALSE;
 	}
+	if (other1) return FALSE;
 	for (xtmp = obj2->oextra; xtmp; xtmp = xtmp->next) {
 	    if (xtmp->typ == XDAT_NAME) {
 		nam2 = (char *)xtmp->dat;
-		continue;
+	    } else if (xtmp->typ == XDAT_ARTIFACT) {
+		art2 = (struct artifact *)xtmp->dat;
+	    } else {
+		other2 = TRUE;
 	    }
-	    return FALSE;
+	}
+	if (other2) return FALSE;
+	if (art1 || art2) {
+	    if (art1 && art2) {
+		if (art1->otyp != art2->otyp ||
+		    art1->weight     != art2->weight ||
+		    art1->spfx       != art2->spfx ||
+		    art1->cspfx      != art1->cspfx ||
+		    art1->attk.aatyp != art2->attk.aatyp ||
+		    art1->attk.adtyp != art2->attk.adtyp ||
+		    art1->attk.damn  != art2->attk.damn  ||
+		    art1->attk.damd  != art2->attk.damd  ||
+		    art1->defn.aatyp != art2->defn.aatyp ||
+		    art1->defn.adtyp != art2->defn.adtyp ||
+		    art1->defn.damn  != art2->defn.damn  ||
+		    art1->defn.damd  != art2->defn.damd  ||
+		    art1->cary.aatyp != art2->cary.aatyp ||
+		    art1->cary.adtyp != art2->cary.adtyp ||
+		    art1->cary.damn  != art2->cary.damn  ||
+		    art1->cary.damd  != art2->cary.damd  ||
+		    art1->inv_prop   != art2->inv_prop ||
+		    art1->material   != art2->material ||
+		    art1->alignment  != art2->alignment ||
+		    art1->role       != art2->role ||
+		    art1->race       != art2->race ||
+		    art1->cost       != art2->cost)
+		    return FALSE;
+	    } else
+		return FALSE;
 	}
 	if (nam1 && nam2) return !strcmp(nam1, nam2);
 	return TRUE;
